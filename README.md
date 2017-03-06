@@ -1,0 +1,2 @@
+# Sell Digital Product
+SDP is a Pluf module to sell digital products. It provides possibilies to manage, organize, upload, download and sell different digital products (such as PDF, media and other files).

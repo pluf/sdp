@@ -129,7 +129,7 @@ class SDP_Asset extends Pluf_Model
                 'type' => 'Pluf_DB_Field_Foreignkey',
                 'model' => 'CMS_Content',
                 'blank' => true,
-                'relate_name' => 'content',
+                'relate_name' => 'thumbnail',
                 'editable' => true,
                 'readable' => true,
             )

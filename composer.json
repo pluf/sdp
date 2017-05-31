@@ -14,8 +14,9 @@
 			"homepage" : "http://dpq.co.ir",
 			"role" : "developer"
 		}, {
-			"name" : "MahdiIsComingd",
-			"role" : "developer"
+			"name" : "MahdiIsComing",
+			"role" : "developer",
+			"email" : "mahdi.ar@dpq.co.ir"
 		}
 	],
 	"minimum-stability" : "stable",

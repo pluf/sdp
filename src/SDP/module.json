@@ -6,7 +6,7 @@
 		"SDP_Asset",
 		"SDP_Link",
 		"SDP_AssetRelation",
-		"SDP_TAG",
+		"SDP_Tag",
 		"SDP_Category",
 		"SDP_Profile"
 	],

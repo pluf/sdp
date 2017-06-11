@@ -37,7 +37,8 @@ class SDP_Views_Asset
      */
     public static function find ($request, $match)
     {
-        $assetPaginator = new Pluf_Paginator(new SDP_Asset());
+        $asset = new SDP_Asset();
+        $assetPaginator = new Pluf_Paginator($asset);
         $assetPaginator->list_filters = array(
                 'id',
                 'name',
@@ -85,12 +86,75 @@ class SDP_Views_Asset
                 'price',
                 'parent'
         );
+        
+        $queryView = SDP_Views_Asset::createViewQuery($request);
+        if($queryView != null){            
+            $asset->_a['views']['myView'] = array(
+                    'join' => 'JOIN (' .$queryView. ') AS C ON sdp_asset.id=C.sdp_asset_id'
+            );
+            $assetPaginator->model_view = 'myView';
+        }
+        
         $assetPaginator->configure($list_display, $search_fields, $sort_fields);
         $assetPaginator->items_per_page = SDP_Shortcuts_NormalizeItemPerPage($request);
         $assetPaginator->setFromRequest($request);
         return new Pluf_HTTP_Response_Json($assetPaginator->render_object());
     }
 
+    /**
+     * Creates a returns a query to get id of assets with some property about tag and category.
+     * Valid parameters in request could be as below:
+     *  include_tag : assets which have tag with determined id  
+     *  exclude_tag : assets which have not tag with determined id  
+     *  include_category : assets which exist in category with determined id  
+     *  exclude_category : assets which not exist in category with determined id  
+     *  
+     * Returns nulll if no one mentioned parameters exist in request
+     * @param Pluf_HTTP_Request $request
+     * @return NULL|string
+     */
+    private static function createViewQuery($request){
+        $includeTag = isset($request->REQUEST['include_tag']) ? $request->REQUEST['include_tag'] : null;
+        $excludeTag = isset($request->REQUEST['exclude_tag']) ? $request->REQUEST['exclude_tag'] : 0;
+        $includeCategory = isset($request->REQUEST['include_category']) ? $request->REQUEST['include_category'] : null;
+        $excludeCategory = isset($request->REQUEST['exclude_category']) ? $request->REQUEST['exclude_category'] : 0;
+        if($includeTag == null && $excludeTag == 0 && $includeCategory == null && $excludeCategory == 0)
+            return null;
+        
+        // NOT IN expression
+        $notin = $excludeTag == 0 && $excludeCategory == 0 ? '' :
+            '('.
+            'SELECT sdp_asset_id FROM sdp_asset_sdp_tag_assoc WHERE sdp_tag_id='.$excludeTag.
+            ' UNION '.
+            'SELECT sdp_asset_id FROM sdp_asset_sdp_category_assoc WHERE sdp_category_id='.$excludeCategory.
+            ')';
+        // Query
+        if($includeTag !== null && $includeCategory !== null){
+            $query = 'SELECT A.sdp_asset_id FROM sdp_asset_sdp_tag_assoc AS A JOIN sdp_asset_sdp_category_assoc AS B ON A.sdp_asset_id=B.sdp_asset_id'.
+                    ' WHERE A.sdp_tag_id='.$includeTag.' AND B.sdp_category_id='.$includeCategory;
+            if(!empty($notin))
+                $query .= ' AND A.sdp_asset_id NOT IN '.$notin;
+        }
+        elseif($includeTag !== null && $includeCategory === null){
+            $query = 'SELECT A.sdp_asset_id FROM sdp_asset_sdp_tag_assoc AS A'.
+                ' WHERE A.sdp_tag_id='.$includeTag;
+            if(!empty($notin))
+                $query .= ' AND A.sdp_asset_id NOT IN '.$notin;
+        }
+        elseif($includeTag === null && $includeCategory !== null){
+            $query = 'SELECT A.sdp_asset_id FROM sdp_asset_sdp_category_assoc AS A'.
+                ' WHERE A.sdp_category_id='.$includeCategory;
+            if(!empty($notin))
+                $query .= ' AND A.sdp_asset_id NOT IN '.$notin;
+        }
+        else{
+            $query = 'SELECT A.id AS sdp_asset_id FROM sdp_asset AS A';
+            if(!empty($notin))
+                $query .= ' WHERE A.id NOT IN '.$notin;
+        }
+        return $query;
+    }
+    
     public static function get ($request, $match)
     {
         // تعیین داده‌ها
@@ -145,7 +209,7 @@ class SDP_Views_Asset
             $extra = array(
                     'asset' => $asset
             );
-            $form = new SDP_Form_ContentUpdate(
+            $form = new SDP_Form_AssetUpdate(
                     array_merge($request->REQUEST, $request->FILES), $extra);
             $asset = $form->update();
             // return new Pluf_HTTP_Response_Json($content);

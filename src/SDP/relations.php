@@ -8,10 +8,12 @@ return array(
         )
     ),
     'SDP_Asset' => array(
-        'relate_to' => array(
-            'SDP_Asset',
-            'CMS_Content'
-        )
+    // XXX: note: hadi, 1396-03: commented to avoid casecade deleting *****
+//         'relate_to' => array(
+//             'SDP_Asset',
+//             'CMS_Content'
+//         )
+    // ******
 //         ,
 //         'relate_to_many' => array(
 //             'SDP_Tag',
@@ -19,10 +21,12 @@ return array(
 //         )
     ),
     'SDP_Category' => array(
-        'relate_to' => array(
-            'CMS_Content',
-            'SDP_Category'
-        ),
+    // XXX: note: hadi, 1396-03: commented to avoid casecade deleting *****
+//         'relate_to' => array(
+//             'CMS_Content',
+//             'SDP_Category'
+//         ),
+    // *****
         'relate_to_many' => array(
             'SDP_Asset'
         )

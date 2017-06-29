@@ -25,7 +25,7 @@ class SDP_Views_Link
 
     public static function get($request, $match)
     {
-        $link = new SDP_Link($match['id']);
+        $link = Pluf_Shortcuts_GetObjectOr404('SDP_Link', $match['id']);
         return new Pluf_HTTP_Response_Json($link);
     }
 
@@ -54,7 +54,7 @@ class SDP_Views_Link
             'asset'
         );
         $links->configure(array(), $search_fields, $sort_fields);
-        $links->items_per_page = 30;
+        $links->items_per_page = SDP_Shortcuts_NormalizeItemPerPage($request);
         $links->setFromRequest($request);
         return new Pluf_HTTP_Response_Json($links->render_object());
     }
@@ -102,21 +102,23 @@ class SDP_Views_Link
     {
         $link = Pluf_Shortcuts_GetObjectOr404('SDP_Link', $match['linkId']);
         
-        $url = $request->REQUEST['callback'];
         $user = $request->user;
+        $url = $request->REQUEST['callback'];
         $backend = $request->REQUEST['backend'];
         $price = $link->get_asset()->price;
         
-        $payment = SaaSBank_Service::create($request, array(
+        $receiptData = array(
             'amount' => $price, // مقدار پرداخت به ریال
-            'title' => 'خرید پلن  ' . $link->id,
+            'title' => 'buy asset ['. $link->asset . '] from link [' . $link->id . ']',
             'description' => 'description',
             'email' => $user->email,
             // 'phone' => $user->phone,
             'phone' => '',
             'callbackURL' => $url,
             'backend' => $backend
-        ), $link);
+        );
+        
+        $payment = Bank_Service::create($receiptData, 'sdp-link', $link->id);
         
         $link->payment = $payment;
         $link->update();
@@ -131,8 +133,8 @@ class SDP_Views_Link
     public static function activate($request, $match)
     {
         $link = Pluf_Shortcuts_GetObjectOr404('SDP_Link', $match['linkId']);
-        
-        SaaSBank_Service::update($link->get_payment());
+        $receipt = $link->get_payment();
+        Bank_Service::update($receipt);
         
         if ($link->get_payment()->isPayed())
             $link->activate();

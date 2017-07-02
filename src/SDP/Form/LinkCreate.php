@@ -8,10 +8,12 @@
  *
  */
 class SDP_Form_LinkCreate extends Pluf_Form {
+    
 	public $asset = null;
+	public $user = null;
+	
 	public function initFields($extra = array()) {
 		$this->asset = $extra ['asset'];
-		
 		$this->user = $extra ['user'];
 		
 		$this->fields ['secure_link'] = new Pluf_Form_Field_Varchar ( array (
@@ -37,10 +39,13 @@ class SDP_Form_LinkCreate extends Pluf_Form {
 		// Create the link
 		$link = new SDP_Link ();
 		$link->secure_link = chunk_split ( substr ( md5 ( time () . rand ( 10000, 99999 ) ), 0, 20 ), 6, '' );
-		// XXX: mahdi, validation of f expiry date from here and move it after activation
-		$link->expiry = date('Y-m-d H:i:s' , strtotime(' +1 day'));
+		// Note: Hadi - 1396-04: time is base on day
+		$day = Setting_Service::get('temporary_link_valid_time', '1');
+		$expiryDay = ' +'.$day.' day';
+		$link->expiry = date('Y-m-d H:i:s' , strtotime($expiryDay));
 		$link->setFromFormData ( $this->cleaned_data );
 		$link->asset = $this->asset;
+		$link->user = $this->user;
 		if ($commit) {
 			$link->create ();
 		}

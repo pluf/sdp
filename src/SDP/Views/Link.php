@@ -26,6 +26,7 @@ class SDP_Views_Link
     public static function get($request, $match)
     {
         $link = Pluf_Shortcuts_GetObjectOr404('SDP_Link', $match['id']);
+        $link = SDP_Views_Link::updateActivationInfo($link);
         return new Pluf_HTTP_Response_Json($link);
     }
 
@@ -64,26 +65,22 @@ class SDP_Views_Link
         $link = SDP_Shortcuts_GetLinkBySecureIdOr404($match['secure_link']);
         // Check that asset has price or not
         if ($link->get_asset()->price != null && $link->get_asset()->price > 0) {
-            if ($link->active != 1)
-                throw new SDP_Exception_ObjectNotFound("Link is not activated.");
+            if (!$link->active)
+                throw new SDP_Exception_ObjectNotFound("Link is not active.");
         }
-        
         // Check link expiry
-        
         if (date("Y-m-d H:i:s") > $link->expiry) {
             // Error: Link Expiry
             throw new SDP_Exception_ObjectNotFound("Link has been expired.");
         }
         
         $asset = $link->get_asset();
-        $user = $link->get_user();
-        
         //Mahdi: Added file extension
         // Do Download
         $httpRange = isset($request->SERVER['HTTP_RANGE']) ? $request->SERVER['HTTP_RANGE'] : null;
         $response = new Pluf_HTTP_Response_ResumableFile($asset->path . '/' . $asset->id, $httpRange, $asset->name . '.' . SDP_Shortcuts_Mime2Ext($asset->mime_type), $asset->mime_type);
         // TODO: do buz.
-        $size = $response->computeSize();
+        // $size = $response->computeSize();
         $link->download ++;
         $link->update();
         // Hadi, 1395-11-07: download counter of asset should be increased.
@@ -105,12 +102,13 @@ class SDP_Views_Link
         $user = $request->user;
         $url = $request->REQUEST['callback'];
         $backend = $request->REQUEST['backend'];
-        $price = $link->get_asset()->price;
+        $asset = $link->get_asset();
+        $price = $asset->price;
         
         $receiptData = array(
-            'amount' => $price, // مقدار پرداخت به ریال
-            'title' => 'buy asset ['. $link->asset . '] from link [' . $link->id . ']',
-            'description' => 'description',
+            'amount' => $price, // مقدار پرداخت به تومان
+            'title' => $asset->name,
+            'description' => 'ID: ' . $asset->id . ', Name: ' . $asset->name,
             'email' => $user->email,
             // 'phone' => $user->phone,
             'phone' => '',
@@ -133,11 +131,24 @@ class SDP_Views_Link
     public static function activate($request, $match)
     {
         $link = Pluf_Shortcuts_GetObjectOr404('SDP_Link', $match['linkId']);
-        $receipt = $link->get_payment();
-        Bank_Service::update($receipt);
-        
-        if ($link->get_payment()->isPayed())
-            $link->activate();
+        $link = SDP_Views_Link::updateActivationInfo($link);
         return new Pluf_HTTP_Response_Json($link);
     }
+    
+    /**
+     * Checks 
+     * @param unknown $link
+     * @return Pluf_HTTP_Response_Json|unknown
+     */
+    private static function updateActivationInfo($link){
+        if($link->active || !$link->payment){
+            return $link;
+        }
+        $receipt = $link->get_payment();
+        Bank_Service::update($receipt);
+        if ($link->get_payment()->isPayed())
+            $link->activate();
+        return $link;
+    }
+    
 }

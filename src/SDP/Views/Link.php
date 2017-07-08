@@ -108,7 +108,7 @@ class SDP_Views_Link
         $receiptData = array(
             'amount' => $price, // مقدار پرداخت به تومان
             'title' => $asset->name,
-            'description' => 'ID: ' . $asset->id . ', Name: ' . $asset->name,
+            'description' => $asset->id . ' - ' . $asset->name,
             'email' => $user->email,
             // 'phone' => $user->phone,
             'phone' => '',

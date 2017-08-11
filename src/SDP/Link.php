@@ -78,7 +78,7 @@ class SDP_Link extends Pluf_Model
             ),
             'payment' => array(
                 'type' => 'Pluf_DB_Field_Foreignkey',
-                'model' => 'SaaSBank_Receipt',
+                'model' => 'Bank_Receipt',
                 'blank' => false,
                 'editable' => false,
                 'readable' => true,
@@ -135,6 +135,14 @@ class SDP_Link extends Pluf_Model
 
     function activate()
     {
+        if($this->active){
+            return;
+        }
+        // It is first time to activate link
+        // Note: Hadi - 1396-04: time is base on day
+        $day = Setting_Service::get('link_valid_time', '30');
+        $expiryDay = ' +'.$day.' day';
+        $this->expiry = date('Y-m-d H:i:s' , strtotime($expiryDay));
         $this->active = true;
         $this->update();
     }

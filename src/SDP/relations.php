@@ -4,7 +4,7 @@ return array(
         'relate_to' => array(
             'SDP_Asset',
             'Pluf_User',
-            'SaaSBank_Receipt'
+            'Bank_Receipt'
         )
     ),
     'SDP_Asset' => array(

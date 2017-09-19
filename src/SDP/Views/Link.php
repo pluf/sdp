@@ -1,5 +1,6 @@
 <?php
 Pluf::loadFunction('Pluf_Shortcuts_GetObjectOr404');
+Pluf::loadFunction('Discount_Shortcuts_GetDiscountByCodeOr404');
 Pluf::loadFunction('SDP_Shortcuts_Mime2Ext');
 
 class SDP_Views_Link
@@ -105,6 +106,15 @@ class SDP_Views_Link
         $asset = $link->get_asset();
         $price = $asset->price;
         
+        // check for discount
+        if(isset($request->REQUEST['discount_code'])){
+            $discount = Discount_Shortcuts_GetDiscountByCodeOr404($request->REQUEST['discount_code']);
+            $discountEngine = $discount->get_engine();
+            $price = $discountEngine->getPrice($price, $discount, $request);
+            $discountEngine->consumeDiscount($discount);
+            $link->discount_code = $discount->code;
+        }
+        
         $receiptData = array(
             'amount' => $price, // مقدار پرداخت به تومان
             'title' => $asset->name,
@@ -137,8 +147,8 @@ class SDP_Views_Link
     
     /**
      * Checks 
-     * @param unknown $link
-     * @return Pluf_HTTP_Response_Json|unknown
+     * @param SDP_Link $link
+     * @return SDP_Link
      */
     private static function updateActivationInfo($link){
         if($link->active || !$link->payment){

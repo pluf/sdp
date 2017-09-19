@@ -58,7 +58,13 @@ class SDP_Link extends Pluf_Model
                 'editable' => false,
                 'readable' => true
             ),
-            
+            'discount_code' => array(
+                'type' => 'Pluf_DB_Field_Varchar',
+                'blank' => false,
+                'size' => 50,
+                'editable' => true,
+                'readable' => true
+            ),
             // relations
             'asset' => array(
                 'type' => 'Pluf_DB_Field_Foreignkey',

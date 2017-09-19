@@ -1,6 +1,5 @@
 <?php
 Pluf::loadFunction('Pluf_Shortcuts_GetObjectOr404');
-Pluf::loadFunction('Discount_Shortcuts_GetDiscountByCodeOr404');
 Pluf::loadFunction('SDP_Shortcuts_Mime2Ext');
 
 class SDP_Views_Link
@@ -19,8 +18,9 @@ class SDP_Views_Link
         // Create link and get its ID
         $form = new SDP_Form_LinkCreate($request->REQUEST, $extra);
         $link = $form->save();
-        //If asset is without price, created link will be activated automatically.
-        if ($asset->price == null) $link->activate();
+        // If asset is without price, created link will be activated automatically.
+        if ($asset->price == null)
+            $link->activate();
         return new Pluf_HTTP_Response_Json($link);
     }
 
@@ -66,7 +66,7 @@ class SDP_Views_Link
         $link = SDP_Shortcuts_GetLinkBySecureIdOr404($match['secure_link']);
         // Check that asset has price or not
         if ($link->get_asset()->price != null && $link->get_asset()->price > 0) {
-            if (!$link->active)
+            if (! $link->active)
                 throw new SDP_Exception_ObjectNotFound("Link is not active.");
         }
         // Check link expiry
@@ -76,7 +76,7 @@ class SDP_Views_Link
         }
         
         $asset = $link->get_asset();
-        //Mahdi: Added file extension
+        // Mahdi: Added file extension
         // Do Download
         $httpRange = isset($request->SERVER['HTTP_RANGE']) ? $request->SERVER['HTTP_RANGE'] : null;
         $response = new Pluf_HTTP_Response_ResumableFile($asset->path . '/' . $asset->id, $httpRange, $asset->name . '.' . SDP_Shortcuts_Mime2Ext($asset->mime_type), $asset->mime_type);
@@ -93,8 +93,8 @@ class SDP_Views_Link
 
     /**
      *
-     * @param Pluf_HTTP_Request $request            
-     * @param array $match            
+     * @param Pluf_HTTP_Request $request
+     * @param array $match
      */
     public static function payment($request, $match)
     {
@@ -107,12 +107,11 @@ class SDP_Views_Link
         $price = $asset->price;
         
         // check for discount
-        if(isset($request->REQUEST['discount_code'])){
-            $discount = Discount_Shortcuts_GetDiscountByCodeOr404($request->REQUEST['discount_code']);
-            $discountEngine = $discount->get_engine();
-            $price = $discountEngine->getPrice($price, $discount, $request);
-            $discountEngine->consumeDiscount($discount);
-            $link->discount_code = $discount->code;
+        $discountCode = $request->REQUEST['discount_code'];
+        if (isset($discountCode)) {
+            $price = Discount_Service::getPrice($price, $discountCode, $request);
+            $discount = Discount_Service::consumeDiscount($discountCode);
+            $link->discount_code = $discountCode;
         }
         
         $receiptData = array(
@@ -135,8 +134,8 @@ class SDP_Views_Link
 
     /**
      *
-     * @param Pluf_HTTP_Request $request            
-     * @param array $match            
+     * @param Pluf_HTTP_Request $request
+     * @param array $match
      */
     public static function activate($request, $match)
     {
@@ -144,14 +143,16 @@ class SDP_Views_Link
         $link = SDP_Views_Link::updateActivationInfo($link);
         return new Pluf_HTTP_Response_Json($link);
     }
-    
+
     /**
-     * Checks 
+     * Checks
+     * 
      * @param SDP_Link $link
      * @return SDP_Link
      */
-    private static function updateActivationInfo($link){
-        if($link->active || !$link->payment){
+    private static function updateActivationInfo($link)
+    {
+        if ($link->active || ! $link->payment) {
             return $link;
         }
         $receipt = $link->get_payment();
@@ -160,5 +161,4 @@ class SDP_Views_Link
             $link->activate();
         return $link;
     }
-    
 }

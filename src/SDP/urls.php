@@ -396,7 +396,8 @@ return array(
         'method' => 'create',
         'http-method' => 'GET',
         'precond' => array(
-            'Pluf_Precondition::loginRequired'
+            'Pluf_Precondition::loginRequired',
+            'Pluf_Precondition::authorizedRequired'
         )
     ),
     array( // Link urls
@@ -406,7 +407,7 @@ return array(
         'http-method' => 'GET',
         'precond' => array(
             'Pluf_Precondition::loginRequired',
-            'Pluf_Precondition::ownerRequired'
+            'Pluf_Precondition::authorizedRequired'
         )
     ),
     array( // Link urls
@@ -416,7 +417,7 @@ return array(
         'http-method' => 'GET',
         'precond' => array(
             'Pluf_Precondition::loginRequired',
-            'Pluf_Precondition::ownerRequired'
+            'Pluf_Precondition::authorizedRequired'
         )
     ),
     // ************************************************************* download asset
@@ -434,7 +435,7 @@ return array(
         'http-method' => 'POST',
         'precond' => array(
             'Pluf_Precondition::loginRequired',
-            'Pluf_Precondition::ownerRequired'
+            'Pluf_Precondition::authorizedRequired'
         )
     ),
     array( // Activate secure link that has been activated
@@ -444,7 +445,7 @@ return array(
         'http-method' => 'GET',
         'precond' => array(
             'Pluf_Precondition::loginRequired',
-            'Pluf_Precondition::ownerRequired'
+            'Pluf_Precondition::authorizedRequired'
         )
     ),
     // ************************************************************* AssetRelation

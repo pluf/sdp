@@ -60,9 +60,10 @@ class SDP_Link extends Pluf_Model
             ),
             'discount_code' => array(
                 'type' => 'Pluf_DB_Field_Varchar',
-                'blank' => false,
+                'blank' => true,
+                'is_null' => true,
                 'size' => 50,
-                'editable' => true,
+                'editable' => false,
                 'readable' => true
             ),
             // relations

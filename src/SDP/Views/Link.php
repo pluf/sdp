@@ -27,12 +27,14 @@ class SDP_Views_Link
     public static function get($request, $match)
     {
         $link = Pluf_Shortcuts_GetObjectOr404('SDP_Link', $match['id']);
+        // TODO: hadi: check if user is owner of tenant or owner of link
         $link = SDP_Views_Link::updateActivationInfo($link);
         return new Pluf_HTTP_Response_Json($link);
     }
 
     public static function find($request, $match)
     {
+        // XXX: hadi: restrict find to current user or user is owner of tenant 
         $links = new Pluf_Paginator(new SDP_Link());
         $links->list_filters = array(
             'id',
@@ -107,8 +109,8 @@ class SDP_Views_Link
         $price = $asset->price;
         
         // check for discount
-        $discountCode = $request->REQUEST['discount_code'];
-        if (isset($discountCode)) {
+        if (isset($request->REQUEST['discount_code'])) {
+            $discountCode = $request->REQUEST['discount_code'];
             $price = Discount_Service::getPrice($price, $discountCode, $request);
             $discount = Discount_Service::consumeDiscount($discountCode);
             $link->discount_code = $discountCode;

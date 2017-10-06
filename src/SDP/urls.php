@@ -484,8 +484,8 @@ return array(
     ),
     array(
         'regex' => '#^/assetrelation/new$#',
-        'model' => 'Pluf_Views',
-        'method' => 'createObject',
+        'model' => 'SDP_Views_AssetRelation',
+        'method' => 'create',
         'http-method' => 'POST',
         'params' => array(
             'model' => 'SDP_AssetRelation'

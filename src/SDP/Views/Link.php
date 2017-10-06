@@ -9,6 +9,11 @@ class SDP_Views_Link
     {
         $asset = Pluf_Shortcuts_GetObjectOr404('SDP_Asset', $match['asset_id']);
         
+        // Check number free link
+        if ($asset->price == null || $asset->price == 0) {
+            SDP_Views_Link::increaseLinkCount($request);
+        }
+        
         // initial link data
         $extra = array(
             'user' => $request->user,
@@ -19,9 +24,37 @@ class SDP_Views_Link
         $form = new SDP_Form_LinkCreate($request->REQUEST, $extra);
         $link = $form->save();
         // If asset is without price, created link will be activated automatically.
-        if ($asset->price == null)
+        if ($asset->price == null || $asset->price == 0) {
             $link->activate();
+        }
         return new Pluf_HTTP_Response_Json($link);
+    }
+
+    /**
+     * Checks number of created free links by current session and increases the number.
+     * It throws exception if current session has received maximum daily count.
+     *
+     * @param Pluf_HTTP_Request $request
+     * @throws Pluf_Exception_Forbidden
+     */
+    private static function increaseLinkCount($request)
+    {
+        $max = Setting_Service::get(SDP_Constants::SETTING_KEY_MAX_DAILY_FREE_LINK, - 1);
+        if($max < 0){
+            return;
+        }
+        $userSpaceData = $request->user_space->getData(SDP_Constants::USERSPACE_KEY_SDP_DATE, null);
+        $linkCount = $request->user_space->getData(SDP_Constants::USERSPACE_KEY_SDP_LINK_COUNT, 0);
+        $today = gmdate('Y-m-d');
+        if ($userSpaceData === null || $userSpaceData !== $today) {
+            $request->user_space->setData(SDP_Constants::USERSPACE_KEY_SDP_DATE, $today);
+            $request->user_space->setData(SDP_Constants::USERSPACE_KEY_SDP_LINK_COUNT, 0);
+            $linkCount = 0;
+        }
+        if ($max > 0 && $linkCount >= $max) {
+            throw new Pluf_Exception_Forbidden('you are received maximum daily count free link');
+        }
+        $request->user_space->setData(SDP_Constants::USERSPACE_KEY_SDP_LINK_COUNT, $linkCount + 1);
     }
 
     public static function get($request, $match)
@@ -34,7 +67,7 @@ class SDP_Views_Link
 
     public static function find($request, $match)
     {
-        // XXX: hadi: restrict find to current user or user is owner of tenant 
+        // XXX: hadi: restrict find to current user or user is owner of tenant
         $links = new Pluf_Paginator(new SDP_Link());
         $links->list_filters = array(
             'id',
@@ -81,7 +114,11 @@ class SDP_Views_Link
         // Mahdi: Added file extension
         // Do Download
         $httpRange = isset($request->SERVER['HTTP_RANGE']) ? $request->SERVER['HTTP_RANGE'] : null;
-        $response = new Pluf_HTTP_Response_ResumableFile($asset->path . '/' . $asset->id, $httpRange, $asset->name . '.' . SDP_Shortcuts_Mime2Ext($asset->mime_type), $asset->mime_type);
+        $response = new Pluf_HTTP_Response_ResumableFile(
+            $asset->path . '/' . $asset->id, 
+            $httpRange, 
+            $asset->name . '.' . SDP_Shortcuts_Mime2Ext($asset->mime_type), 
+            $asset->mime_type);
         // TODO: do buz.
         // $size = $response->computeSize();
         $link->download ++;
@@ -148,7 +185,7 @@ class SDP_Views_Link
 
     /**
      * Checks
-     * 
+     *
      * @param SDP_Link $link
      * @return SDP_Link
      */

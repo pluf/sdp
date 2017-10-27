@@ -58,7 +58,14 @@ class SDP_Link extends Pluf_Model
                 'editable' => false,
                 'readable' => true
             ),
-            
+            'discount_code' => array(
+                'type' => 'Pluf_DB_Field_Varchar',
+                'blank' => true,
+                'is_null' => true,
+                'size' => 50,
+                'editable' => false,
+                'readable' => true
+            ),
             // relations
             'asset' => array(
                 'type' => 'Pluf_DB_Field_Foreignkey',
@@ -140,7 +147,7 @@ class SDP_Link extends Pluf_Model
         }
         // It is first time to activate link
         // Note: Hadi - 1396-04: time is base on day
-        $day = Setting_Service::get('link_valid_time', '30');
+        $day = Setting_Service::get(SDP_Constants::SETTING_KEY_LINK_VALID_DAY, '30');
         $expiryDay = ' +'.$day.' day';
         $this->expiry = date('Y-m-d H:i:s' , strtotime($expiryDay));
         $this->active = true;

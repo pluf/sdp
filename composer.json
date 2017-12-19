@@ -21,16 +21,13 @@
 	],
 	"minimum-stability" : "stable",
 	"require" : {
-		"pluf/core" : "^2.1.0",
-		"pluf/cms" : "^2.1.0",
-		"pluf/bank" : "^2.1.0",
-		"pluf/discount" : "^2.1.0"
+		"pluf/core" : "^3.0.0",
+		"pluf/cms" : "^3.0.0",
+		"pluf/bank" : "^3.0.0",
+		"pluf/discount" : "^3.0.0"
 	},
 	"require-dev" : {
-		"phpunit/phpunit" : "^5.7.14",
-		"phpunit/php-invoker" : "^1.1",
-		"phpunit/dbunit" : "^2.0",
-		"phpunit/phpunit-story" : "^1.0"
+		"pluf/test" : "^3.0.0"
 	},
 	"include-path" : [
 		"src/"

@@ -7,8 +7,8 @@ return array(
         'method' => 'create',
         'http-method' => 'POST',
         'precond' => array(
-            'Pluf_Precondition::loginRequired',
-            'Pluf_Precondition::ownerRequired'
+            'User_Precondition::loginRequired',
+            'User_Precondition::ownerRequired'
         )
     ),
     array( // Find
@@ -29,8 +29,8 @@ return array(
         'method' => 'delete',
         'http-method' => 'DELETE',
         'precond' => array(
-            'Pluf_Precondition::loginRequired',
-            'Pluf_Precondition::ownerRequired'
+            'User_Precondition::loginRequired',
+            'User_Precondition::ownerRequired'
         )
     ),
     array( // Update
@@ -39,8 +39,8 @@ return array(
         'method' => 'update',
         'http-method' => 'POST',
         'precond' => array(
-            'Pluf_Precondition::loginRequired',
-            'Pluf_Precondition::ownerRequired'
+            'User_Precondition::loginRequired',
+            'User_Precondition::ownerRequired'
         )
     ),
     array( // Find childs (if asset is folder)
@@ -62,8 +62,8 @@ return array(
         'method' => 'addTag',
         'http-method' => 'POST',
         'precond' => array(
-            'Pluf_Precondition::loginRequired',
-            'Pluf_Precondition::ownerRequired'
+            'User_Precondition::loginRequired',
+            'User_Precondition::ownerRequired'
         )
     ),
     array(
@@ -72,8 +72,8 @@ return array(
         'method' => 'addTag',
         'http-method' => 'POST',
         'precond' => array(
-            'Pluf_Precondition::loginRequired',
-            'Pluf_Precondition::ownerRequired'
+            'User_Precondition::loginRequired',
+            'User_Precondition::ownerRequired'
         )
     ),
     array(
@@ -82,8 +82,8 @@ return array(
         'method' => 'removeTag',
         'http-method' => 'DELETE',
         'precond' => array(
-            'Pluf_Precondition::loginRequired',
-            'Pluf_Precondition::ownerRequired'
+            'User_Precondition::loginRequired',
+            'User_Precondition::ownerRequired'
         )
     ),
     // ************************************************************* Categories of Assets
@@ -99,8 +99,8 @@ return array(
         'method' => 'addCategory',
         'http-method' => 'POST',
         'precond' => array(
-            'Pluf_Precondition::loginRequired',
-            'Pluf_Precondition::ownerRequired'
+            'User_Precondition::loginRequired',
+            'User_Precondition::ownerRequired'
         )
     ),
     array(
@@ -109,8 +109,8 @@ return array(
         'method' => 'addCategory',
         'http-method' => 'POST',
         'precond' => array(
-            'Pluf_Precondition::loginRequired',
-            'Pluf_Precondition::ownerRequired'
+            'User_Precondition::loginRequired',
+            'User_Precondition::ownerRequired'
         )
     ),
     array(
@@ -119,8 +119,8 @@ return array(
         'method' => 'removeCategory',
         'http-method' => 'DELETE',
         'precond' => array(
-            'Pluf_Precondition::loginRequired',
-            'Pluf_Precondition::ownerRequired'
+            'User_Precondition::loginRequired',
+            'User_Precondition::ownerRequired'
         )
     ),
     // ************************************************************* Relations of Asset
@@ -136,8 +136,8 @@ return array(
         'method' => 'addRelation',
         'http-method' => 'POST',
         'precond' => array(
-            'Pluf_Precondition::loginRequired',
-            'Pluf_Precondition::ownerRequired'
+            'User_Precondition::loginRequired',
+            'User_Precondition::ownerRequired'
         )
     ),
     array(
@@ -146,8 +146,8 @@ return array(
         'method' => 'addRelation',
         'http-method' => 'POST',
         'precond' => array(
-            'Pluf_Precondition::loginRequired',
-            'Pluf_Precondition::ownerRequired'
+            'User_Precondition::loginRequired',
+            'User_Precondition::ownerRequired'
         )
     ),
     array(
@@ -156,8 +156,8 @@ return array(
         'method' => 'removeRelation',
         'http-method' => 'DELETE',
         'precond' => array(
-            'Pluf_Precondition::loginRequired',
-            'Pluf_Precondition::ownerRequired'
+            'User_Precondition::loginRequired',
+            'User_Precondition::ownerRequired'
         )
     ),
 
@@ -196,8 +196,8 @@ return array(
             'model' => 'SDP_Category'
         ),
         'precond' => array(
-            'Pluf_Precondition::loginRequired',
-            'Pluf_Precondition::ownerRequired'
+            'User_Precondition::loginRequired',
+            'User_Precondition::ownerRequired'
         )
     ),
     array( // Get info
@@ -219,8 +219,8 @@ return array(
             'permanently' => true
         ),
         'precond' => array(
-            'Pluf_Precondition::loginRequired',
-            'Pluf_Precondition::ownerRequired'
+            'User_Precondition::loginRequired',
+            'User_Precondition::ownerRequired'
         )
     ),
     array( // Update
@@ -232,8 +232,8 @@ return array(
             'model' => 'SDP_Category'
         ),
         'precond' => array(
-            'Pluf_Precondition::loginRequired',
-            'Pluf_Precondition::ownerRequired'
+            'User_Precondition::loginRequired',
+            'User_Precondition::ownerRequired'
         )
     ),
     // ************************************************************* Assets in Category
@@ -249,8 +249,8 @@ return array(
         'method' => 'addAsset',
         'http-method' => 'POST',
         'precond' => array(
-            'Pluf_Precondition::loginRequired',
-            'Pluf_Precondition::ownerRequired'
+            'User_Precondition::loginRequired',
+            'User_Precondition::ownerRequired'
         )
     ),
     array(
@@ -259,8 +259,8 @@ return array(
         'method' => 'addAsset',
         'http-method' => 'POST',
         'precond' => array(
-            'Pluf_Precondition::loginRequired',
-            'Pluf_Precondition::ownerRequired'
+            'User_Precondition::loginRequired',
+            'User_Precondition::ownerRequired'
         )
     ),
     array(
@@ -269,8 +269,8 @@ return array(
         'method' => 'removeAsset',
         'http-method' => 'DELETE',
         'precond' => array(
-            'Pluf_Precondition::loginRequired',
-            'Pluf_Precondition::ownerRequired'
+            'User_Precondition::loginRequired',
+            'User_Precondition::ownerRequired'
         )
     ),
     // ************************************************************* Tag
@@ -306,8 +306,8 @@ return array(
             'model' => 'SDP_Tag'
         ),
         'precond' => array(
-            'Pluf_Precondition::loginRequired',
-            'Pluf_Precondition::ownerRequired'
+            'User_Precondition::loginRequired',
+            'User_Precondition::ownerRequired'
         )
     ),
     array( // Get info
@@ -335,8 +335,8 @@ return array(
             'permanently' => true
         ),
         'precond' => array(
-            'Pluf_Precondition::loginRequired',
-            'Pluf_Precondition::ownerRequired'
+            'User_Precondition::loginRequired',
+            'User_Precondition::ownerRequired'
         )
     ),
     array( // Update
@@ -348,8 +348,8 @@ return array(
             'model' => 'SDP_Tag'
         ),
         'precond' => array(
-            'Pluf_Precondition::loginRequired',
-            'Pluf_Precondition::ownerRequired'
+            'User_Precondition::loginRequired',
+            'User_Precondition::ownerRequired'
         )
     ),
     // ************************************************************* Assets with Tag
@@ -365,8 +365,8 @@ return array(
         'method' => 'addAsset',
         'http-method' => 'POST',
         'precond' => array(
-            'Pluf_Precondition::loginRequired',
-            'Pluf_Precondition::ownerRequired'
+            'User_Precondition::loginRequired',
+            'User_Precondition::ownerRequired'
         )
     ),
     array(
@@ -375,8 +375,8 @@ return array(
         'method' => 'addAsset',
         'http-method' => 'POST',
         'precond' => array(
-            'Pluf_Precondition::loginRequired',
-            'Pluf_Precondition::ownerRequired'
+            'User_Precondition::loginRequired',
+            'User_Precondition::ownerRequired'
         )
     ),
     array(
@@ -385,8 +385,8 @@ return array(
         'method' => 'removeAsset',
         'http-method' => 'DELETE',
         'precond' => array(
-            'Pluf_Precondition::loginRequired',
-            'Pluf_Precondition::ownerRequired'
+            'User_Precondition::loginRequired',
+            'User_Precondition::ownerRequired'
         )
     ),
     // ************************************************************* Link
@@ -396,7 +396,7 @@ return array(
         'method' => 'create',
         'http-method' => 'GET',
         'precond' => array(
-            'Pluf_Precondition::loginRequired',
+            'User_Precondition::loginRequired',
             'Pluf_Precondition::authorizedRequired'
         )
     ),
@@ -406,7 +406,7 @@ return array(
         'method' => 'get',
         'http-method' => 'GET',
         'precond' => array(
-            'Pluf_Precondition::loginRequired',
+            'User_Precondition::loginRequired',
             'Pluf_Precondition::authorizedRequired'
         )
     ),
@@ -416,7 +416,7 @@ return array(
         'method' => 'find',
         'http-method' => 'GET',
         'precond' => array(
-            'Pluf_Precondition::loginRequired',
+            'User_Precondition::loginRequired',
             'Pluf_Precondition::authorizedRequired'
         )
     ),
@@ -434,7 +434,7 @@ return array(
         'method' => 'payment',
         'http-method' => 'POST',
         'precond' => array(
-            'Pluf_Precondition::loginRequired',
+            'User_Precondition::loginRequired',
             'Pluf_Precondition::authorizedRequired'
         )
     ),
@@ -444,7 +444,7 @@ return array(
         'method' => 'activate',
         'http-method' => 'GET',
         'precond' => array(
-            'Pluf_Precondition::loginRequired',
+            'User_Precondition::loginRequired',
             'Pluf_Precondition::authorizedRequired'
         )
     ),
@@ -491,8 +491,8 @@ return array(
             'model' => 'SDP_AssetRelation'
         ),
         'precond' => array(
-            'Pluf_Precondition::loginRequired',
-            'Pluf_Precondition::ownerRequired'
+            'User_Precondition::loginRequired',
+            'User_Precondition::ownerRequired'
         )
     ),
     array(
@@ -514,8 +514,8 @@ return array(
             'permanently' => true
         ),
         'precond' => array(
-            'Pluf_Precondition::loginRequired',
-            'Pluf_Precondition::ownerRequired'
+            'User_Precondition::loginRequired',
+            'User_Precondition::ownerRequired'
         )
     ),
     array(
@@ -527,8 +527,8 @@ return array(
             'model' => 'SDP_AssetRelation'
         ),
         'precond' => array(
-            'Pluf_Precondition::loginRequired',
-            'Pluf_Precondition::ownerRequired'
+            'User_Precondition::loginRequired',
+            'User_Precondition::ownerRequired'
         )
     )
 );

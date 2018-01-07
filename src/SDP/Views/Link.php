@@ -39,7 +39,7 @@ class SDP_Views_Link
      */
     private static function increaseLinkCount($request)
     {
-        $max = Setting_Service::get(SDP_Constants::SETTING_KEY_MAX_DAILY_FREE_LINK, - 1);
+        $max = Tenant_Service::setting(SDP_Constants::SETTING_KEY_MAX_DAILY_FREE_LINK, - 1);
         if($max < 0){
             return;
         }

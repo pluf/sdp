@@ -125,23 +125,71 @@ class SDP_Views_Link
         $asset = $link->get_asset();
         // Mahdi: Added file extension
         // Do Download
+        $filepath = $asset->path . '/' . $asset->id;
         $httpRange = isset($request->SERVER['HTTP_RANGE']) ? $request->SERVER['HTTP_RANGE'] : null;
         $response = new Pluf_HTTP_Response_ResumableFile(
-            $asset->path . '/' . $asset->id, 
+            $filepath, 
             $httpRange, 
             $asset->name . '.' . SDP_Shortcuts_Mime2Ext($asset->mime_type), 
             $asset->mime_type);
         // TODO: do buz.
         // $size = $response->computeSize();
-        $link->download ++;
-        $link->update();
-        // Hadi, 1395-11-07: download counter of asset should be increased.
-        $asset->download ++;
-        $asset->update();
+        // Note: Hadi 1397-03-28: Increase download counter only if download request is not partial or contains first part of file
+        if(SDP_Views_Link::containsFirstPortion($httpRange, filesize($filepath))){            
+            $link->download ++;
+            $link->update();
+            // Hadi, 1395-11-07: download counter of asset should be increased.
+            $asset->download ++;
+            $asset->update();
+        }
         return $response;
-        // throw new SDP_Exception_ObjectNotFound ( "SDP plan does not have enough priviledges." );
     }
 
+    private static function containsFirstPortion($httpRange, $totalSize){
+        if ($httpRange && $range = stristr(trim($httpRange), 'bytes=')) {
+            $range = substr($range, 6);
+            $ranges = explode(',', $range);
+            $t = count($ranges);
+            if($t <= 0){
+                // request file completely in one part
+                return true;                
+            }
+            // $t > 0
+            $start = $end = 0;
+            foreach ($ranges as $range) {
+                SDP_Views_Link::getRange($range, $start, $end, $totalSize);
+                if($start == 0){
+                    return true;
+                }
+            }
+            return false;
+        }
+        // request file completely in one part
+        return true;
+    }
+    
+    private static function getRange($range, &$start, &$end, $fileSize)
+    {
+        list ($start, $end) = explode('-', $range);
+        if ($start == '') {
+            $tmp = $end;
+            $end = $fileSize - 1;
+            $start = $fileSize - $tmp;
+            if ($start < 0)
+                $start = 0;
+        } else {
+            if ($end == '' || $end > $fileSize - 1)
+                $end = $fileSize - 1;
+        }
+        if ($start > $end) {
+            // Requested range is not satisfiable
+        }
+        return array(
+            $start,
+            $end
+        );
+    }
+    
     /**
      *
      * @param Pluf_HTTP_Request $request

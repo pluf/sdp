@@ -69,12 +69,20 @@ class SDP_Views_Link
     {
         // XXX: hadi: restrict find to current user or user is owner of tenant
         $links = new Pluf_Paginator(new SDP_Link());
+        if (!User_Precondition::isOwner($request)){
+            $links->forced_where = new Pluf_SQL('`user`=%s', array(
+                $request->user->id
+            ));
+        }
         $links->list_filters = array(
             'id',
             'secure_link',
             'expiry',
             'download',
-            'asset'
+            'active',
+            'discount_code',
+            'asset',
+            'user'
         );
         $search_fields = array(
             'id',
@@ -88,7 +96,11 @@ class SDP_Views_Link
             'secure_link',
             'expiry',
             'download',
-            'asset'
+            'creation_dtime',
+            'active',
+            'discount_code',
+            'asset',
+            'user'
         );
         $links->configure(array(), $search_fields, $sort_fields);
         $links->items_per_page = SDP_Shortcuts_NormalizeItemPerPage($request);

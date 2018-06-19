@@ -67,7 +67,7 @@ class SDP_Views_Link
 
     public static function find($request, $match)
     {
-        // XXX: hadi: restrict find to current user or user is owner of tenant
+        // Restrict find to current user or user is owner of tenant
         $links = new Pluf_Paginator(new SDP_Link());
         if (!User_Precondition::isOwner($request)){
             $links->forced_where = new Pluf_SQL('`user`=%s', array(

@@ -38,67 +38,17 @@ class SDP_Views_Asset
     public static function find ($request, $match)
     {
         $asset = new SDP_Asset();
-        $assetPaginator = new Pluf_Paginator($asset);
-        $assetPaginator->list_filters = array(
-                'id',
-                'name',
-                'size',
-                'download',
-                'driver_type',
-                'driver_id',
-                'creation_dtime',
-                'modif_dtime',
-                'type',
-                'mime_type',
-                'price',
-                'parent'
-        );
-        $list_display = array(
-                'name',
-                'type',
-                'size',
-                'price',
-                'download',
-                'driver_type',
-                'driver_id',
-                'parent'
-        );
-        
-        $search_fields = array(
-                'name',
-                'driver_type',
-                'driver_id',
-                'type',
-                'description',
-                'mime_type'
-        );
-        $sort_fields = array(
-                'id',
-                'name',
-                'size',
-                'download',
-                'driver_type',
-                'driver_id',
-                'creation_dtime',
-                'modif_dtime',
-                'type',
-                'mime_type',
-                'price',
-                'parent'
-        );
+        $builder= new Pluf_Paginator_Builder($asset);
         
         $queryView = SDP_Views_Asset::createViewQuery($request);
         if($queryView != null){            
             $asset->_a['views']['myView'] = array(
                     'join' => 'JOIN (' .$queryView. ') AS C ON sdp_asset.id=C.sdp_asset_id'
             );
-            $assetPaginator->model_view = 'myView';
+            $builder->setView('myView');
         }
-        
-        $assetPaginator->configure($list_display, $search_fields, $sort_fields);
-        $assetPaginator->items_per_page = SDP_Shortcuts_NormalizeItemPerPage($request);
-        $assetPaginator->setFromRequest($request);
-        return new Pluf_HTTP_Response_Json($assetPaginator->render_object());
+//         TODO: maso, 2018: set item per page SDP_Shortcuts_NormalizeItemPerPage($request);
+        return $builder->build()->render_object();
     }
 
     /**

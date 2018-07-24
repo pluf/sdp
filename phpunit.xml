@@ -1,18 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit colors="true">
     <testsuites>
-        <testsuite name="SDP">
-            <directory>tests/SDP/</directory>
+        <testsuite name="Pluf">
+            <directory>tests/Pluf/</directory>
+            <directory>tests/Pluf_Crypt/</directory>
+            <directory>tests/Pluf_Utils/</directory>
+            <directory>tests/Pluf_Encoder/</directory>
+            <directory>tests/Pluf_Tenant/</directory>
+            <directory>tests/Pluf_Tenant_Template/</directory>
+            <directory>tests/Pluf_Mail/</directory>
+            <directory>tests/Pluf_Migration/</directory>
+		</testsuite>
+        <testsuite name="ORM">
+            <directory>tests/Pluf_DB/</directory>
+            <directory>tests/Pluf_DB_Schema/</directory>
+            <directory>tests/Pluf_SQL/</directory>
+            <directory>tests/Pluf_Model/</directory>
+            <directory>tests/Pluf_Paginator/</directory>
+        </testsuite>
+        <testsuite name="View">
+            <directory>tests/Pluf_Dispatcher/</directory>
+            <directory>tests/Pluf_Paginator/</directory>
+            <directory>tests/Pluf_Text_Wiki/</directory>
+            <directory>tests/Pluf_Text_HTML_Filter/</directory>
+            <directory>tests/Pluf_Form_Field/</directory>
+            
+            <directory>tests/Pluf_HTTP_Response</directory>
         </testsuite>
     </testsuites>
-
-	<!-- Code coverage -->
-	<filter>
-		<whitelist addUncoveredFilesFromWhitelist="true">
-			<directory suffix=".php">src</directory>
-		</whitelist>
-	</filter>
-	<logging>
+    
+    <filter>
+        <whitelist addUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">src</directory>
+        </whitelist>
+    </filter>
+    <logging>
         <log type="coverage-clover" target="build/logs/clover.xml"/>
-	</logging>
+<!--         <log type="coverage-html" target="build/logs/codeCoverage" charset="UTF-8" -->
+<!-- 	        yui="true" highlight="true" -->
+<!-- 	        lowUpperBound="50" highLowerBound="80"/> -->
+    </logging>
 </phpunit>

@@ -168,23 +168,7 @@ return array(
         'method' => 'findObject',
         'http-method' => 'GET',
         'params' => array(
-            'model' => 'SDP_Category',
-            'listFilters' => array(
-                'id',
-                'name',
-                'parent'
-            ),
-            'searchFields' => array(
-                'name',
-                'description'
-            ),
-            'sortFields' => array(
-                'id',
-                'name',
-                'parent',
-                'creation_date',
-                'modif_dtime'
-            )
+            'model' => 'SDP_Category'
         )
     ),
     array( // Create
@@ -280,21 +264,7 @@ return array(
         'method' => 'findObject',
         'http-method' => 'GET',
         'params' => array(
-            'model' => 'SDP_Tag',
-            'listFilters' => array(
-                'id',
-                'name'
-            ),
-            'searchFields' => array(
-                'name',
-                'description'
-            ),
-            'sortFields' => array(
-                'id',
-                'name',
-                'creation_date',
-                'modif_dtime'
-            )
+            'model' => 'SDP_Tag'
         )
     ),
     array( // Create
@@ -450,31 +420,7 @@ return array(
         'method' => 'findObject',
         'http-method' => 'GET',
         'params' => array(
-            'model' => 'SDP_AssetRelation',
-            'listFilters' => array(
-                'id',
-                'type',
-                'start',
-                'end'
-            ),
-            'listDisplay' => array(
-                'type' => 'type',
-                'description' => 'description'
-            ),
-            '$searchFields' => array(
-                'type',
-                'start',
-                'end',
-                'description'
-            ),
-            'sortFields' => array(
-                'id',
-                'type',
-                'start',
-                'end',
-                'creation_date',
-                'modif_dtime'
-            )
+            'model' => 'SDP_AssetRelation'
         )
     ),
     array(

@@ -28,6 +28,10 @@ require_once 'Pluf.php';
 class SDPV1_REST_BasicsTest extends TestCase
 {
 
+    /**
+     * 
+     * @var Test_Client
+     */
     public static $client;
 
     /**
@@ -98,6 +102,60 @@ class SDPV1_REST_BasicsTest extends TestCase
         Test_Assert::assertResponseNotNull($response, 'Find result is empty');
         Test_Assert::assertResponseStatusCode($response, 200, 'Find status code is not 200');
         Test_Assert::assertResponsePaginateList($response, 'Find result is not JSON paginated list');
+    }
+
+    /**
+     * Sort categories based on id
+     * @test
+     */
+    public function getListofCategoriesSortByIdTest()
+    {
+        $cat1 = new SDP_Category();
+        $cat1->name ='name'. rand();
+        $cat1->create();
+        
+        $cat2 = new SDP_Category();
+        $cat2->name ='name'. rand();
+        $cat2->create();
+        
+        // DESC
+        $response = self::$client->get('/api/sdp/category/find', array(
+            '_px_fk' => array('id', 'id'),
+            '_px_fv' => array($cat1->id, $cat2->id),
+            '_px_sk' => 'id',
+            '_px_so' => 'd'
+        ));
+        Test_Assert::assertResponseNotNull($response, 'Find result is empty');
+        Test_Assert::assertResponseStatusCode($response, 200, 'Find status code is not 200');
+        Test_Assert::assertResponsePaginateList($response, 'Find result is not JSON paginated list');
+        
+        $actual = json_decode($response->content, true);
+        for ($i = 1; $i < sizeof($actual['items']); $i ++) {
+            $a = $actual['items'][$i];
+            $b = $actual['items'][$i - 1];
+            $this->assertTrue($a['id'] < $b['id']);
+        }
+        
+        // ASC
+        $response = self::$client->get('/api/sdp/category/find', array(
+            '_px_fk' => array('id', 'id'),
+            '_px_fv' => array($cat1->id, $cat2->id),
+            '_px_sk' => 'id',
+            '_px_so' => 'a'
+        ));
+        Test_Assert::assertResponseNotNull($response, 'Find result is empty');
+        Test_Assert::assertResponseStatusCode($response, 200, 'Find status code is not 200');
+        Test_Assert::assertResponsePaginateList($response, 'Find result is not JSON paginated list');
+        
+        $actual = json_decode($response->content, true);
+        for ($i = 1; $i < sizeof($actual['items']); $i ++) {
+            $a = $actual['items'][$i];
+            $b = $actual['items'][$i - 1];
+            $this->assertTrue($a['id'] > $b['id']);
+        }
+        
+        $cat1->delete();
+        $cat2->delete();
     }
 }
 

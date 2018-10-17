@@ -15,31 +15,14 @@ class SDP_Views_Category
             'join' => 'LEFT JOIN ' . $assocTable . ' ON ' . $assetTable . '.id=' . $assocTable . '.sdp_asset_id'
         );
         
-        $page = new Pluf_Paginator($asset);
-        $sql = new Pluf_SQL('sdp_category_id=%s', array(
-            $category->id
-        ));
-        $page->forced_where = $sql;
-        $page->model_view = 'myView';
-        $page->list_filters = array(
-            'id',
-            'name',
-            'parent'
-        );
-        $search_fields = array(
-            'name',
-            'description'
-        );
-        $sort_fields = array(
-            'id',
-            'name',
-            'parent',
-            'creation_date',
-            'modif_dtime'
-        );
-        $page->configure(array(), $search_fields, $sort_fields);
-        $page->setFromRequest($request);
-        return new Pluf_HTTP_Response_Json($page->render_object());
+        $builder = new Pluf_Paginator_Builder($asset);
+        return $builder->setWhereClause(new Pluf_SQL('sdp_category_id=%s', array(
+                $category->id
+            )))
+            ->setView('myView')
+            ->setRequest($request)
+            ->build()
+            ->render_object();
     }
 
     public static function addAsset($request, $match)

@@ -21,13 +21,13 @@
 	],
 	"minimum-stability" : "stable",
 	"require" : {
-		"pluf/core" : "^3.0.0",
-		"pluf/cms" : "^3.0.0",
-		"pluf/bank" : "^3.0.0",
-		"pluf/discount" : "^3.0.0"
+		"pluf/core" : "^4.0.0",
+		"pluf/cms" : "^4.0.0",
+		"pluf/bank" : "^4.0.0",
+		"pluf/discount" : "^4.0.0"
 	},
 	"require-dev" : {
-		"pluf/test" : "^3.0.0"
+		"pluf/test" : "^4.0.0"
 	},
 	"include-path" : [
 		"src/"

@@ -48,6 +48,7 @@ class SDP_Views_Asset
             $builder->setView('myView');
         }
 //         TODO: maso, 2018: set item per page SDP_Shortcuts_NormalizeItemPerPage($request);
+        $builder->setRequest($request);
         return $builder->build()->render_object();
     }
 

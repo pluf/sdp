@@ -113,7 +113,7 @@ class SDP_Asset extends Pluf_Model
                 'type' => 'Pluf_DB_Field_Foreignkey',
                 'model' => 'SDP_Asset',
                 'blank' => false,
-                'relate_name' => 'parent',
+                'relate_name' => 'children',
                 'editable' => true,
                 'readable' => true
             ),
@@ -121,7 +121,7 @@ class SDP_Asset extends Pluf_Model
                 'type' => 'Pluf_DB_Field_Foreignkey',
                 'model' => 'CMS_Content',
                 'blank' => true,
-                'relate_name' => 'content',
+                'relate_name' => 'assets',
                 'editable' => true,
                 'readable' => true,
             ),
@@ -129,7 +129,7 @@ class SDP_Asset extends Pluf_Model
                 'type' => 'Pluf_DB_Field_Foreignkey',
                 'model' => 'CMS_Content',
                 'blank' => true,
-                'relate_name' => 'thumbnail',
+                'relate_name' => 'assets',
                 'editable' => true,
                 'readable' => true,
             )

@@ -4,7 +4,7 @@
  * Copyright (C) 2010-2020 Phoinex Scholars Co. (http://dpq.co.ir)
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it utagsnder the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
@@ -95,6 +95,10 @@ class Tag_RestTest extends TestCase
                 'sub' => include 'User/urls.php'
             )
         ));
+        self::$ownerClient->post('/api/user/login', array(
+            'login' => 'test',
+            'password' => 'test'
+        ));
     }
 
     /**
@@ -107,6 +111,92 @@ class Tag_RestTest extends TestCase
         $m->unInstall();
     }
 
+    /**
+     *
+     * @test
+     */
+    public function createRestTest()
+    {
+        $form = array(
+            'name' => 'tag-' . rand(),
+            'description' => 'description ' . rand(),
+            'price' => rand()
+        );
+        $response = self::$ownerClient->post('/api/sdp/tags', $form);
+        $this->assertNotNull($response);
+        $this->assertEquals($response->status_code, 200);
+        
+    }
+    
+    /**
+     *
+     * @test
+     */
+    public function getRestTest()
+    {
+        $item = new SDP_Tag();
+        $item->name = 'tag-' . rand();
+        $item->description = 'description';
+        $item->price = rand();
+        $item->create();
+        Test_Assert::assertFalse($item->isAnonymous(), 'Could not create SDP_Tag');
+        // Get item
+        $response = self::$client->get('/api/sdp/tags/' . $item->id);
+        $this->assertNotNull($response);
+        $this->assertEquals($response->status_code, 200);
+    }
+    
+    /**
+     *
+     * @test
+     */
+    public function updateRestTest()
+    {
+        $item = new SDP_Tag();
+        $item->name = 'tag-' . rand();
+        $item->description = 'description';
+        $item->price = rand();
+        $item->create();
+        Test_Assert::assertFalse($item->isAnonymous(), 'Could not create SDP_Tag');
+        // Update item
+        $form = array(
+            'price' => rand()
+        );
+        $response = self::$client->post('/api/sdp/tags/' . $item->id, $form);
+        $this->assertNotNull($response);
+        $this->assertEquals($response->status_code, 200);
+    }
+    
+    /**
+     *
+     * @test
+     */
+    public function deleteRestTest()
+    {
+        $item = new SDP_Tag();
+        $item->name = 'tag-' . rand();
+        $item->description = 'description';
+        $item->price = rand();
+        $item->create();
+        Test_Assert::assertFalse($item->isAnonymous(), 'Could not create SDP_Tag');
+        
+        // delete
+        $response = self::$ownerClient->delete('/api/sdp/tags/' . $item->id);
+        $this->assertNotNull($response);
+        $this->assertEquals($response->status_code, 200);
+    }
+    
+    /**
+     *
+     * @test
+     */
+    public function findRestTest()
+    {
+        $response = self::$client->get('/api/sdp/tags');
+        $this->assertNotNull($response);
+        $this->assertEquals($response->status_code, 200);
+    }
+    
     /**
      *
      * @test

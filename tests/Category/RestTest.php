@@ -95,6 +95,10 @@ class Category_RestTest extends TestCase
                 'sub' => include 'User/urls.php'
             )
         ));
+        self::$ownerClient->post('/api/user/login', array(
+            'login' => 'test',
+            'password' => 'test'
+        ));
     }
 
     /**
@@ -107,6 +111,92 @@ class Category_RestTest extends TestCase
         $m->unInstall();
     }
 
+    /**
+     *
+     * @test
+     */
+    public function createRestTest()
+    {
+        $form = array(
+            'name' => 'category-' . rand(),
+            'description' => 'description ' . rand(),
+            'price' => rand()
+        );
+        $response = self::$ownerClient->post('/api/sdp/categories', $form);
+        $this->assertNotNull($response);
+        $this->assertEquals($response->status_code, 200);
+        
+    }
+    
+    /**
+     *
+     * @test
+     */
+    public function getRestTest()
+    {
+        $item = new SDP_Category();
+        $item->name = 'category-' . rand();
+        $item->description = 'description';
+        $item->price = rand();
+        $item->create();
+        Test_Assert::assertFalse($item->isAnonymous(), 'Could not create SDP_Category');
+        // Get item
+        $response = self::$client->get('/api/sdp/categories/' . $item->id);
+        $this->assertNotNull($response);
+        $this->assertEquals($response->status_code, 200);
+    }
+    
+    /**
+     *
+     * @test
+     */
+    public function updateRestTest()
+    {
+        $item = new SDP_Category();
+        $item->name = 'category-' . rand();
+        $item->description = 'description';
+        $item->price = rand();
+        $item->create();
+        Test_Assert::assertFalse($item->isAnonymous(), 'Could not create SDP_Category');
+        // Update item
+        $form = array(
+            'price' => rand()
+        );
+        $response = self::$client->post('/api/sdp/categories/' . $item->id, $form);
+        $this->assertNotNull($response);
+        $this->assertEquals($response->status_code, 200);
+    }
+    
+    /**
+     *
+     * @test
+     */
+    public function deleteRestTest()
+    {
+        $item = new SDP_Category();
+        $item->name = 'category-' . rand();
+        $item->description = 'description';
+        $item->price = rand();
+        $item->create();
+        Test_Assert::assertFalse($item->isAnonymous(), 'Could not create SDP_Category');
+        
+        // delete
+        $response = self::$ownerClient->delete('/api/sdp/categories/' . $item->id);
+        $this->assertNotNull($response);
+        $this->assertEquals($response->status_code, 200);
+    }
+    
+    /**
+     *
+     * @test
+     */
+    public function findRestTest()
+    {
+        $response = self::$client->get('/api/sdp/categories');
+        $this->assertNotNull($response);
+        $this->assertEquals($response->status_code, 200);
+    }
+    
     /**
      *
      * @test

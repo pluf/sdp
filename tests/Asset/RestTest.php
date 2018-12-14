@@ -95,6 +95,10 @@ class Asset_RestTest extends TestCase
                 'sub' => include 'User/urls.php'
             )
         ));
+        self::$ownerClient->post('/api/user/login', array(
+            'login' => 'test',
+            'password' => 'test'
+        ));
     }
 
     /**
@@ -107,6 +111,92 @@ class Asset_RestTest extends TestCase
         $m->unInstall();
     }
 
+    /**
+     *
+     * @test
+     */
+    public function createRestTest()
+    {
+        $form = array(
+            'name' => 'asset-' . rand(),
+            'description' => 'description ' . rand(),
+            'price' => rand()
+        );
+        $response = self::$ownerClient->post('/api/sdp/assets', $form);
+        $this->assertNotNull($response);
+        $this->assertEquals($response->status_code, 200);
+        
+    }
+    
+    /**
+     *
+     * @test
+     */
+    public function getRestTest()
+    {
+        $item = new SDP_Asset();
+        $item->name = 'asset-' . rand();
+        $item->description = 'description';
+        $item->price = rand();
+        $item->create();
+        Test_Assert::assertFalse($item->isAnonymous(), 'Could not create SDP_Asset');
+        // Get item
+        $response = self::$client->get('/api/sdp/assets/' . $item->id);
+        $this->assertNotNull($response);
+        $this->assertEquals($response->status_code, 200);
+    }
+    
+    /**
+     *
+     * @test
+     */
+    public function updateRestTest()
+    {
+        $item = new SDP_Asset();
+        $item->name = 'asset-' . rand();
+        $item->description = 'description';
+        $item->price = rand();
+        $item->create();
+        Test_Assert::assertFalse($item->isAnonymous(), 'Could not create SDP_Asset');
+        // Update item
+        $form = array(
+            'price' => rand()
+        );
+        $response = self::$client->post('/api/sdp/assets/' . $item->id, $form);
+        $this->assertNotNull($response);
+        $this->assertEquals($response->status_code, 200);
+    }
+    
+    /**
+     *
+     * @test
+     */
+    public function deleteRestTest()
+    {
+        $item = new SDP_Asset();
+        $item->name = 'asset-' . rand();
+        $item->description = 'description';
+        $item->price = rand();
+        $item->create();
+        Test_Assert::assertFalse($item->isAnonymous(), 'Could not create SDP_Asset');
+        
+        // delete
+        $response = self::$ownerClient->delete('/api/sdp/assets/' . $item->id);
+        $this->assertNotNull($response);
+        $this->assertEquals($response->status_code, 200);
+    }
+    
+    /**
+     *
+     * @test
+     */
+    public function findRestTest()
+    {
+        $response = self::$client->get('/api/sdp/assets');
+        $this->assertNotNull($response);
+        $this->assertEquals($response->status_code, 200);
+    }
+    
     /**
      *
      * @test

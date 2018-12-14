@@ -119,8 +119,7 @@ class Tag_RestTest extends TestCase
     {
         $form = array(
             'name' => 'tag-' . rand(),
-            'description' => 'description ' . rand(),
-            'price' => rand()
+            'description' => 'description ' . rand()
         );
         $response = self::$ownerClient->post('/api/sdp/tags', $form);
         $this->assertNotNull($response);
@@ -158,7 +157,7 @@ class Tag_RestTest extends TestCase
         Test_Assert::assertFalse($item->isAnonymous(), 'Could not create SDP_Tag');
         // Update item
         $form = array(
-            'price' => rand()
+            'description' => 'updated description'
         );
         $response = self::$client->post('/api/sdp/tags/' . $item->id, $form);
         $this->assertNotNull($response);

@@ -119,8 +119,7 @@ class Category_RestTest extends TestCase
     {
         $form = array(
             'name' => 'category-' . rand(),
-            'description' => 'description ' . rand(),
-            'price' => rand()
+            'description' => 'description ' . rand()
         );
         $response = self::$ownerClient->post('/api/sdp/categories', $form);
         $this->assertNotNull($response);
@@ -137,7 +136,6 @@ class Category_RestTest extends TestCase
         $item = new SDP_Category();
         $item->name = 'category-' . rand();
         $item->description = 'description';
-        $item->price = rand();
         $item->create();
         Test_Assert::assertFalse($item->isAnonymous(), 'Could not create SDP_Category');
         // Get item
@@ -155,12 +153,11 @@ class Category_RestTest extends TestCase
         $item = new SDP_Category();
         $item->name = 'category-' . rand();
         $item->description = 'description';
-        $item->price = rand();
         $item->create();
         Test_Assert::assertFalse($item->isAnonymous(), 'Could not create SDP_Category');
         // Update item
         $form = array(
-            'price' => rand()
+            'description' => 'updated description'
         );
         $response = self::$client->post('/api/sdp/categories/' . $item->id, $form);
         $this->assertNotNull($response);
@@ -176,7 +173,6 @@ class Category_RestTest extends TestCase
         $item = new SDP_Category();
         $item->name = 'category-' . rand();
         $item->description = 'description';
-        $item->price = rand();
         $item->create();
         Test_Assert::assertFalse($item->isAnonymous(), 'Could not create SDP_Category');
         

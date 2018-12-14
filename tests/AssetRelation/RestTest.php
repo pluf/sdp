@@ -123,7 +123,6 @@ class AssetRelation_RestTest extends TestCase
         $item = new SDP_Asset();
         $item->name = 'asset-' . rand();
         $item->description = 'description';
-        $item->price = rand();
         $item->create();
         Test_Assert::assertFalse($item->isAnonymous(), 'Could not create SDP_Asset');
         self::$assetList[] = $item;

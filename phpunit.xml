@@ -8,6 +8,7 @@
 			<directory>tests/Asset/</directory>
 			<directory>tests/Category/</directory>
 			<directory>tests/Tag/</directory>
+			<directory>tests/AssetRelation/</directory>
 		</testsuite>
 		
 	</testsuites>

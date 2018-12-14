@@ -262,6 +262,87 @@ class Asset_RestTest extends TestCase
         $asset1->delete();
         $asset2->delete();
     }
+
+    
+    /**
+     * Sort assets based on id
+     * @test
+     */
+    public function getListofAssetsFilteredByCategoryTest()
+    {
+        $asset1 = new SDP_Asset();
+        $asset1->name ='name'. rand();
+        $asset1->create();
+        
+        $asset2 = new SDP_Asset();
+        $asset2->name ='name'. rand();
+        $asset2->create();
+        
+        $cat = new SDP_Category();
+        $cat->name = 'category-' . rand();
+        $cat->description = 'description';
+        $cat->price = rand();
+        $cat->create();
+        
+        // add asset1 to category
+        $asset1->setAssoc($cat);
+        
+        // Get assets in category
+        $response = self::$client->get('/api/sdp/assets', array(
+            'include_category' => $cat->id
+        ));
+        Test_Assert::assertResponseNotNull($response, 'Find result is empty');
+        Test_Assert::assertResponseStatusCode($response, 200, 'Find status code is not 200');
+        Test_Assert::assertResponsePaginateList($response, 'Find result is not JSON paginated list');
+        
+        $actual = json_decode($response->content, true);
+        $this->assertTrue(sizeof($actual['items']) === 1);
+        $this->assertTrue($actual['items'][0]['id'] === $asset1->id);
+        
+        $asset1->delete();
+        $asset2->delete();
+        $cat->delete();
+    }
+    
+    /**
+     * Sort assets based on id
+     * @test
+     */
+    public function getListofAssetsFilteredByTagTest()
+    {
+        $asset1 = new SDP_Asset();
+        $asset1->name ='name'. rand();
+        $asset1->create();
+        
+        $asset2 = new SDP_Asset();
+        $asset2->name ='name'. rand();
+        $asset2->create();
+        
+        $tag = new SDP_Tag();
+        $tag->name = 'tag-' . rand();
+        $tag->description = 'description';
+        $tag->create();
+        
+        // add tag to asset1
+        $asset1->setAssoc($tag);
+        
+        // Get assets with tag
+        $response = self::$client->get('/api/sdp/assets', array(
+            'include_tag' => $tag->id
+        ));
+        Test_Assert::assertResponseNotNull($response, 'Find result is empty');
+        Test_Assert::assertResponseStatusCode($response, 200, 'Find status code is not 200');
+        Test_Assert::assertResponsePaginateList($response, 'Find result is not JSON paginated list');
+        
+        $actual = json_decode($response->content, true);
+        $this->assertTrue(sizeof($actual['items']) === 1);
+        $this->assertTrue($actual['items'][0]['id'] === $asset1->id);
+        
+        $asset1->delete();
+        $asset2->delete();
+        $tag->delete();
+    }
+    
 }
 
 

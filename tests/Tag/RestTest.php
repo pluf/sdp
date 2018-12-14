@@ -137,7 +137,6 @@ class Tag_RestTest extends TestCase
         $item = new SDP_Tag();
         $item->name = 'tag-' . rand();
         $item->description = 'description';
-        $item->price = rand();
         $item->create();
         Test_Assert::assertFalse($item->isAnonymous(), 'Could not create SDP_Tag');
         // Get item
@@ -155,7 +154,6 @@ class Tag_RestTest extends TestCase
         $item = new SDP_Tag();
         $item->name = 'tag-' . rand();
         $item->description = 'description';
-        $item->price = rand();
         $item->create();
         Test_Assert::assertFalse($item->isAnonymous(), 'Could not create SDP_Tag');
         // Update item
@@ -176,7 +174,6 @@ class Tag_RestTest extends TestCase
         $item = new SDP_Tag();
         $item->name = 'tag-' . rand();
         $item->description = 'description';
-        $item->price = rand();
         $item->create();
         Test_Assert::assertFalse($item->isAnonymous(), 'Could not create SDP_Tag');
         

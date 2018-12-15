@@ -31,7 +31,7 @@ class SDP_Views_Category
         if (isset($match['assetId'])) {
             $assetId = $match['assetId'];
         } else {
-            $assetId = $request->REQUEST['assetId'];
+            $assetId = isset($request->REQUEST['id']) ? $request->REQUEST['id'] : $request->REQUEST['assetId'];
         }
         $asset = Pluf_Shortcuts_GetObjectOr404('SDP_Asset', $assetId);
         $category->setAssoc($asset);
@@ -44,7 +44,7 @@ class SDP_Views_Category
         if (isset($match['assetId'])) {
             $assetId = $match['assetId'];
         } else {
-            $assetId = $request->REQUEST['assetId'];
+            $assetId = isset($request->REQUEST['id']) ? $request->REQUEST['id'] : $request->REQUEST['assetId'];
         }
         $asset = Pluf_Shortcuts_GetObjectOr404('SDP_Asset', $assetId);
         $category->delAssoc($asset);

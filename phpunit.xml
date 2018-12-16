@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit colors="true">
 	<testsuites>
-		<testsuite name="SDP">
-			<directory>tests/SDPV1_REST/</directory>
+		<testsuite name="Basic">
+			<directory>tests/SDP/</directory>
 		</testsuite>
+		<testsuite name="Entities">
+			<directory>tests/Asset/</directory>
+			<directory>tests/Category/</directory>
+			<directory>tests/Tag/</directory>
+			<directory>tests/AssetRelation/</directory>
+		</testsuite>
+		
 	</testsuites>
 
 	<filter>

@@ -49,7 +49,7 @@ class SDP_Tag extends Pluf_Model
             'assets' => array(
                 'type' => 'Pluf_DB_Field_Manytomany',
                 'model' => 'SDP_Asset',
-                'relate_name' => 'assets',
+                'relate_name' => 'tags',
                 'blank' => false,
                 'editable' => false,
                 'readable' => false
@@ -57,7 +57,7 @@ class SDP_Tag extends Pluf_Model
         );
         
         $this->_a['idx'] = array(
-            'tag_idx' => array(
+            'tag_name_idx' => array(
                 'col' => 'name',
                 'type' => 'unique', // normal, unique, fulltext, spatial
                 'index_type' => '', // hash, btree

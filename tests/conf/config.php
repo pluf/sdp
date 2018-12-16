@@ -2,8 +2,6 @@
 // $cfg = include 'mysql.config.php';
 $cfg = include 'sqlite.config.php';
 
-
-
 $cfg['test'] = false;
 $cfg['timezone'] = 'Europe/Berlin';
 
@@ -59,7 +57,6 @@ $cfg['template_tags'] = array(
 // Default mimetype of the document your application is sending.
 // It can be overwritten for a given response if needed.
 $cfg['mimetype'] = 'text/html';
-
 
 return $cfg;
 

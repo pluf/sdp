@@ -73,15 +73,15 @@ class SDP_Link extends Pluf_Model
                 'blank' => false,
                 'editable' => false,
                 'readable' => true,
-                'relate_name' => 'asset'
+                'relate_name' => 'links'
             ),
             'user' => array(
                 'type' => 'Pluf_DB_Field_Foreignkey',
-                'model' => 'User',
+                'model' => 'User_Account',
                 'blank' => false,
                 'editable' => false,
                 'readable' => true,
-                'relate_name' => 'user'
+                'relate_name' => 'links'
             ),
             'payment' => array(
                 'type' => 'Pluf_DB_Field_Foreignkey',
@@ -89,12 +89,12 @@ class SDP_Link extends Pluf_Model
                 'blank' => false,
                 'editable' => false,
                 'readable' => true,
-                'relate_name' => 'payment'
+                'relate_name' => 'links'
             )
         );
         
         $this->_a['idx'] = array(
-            'link_tenant_idx' => array(
+            'secure_link_idx' => array(
                 'col' => 'secure_link',
                 'type' => 'unique', // normal, unique, fulltext, spatial
                 'index_type' => '', // hash, btree

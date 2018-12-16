@@ -3,7 +3,7 @@ return array(
     'SDP_Link' => array(
         'relate_to' => array(
             'SDP_Asset',
-            'User',
+            'User_Account',
             'Bank_Receipt'
         )
     ),
@@ -38,7 +38,7 @@ return array(
     ),
     'SDP_Profile' => array(
         'relate_to' => array(
-            'User'
+            'User_Account'
         )
     )
     

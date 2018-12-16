@@ -25,13 +25,14 @@ require_once 'Pluf.php';
  * @backupGlobals disabled
  * @backupStaticAttributes disabled
  */
-class SDPV1_REST_BasicsTest extends TestCase
+class Category_RestTest extends TestCase
 {
 
     /**
      * 
      * @var Test_Client
      */
+    public static $ownerClient;
     public static $client;
 
     /**
@@ -40,25 +41,31 @@ class SDPV1_REST_BasicsTest extends TestCase
      */
     public static function createDataBase()
     {
-        Pluf::start(__DIR__ . '/../conf/config.php');
+        Pluf::start(__DIR__.'/../conf/config.php');
         $m = new Pluf_Migration(Pluf::f('installed_apps'));
         $m->install();
-
-        $user = new User();
+        
+        // Test user
+        $user = new User_Account();
         $user->login = 'test';
-        $user->first_name = 'test';
-        $user->last_name = 'test';
-        $user->email = 'toto@example.com';
-        $user->setPassword('test');
-        $user->active = true;
-        $user->administrator = true;
+        $user->is_active = true;
         if (true !== $user->create()) {
             throw new Exception();
         }
+        // Credential of user
+        $credit = new User_Credential();
+        $credit->setFromFormData(array(
+            'account_id' => $user->id
+        ));
+        $credit->setPassword('test');
+        if (true !== $credit->create()) {
+            throw new Exception();
+        }
+        
+        $per = User_Role::getFromString('tenant.owner');
+        $user->setAssoc($per);
 
-        $role = Role::getFromString('Pluf.owner');
-        $user->setAssoc($role);
-
+        // Anonymouse Client
         self::$client = new Test_Client(array(
             array(
                 'app' => 'SDP',
@@ -72,6 +79,25 @@ class SDPV1_REST_BasicsTest extends TestCase
                 'base' => '',
                 'sub' => include 'User/urls.php'
             )
+        ));
+        // Owner Client
+        self::$ownerClient = new Test_Client(array(
+            array(
+                'app' => 'SDP',
+                'regex' => '#^/api/sdp#',
+                'base' => '',
+                'sub' => include 'SDP/urls.php'
+            ),
+            array(
+                'app' => 'User',
+                'regex' => '#^/api/user#',
+                'base' => '',
+                'sub' => include 'User/urls.php'
+            )
+        ));
+        self::$ownerClient->post('/api/user/login', array(
+            'login' => 'test',
+            'password' => 'test'
         ));
     }
 
@@ -89,16 +115,91 @@ class SDPV1_REST_BasicsTest extends TestCase
      *
      * @test
      */
+    public function createRestTest()
+    {
+        $form = array(
+            'name' => 'category-' . rand(),
+            'description' => 'description ' . rand()
+        );
+        $response = self::$ownerClient->post('/api/sdp/categories', $form);
+        $this->assertNotNull($response);
+        $this->assertEquals($response->status_code, 200);
+        
+    }
+    
+    /**
+     *
+     * @test
+     */
+    public function getRestTest()
+    {
+        $item = new SDP_Category();
+        $item->name = 'category-' . rand();
+        $item->description = 'description';
+        $item->create();
+        Test_Assert::assertFalse($item->isAnonymous(), 'Could not create SDP_Category');
+        // Get item
+        $response = self::$client->get('/api/sdp/categories/' . $item->id);
+        $this->assertNotNull($response);
+        $this->assertEquals($response->status_code, 200);
+    }
+    
+    /**
+     *
+     * @test
+     */
+    public function updateRestTest()
+    {
+        $item = new SDP_Category();
+        $item->name = 'category-' . rand();
+        $item->description = 'description';
+        $item->create();
+        Test_Assert::assertFalse($item->isAnonymous(), 'Could not create SDP_Category');
+        // Update item
+        $form = array(
+            'description' => 'updated description'
+        );
+        $response = self::$client->post('/api/sdp/categories/' . $item->id, $form);
+        $this->assertNotNull($response);
+        $this->assertEquals($response->status_code, 200);
+    }
+    
+    /**
+     *
+     * @test
+     */
+    public function deleteRestTest()
+    {
+        $item = new SDP_Category();
+        $item->name = 'category-' . rand();
+        $item->description = 'description';
+        $item->create();
+        Test_Assert::assertFalse($item->isAnonymous(), 'Could not create SDP_Category');
+        
+        // delete
+        $response = self::$ownerClient->delete('/api/sdp/categories/' . $item->id);
+        $this->assertNotNull($response);
+        $this->assertEquals($response->status_code, 200);
+    }
+    
+    /**
+     *
+     * @test
+     */
+    public function findRestTest()
+    {
+        $response = self::$client->get('/api/sdp/categories');
+        $this->assertNotNull($response);
+        $this->assertEquals($response->status_code, 200);
+    }
+    
+    /**
+     *
+     * @test
+     */
     public function getListofCategoriesTest()
     {
-//         // login
-//         $response = self::$client->post('/api/user/login', array(
-//             'login' => 'admin',
-//             'password' => 'admin'
-//         ));
-//         Test_Assert::assertResponseStatusCode($response, 200, 'Fail to login');
-
-        $response = self::$client->get('/api/sdp/category/find');
+        $response = self::$client->get('/api/sdp/categories');
         Test_Assert::assertResponseNotNull($response, 'Find result is empty');
         Test_Assert::assertResponseStatusCode($response, 200, 'Find status code is not 200');
         Test_Assert::assertResponsePaginateList($response, 'Find result is not JSON paginated list');
@@ -119,7 +220,7 @@ class SDPV1_REST_BasicsTest extends TestCase
         $cat2->create();
         
         // DESC
-        $response = self::$client->get('/api/sdp/category/find', array(
+        $response = self::$client->get('/api/sdp/categories', array(
             '_px_fk' => array('id', 'id'),
             '_px_fv' => array($cat1->id, $cat2->id),
             '_px_sk' => 'id',
@@ -137,7 +238,7 @@ class SDPV1_REST_BasicsTest extends TestCase
         }
         
         // ASC
-        $response = self::$client->get('/api/sdp/category/find', array(
+        $response = self::$client->get('/api/sdp/categories', array(
             '_px_fk' => array('id', 'id'),
             '_px_fv' => array($cat1->id, $cat2->id),
             '_px_sk' => 'id',

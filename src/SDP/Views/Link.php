@@ -238,9 +238,10 @@ class SDP_Views_Link
      */
     public static function activate($request, $match)
     {
-        $link = Pluf_Shortcuts_GetObjectOr404('SDP_Link', $match['linkId']);
-        $link = SDP_Views_Link::updateActivationInfo($link);
-        return new Pluf_HTTP_Response_Json($link);
+//         $link = Pluf_Shortcuts_GetObjectOr404('SDP_Link', $match['id']);
+//         $link = SDP_Views_Link::updateActivationInfo($link);
+//         return new Pluf_HTTP_Response_Json($link);
+        return SDP_Views_Asset::get($request, $match);
     }
 
     /**

@@ -31,10 +31,11 @@ class SDP_Profile extends Pluf_Model
             ),
             'user' => array(
                 'type' => 'Pluf_DB_Field_Foreignkey',
-                'model' => 'User',
+                'model' => 'User_Account',
                 'blank' => false,
                 'unique' => true,
-                'editable' => false
+                'editable' => false,
+                'relate_name' => 'profiles'
             )
             ,
             'level' => array(

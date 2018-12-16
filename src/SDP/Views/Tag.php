@@ -18,13 +18,13 @@ class SDP_Views_Tag
     {
         $tag = Pluf_Shortcuts_GetObjectOr404('SDP_Tag', $match['tagId']);
         $asset = new SDP_Asset();
-        $assetTable = $asset->_a['table'];
-        $assocTable = 'sdp_asset_sdp_tag_assoc';
+        $assetTable = $asset->_con->pfx . $asset->_a['table'];
+        $assocTable = $asset->_con->pfx . Pluf_Shortcuts_GetAssociationTableName('SDP_Asset', 'SDP_Tag');
         $asset->_a['views']['myView'] = array(
             'select' => $asset->getSelect(),
             'join' => 'LEFT JOIN ' . $assocTable . ' ON ' . $assetTable . '.id=' . $assocTable . '.sdp_asset_id'
         );
-        
+
         $page = new Pluf_Paginator($asset);
         $sql = new Pluf_SQL('sdp_tag_id=%s', array(
             $tag->id
@@ -56,7 +56,7 @@ class SDP_Views_Tag
         if (isset($match['assetId'])) {
             $assetId = $match['assetId'];
         } else {
-            $assetId = $request->REQUEST['assetId'];
+            $assetId = isset($request->REQUEST['id']) ? $request->REQUEST['id'] : $request->REQUEST['assetId'];
         }
         $asset = Pluf_Shortcuts_GetObjectOr404('SDP_Asset', $assetId);
         $tag->setAssoc($asset);
@@ -69,7 +69,7 @@ class SDP_Views_Tag
         if (isset($match['assetId'])) {
             $assetId = $match['assetId'];
         } else {
-            $assetId = $request->REQUEST['assetId'];
+            $assetId = isset($request->REQUEST['id']) ? $request->REQUEST['id'] : $request->REQUEST['assetId'];
         }
         $asset = Pluf_Shortcuts_GetObjectOr404('SDP_Asset', $assetId);
         $tag->delAssoc($asset);

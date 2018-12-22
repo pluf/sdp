@@ -94,7 +94,6 @@ CREATE TABLE `sdp_link` (
 
 CREATE TABLE `sdp_profile` (
   `id` mediumint(9) unsigned NOT NULL AUTO_INCREMENT,
-  `user` mediumint(9) unsigned NOT NULL DEFAULT 0,
   `level` int(11) NOT NULL DEFAULT 0,
   `access_count` int(11) NOT NULL DEFAULT 0,
   `validate` tinyint(1) NOT NULL DEFAULT 0,
@@ -103,10 +102,11 @@ CREATE TABLE `sdp_profile` (
   `mobile_number` varchar(50) NOT NULL DEFAULT '',
   `creation_dtime` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `modif_dtime` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `account_id` mediumint(9) unsigned NOT NULL DEFAULT 0,
   `tenant` mediumint(9) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `user_unique_idx` (`tenant`,`user`),
-  KEY `user_foreignkey_idx` (`user`),
+  UNIQUE KEY `account_id_unique_idx` (`tenant`,`account_id`),
+  KEY `account_id_foreignkey_idx` (`account_id`),
   KEY `tenant_foreignkey_idx` (`tenant`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

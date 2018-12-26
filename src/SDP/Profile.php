@@ -10,6 +10,7 @@ class SDP_Profile extends Pluf_Model
 {
 
     /**
+     *
      * @brief مدل داده‌ای را بارگذاری می‌کند.
      *
      * تمام فیلدهای مورد نیاز برای این مدل داده‌ای در این متد تعیین شده و به
@@ -22,22 +23,13 @@ class SDP_Profile extends Pluf_Model
         $this->_a['table'] = 'sdp_profile';
         $this->_a['model'] = 'SDP_Profile';
         $this->_model = 'SDP_Profile';
-        
+
         $this->_a['cols'] = array(
             'id' => array(
                 'type' => 'Pluf_DB_Field_Sequence',
                 'blank' => true,
                 'editable' => false
             ),
-            'user' => array(
-                'type' => 'Pluf_DB_Field_Foreignkey',
-                'model' => 'User_Account',
-                'blank' => false,
-                'unique' => true,
-                'editable' => false,
-                'relate_name' => 'profiles'
-            )
-            ,
             'level' => array(
                 'type' => 'Pluf_DB_Field_Integer',
                 'blank' => false,
@@ -85,6 +77,19 @@ class SDP_Profile extends Pluf_Model
                 'type' => 'Pluf_DB_Field_Datetime',
                 'blank' => true,
                 'verbose' => __('modification date'),
+                'editable' => false
+            ),
+            /*
+             * Foreign Keys
+             */
+            'account_id' => array(
+                'type' => 'Pluf_DB_Field_Foreignkey',
+                'model' => 'User_Account',
+                'unique' => true,
+                'name' => 'account',
+                'relate_name' => 'sdp_profiles',
+                'graphql_name' => 'account',
+                'is_null' => false,
                 'editable' => false
             )
         );

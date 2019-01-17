@@ -221,7 +221,7 @@ class SDP_Views_Link
             // 'phone' => $user->phone,
             'phone' => '',
             'callbackURL' => $url,
-            'backend' => $backend
+            'backend_id' => $backend
         );
         
         $payment = Bank_Service::create($receiptData, 'sdp-link', $link->id);

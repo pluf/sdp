@@ -1,9 +1,27 @@
 <?php
 
+/**
+ * Determines an asset. The content of the asset may be stored on the local storage
+ * or on a remote storage.
+ * 
+ * Attributes of an asset are as the following:
+ * 
+ * name: the name of the asset
+ * description: a description about the asset
+ * drive_id: a foreign key to a SDP_Drive entity which determines where the content of the asset is placed.
+ * path: the path which content of the asset is stored. This field is not editable/readable for assets on local storage (local drive).
+ * size: the size of the content of the asset in byte. This field is not editable for assets stored on local storage (local drive) and will be computed automatically from given file.
+ * file_name: the name of the file which is set as content of the asset.
+ * mime_type: the mime_type of file which is set as content of the asset. This field should be manually set for assets stored on the remote storages.
+ * 
+ * @author hadi
+ *
+ */
 class SDP_Asset extends Pluf_Model
 {
 
     /**
+     *
      * @brief مدل داده‌ای را بارگذاری می‌کند.
      *
      * @see Pluf_Model::init()
@@ -54,19 +72,6 @@ class SDP_Asset extends Pluf_Model
                 'default' => 0,
                 'editable' => false,
                 'readable' => true
-            ),
-            'driver_type' => array(
-                'type' => 'Pluf_DB_Field_Varchar',
-                'blank' => false,
-                'size' => 250,
-                'editable' => false,
-                'readable' => false
-            ),
-            'driver_id' => array(
-                'type' => 'Pluf_DB_Field_Integer',
-                'blank' => false,
-                'editable' => false,
-                'readable' => false
             ),
             'creation_dtime' => array(
                 'type' => 'Pluf_DB_Field_Datetime',
@@ -123,7 +128,7 @@ class SDP_Asset extends Pluf_Model
                 'blank' => true,
                 'relate_name' => 'assets',
                 'editable' => true,
-                'readable' => true,
+                'readable' => true
             ),
             'thumbnail' => array(
                 'type' => 'Pluf_DB_Field_Foreignkey',
@@ -131,27 +136,21 @@ class SDP_Asset extends Pluf_Model
                 'blank' => true,
                 'relate_name' => 'assets',
                 'editable' => true,
-                'readable' => true,
+                'readable' => true
+            ),
+            'drive_id' => array(
+                'type' => 'Pluf_DB_Field_Foreignkey',
+                'model' => 'SDP_Drive',
+                'blank' => true,
+                'is_null' => true,
+                // Note: Hadi, 1398: do not set 'name' => 'drive'. It will cause to error.
+                'relate_name' => 'assets',
+                'graphql_name' => 'drive',
+                'editable' => false,
+                'readable' => true
             )
-//             ,
-//             'categories' => array(
-//                 'type' => 'Pluf_DB_Field_Manytomany',
-//                 'model' => 'SDP_Category',
-//                 'relate_name' => 'categories',
-//                 'blank' => false,
-//                 'editable' => false,
-//                 'readable' => false
-//             ),
-//             'tags' => array(
-//                 'type' => 'Pluf_DB_Field_Manytomany',
-//                 'model' => 'SDP_Tag',
-//                 'relate_name' => 'tags',
-//                 'blank' => false,
-//                 'editable' => false,
-//                 'readable' => false
-//             )
         );
-        
+
         $this->_a['idx'] = array(
             'page_class_idx' => array(
                 'col' => 'parent, name',
@@ -199,5 +198,23 @@ class SDP_Asset extends Pluf_Model
         if (file_exists($this->path . '/' . $this->id)) {
             unlink($this->path . '/' . $this->id);
         }
+    }
+
+    /**
+     * Returns true if asset is stored on local drive
+     *
+     * @return boolean
+     */
+    function isLocal()
+    {
+        return ! isset($this->drive_id) || $this->drive_id == 0;
+    }
+
+    function get_drive()
+    {
+        if ($this->isLocal()) {
+            return SDP_Service::defaultLocalDrive();
+        }
+        return $this->get_drive_id();
     }
 }

@@ -8,18 +8,18 @@ class SDP_Views_Link
     public static function create($request, $match)
     {
         $asset = Pluf_Shortcuts_GetObjectOr404('SDP_Asset', $match['asset_id']);
-        
+
         // Check number free link
         if ($asset->price == null || $asset->price == 0) {
             SDP_Views_Link::increaseLinkCount($request);
         }
-        
+
         // initial link data
         $extra = array(
             'user' => $request->user,
             'asset' => $asset
         );
-        
+
         // Create link and get its ID
         $form = new SDP_Form_LinkCreate($request->REQUEST, $extra);
         $link = $form->save();
@@ -40,7 +40,7 @@ class SDP_Views_Link
     private static function increaseLinkCount($request)
     {
         $max = Tenant_Service::setting(SDP_Constants::SETTING_KEY_MAX_DAILY_FREE_LINK, - 1);
-        if($max < 0){
+        if ($max < 0) {
             return;
         }
         $userSpaceData = $request->user_space->getData(SDP_Constants::USERSPACE_KEY_SDP_DATE, null);
@@ -69,7 +69,7 @@ class SDP_Views_Link
     {
         // Restrict find to current user or user is owner of tenant
         $links = new Pluf_Paginator(new SDP_Link());
-        if (!User_Precondition::isOwner($request)){
+        if (! User_Precondition::isOwner($request)) {
             $links->forced_where = new Pluf_SQL('`user`=%s', array(
                 $request->user->id
             ));
@@ -121,21 +121,15 @@ class SDP_Views_Link
             // Error: Link Expiry
             throw new SDP_Exception_ObjectNotFound("Link has been expired.");
         }
-        
+
         $asset = $link->get_asset();
-        // Mahdi: Added file extension
-        // Do Download
-        $filepath = $asset->path . '/' . $asset->id;
-        $httpRange = isset($request->SERVER['HTTP_RANGE']) ? $request->SERVER['HTTP_RANGE'] : null;
-        $response = new Pluf_HTTP_Response_ResumableFile(
-            $filepath, 
-            $httpRange, 
-            $asset->name . '.' . SDP_Shortcuts_Mime2Ext($asset->mime_type), 
-            $asset->mime_type);
-        // TODO: do buz.
-        // $size = $response->computeSize();
+        $drive = $asset->get_drive();
+        $driver = $drive->get_driver();
+        $response = $driver->getDownloadResponse($link, $request);
+
         // Note: Hadi 1397-03-28: Increase download counter only if download request is not partial or contains first part of file
-        if(SDP_Views_Link::containsFirstPortion($httpRange, filesize($filepath))){            
+        $httpRange = isset($request->SERVER['HTTP_RANGE']) ? $request->SERVER['HTTP_RANGE'] : null;
+        if (SDP_Views_Link::containsFirstPortion($httpRange, $asset->size)) {
             $link->download ++;
             $link->update();
             // Hadi, 1395-11-07: download counter of asset should be increased.
@@ -145,20 +139,21 @@ class SDP_Views_Link
         return $response;
     }
 
-    private static function containsFirstPortion($httpRange, $totalSize){
+    private static function containsFirstPortion($httpRange, $totalSize)
+    {
         if ($httpRange && $range = stristr(trim($httpRange), 'bytes=')) {
             $range = substr($range, 6);
             $ranges = explode(',', $range);
             $t = count($ranges);
-            if($t <= 0){
+            if ($t <= 0) {
                 // request file completely in one part
-                return true;                
+                return true;
             }
             // $t > 0
             $start = $end = 0;
             foreach ($ranges as $range) {
                 SDP_Views_Link::getRange($range, $start, $end, $totalSize);
-                if($start == 0){
+                if ($start == 0) {
                     return true;
                 }
             }
@@ -167,7 +162,7 @@ class SDP_Views_Link
         // request file completely in one part
         return true;
     }
-    
+
     private static function getRange($range, &$start, &$end, $fileSize)
     {
         list ($start, $end) = explode('-', $range);
@@ -189,7 +184,7 @@ class SDP_Views_Link
             $end
         );
     }
-    
+
     /**
      *
      * @param Pluf_HTTP_Request $request
@@ -198,13 +193,13 @@ class SDP_Views_Link
     public static function payment($request, $match)
     {
         $link = Pluf_Shortcuts_GetObjectOr404('SDP_Link', $match['linkId']);
-        
+
         $user = $request->user;
         $url = $request->REQUEST['callback'];
         $backend = $request->REQUEST['backend'];
         $asset = $link->get_asset();
         $price = $asset->price;
-        
+
         // check for discount
         if (isset($request->REQUEST['discount_code'])) {
             $discountCode = $request->REQUEST['discount_code'];
@@ -212,7 +207,7 @@ class SDP_Views_Link
             $discount = Discount_Service::consumeDiscount($discountCode);
             $link->discount_code = $discountCode;
         }
-        
+
         $receiptData = array(
             'amount' => $price, // مقدار پرداخت به تومان
             'title' => $asset->name,
@@ -223,9 +218,9 @@ class SDP_Views_Link
             'callbackURL' => $url,
             'backend_id' => $backend
         );
-        
+
         $payment = Bank_Service::create($receiptData, 'sdp-link', $link->id);
-        
+
         $link->payment = $payment;
         $link->update();
         return new Pluf_HTTP_Response_Json($payment);
@@ -238,9 +233,9 @@ class SDP_Views_Link
      */
     public static function activate($request, $match)
     {
-//         $link = Pluf_Shortcuts_GetObjectOr404('SDP_Link', $match['id']);
-//         $link = SDP_Views_Link::updateActivationInfo($link);
-//         return new Pluf_HTTP_Response_Json($link);
+        // $link = Pluf_Shortcuts_GetObjectOr404('SDP_Link', $match['id']);
+        // $link = SDP_Views_Link::updateActivationInfo($link);
+        // return new Pluf_HTTP_Response_Json($link);
         return SDP_Views_Asset::get($request, $match);
     }
 

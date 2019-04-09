@@ -15,8 +15,7 @@ class SDP_Views_Asset
         $form = new SDP_Form_AssetCreate($request->REQUEST, $extra);
         $asset = $form->save();
 
-        // Upload asset file and extract information about it (by updating
-        // asset)
+        // Upload asset file (for local assets) and extract information about it
         $extra['asset'] = $asset;
         $form = new SDP_Form_AssetUpdate(array_merge($request->REQUEST, $request->FILES), $extra);
         try {
@@ -25,8 +24,7 @@ class SDP_Views_Asset
             $asset->delete();
             throw $e;
         }
-
-        return new Pluf_HTTP_Response_Json($asset);
+        return $asset;
     }
 
     /**
@@ -151,15 +149,16 @@ class SDP_Views_Asset
         // Precondition::userCanAccessApplication($request, $app);
         // Precondition::userCanAccessResource($request, $content);
 
+        if(!$asset->isLocal()){
+            return new Pluf_Exception_BadRequest('Could not change file of a non local asset');
+        }
         if (array_key_exists('file', $request->FILES)) {
             $extra = array(
                 'asset' => $asset
             );
             $form = new SDP_Form_AssetUpdate(array_merge($request->REQUEST, $request->FILES), $extra);
             $asset = $form->update();
-            // return new Pluf_HTTP_Response_Json($content);
         } else {
-
             // Do
             $myfile = fopen($asset->path . '/' . $asset->id, "w") or die("Unable to open file!");
             $entityBody = file_get_contents('php://input', 'r');
@@ -168,7 +167,7 @@ class SDP_Views_Asset
             $asset->file_size = filesize($asset->path . '/' . $asset->id);
             $asset->update();
         }
-        return new Pluf_HTTP_Response_Json($asset);
+        return $asset;
     }
 
     // *******************************************************************

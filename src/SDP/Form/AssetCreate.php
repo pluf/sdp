@@ -2,9 +2,17 @@
 Pluf::loadFunction('Pluf_Shortcuts_GetObjectOr404');
 
 /**
- * ایجاد یک دارایی جدید
+ * Creates a new asset
  *
- * با استفاده از این فرم می‌توان یک دارایی جدید را ایجاد کرد.
+ * Following fields could be determined to create a new asset:
+ * - name: optional
+ * - type: optional. default is 'file'
+ * - description: optional.
+ * - price: optional. default is 0.
+ * - parent: optional.
+ * - content: optional.
+ * - thumbnail: optional.
+ * - drive_id: optional.
  *
  * @author hadi <mohammad.hadi.mansouri@dpq.co.ir>
  *        
@@ -27,16 +35,6 @@ class SDP_Form_AssetCreate extends Pluf_Form
             'required' => false,
             'label' => 'Type',
             'help_text' => 'Type of asset'
-        ));
-        $this->fields['driver_type'] = new Pluf_Form_Field_Varchar(array(
-            'required' => false,
-            'label' => 'Driver Type',
-            'help_text' => 'Type of driver which asset is saved on it'
-        ));
-        $this->fields['driver_id'] = new Pluf_Form_Field_Integer(array(
-            'required' => false,
-            'label' => 'Driver Id',
-            'help_text' => 'Id of driver which asset is saved on it'
         ));
         $this->fields['parent'] = new Pluf_Form_Field_Integer(array(
             'required' => false,
@@ -62,6 +60,11 @@ class SDP_Form_AssetCreate extends Pluf_Form
             'required' => false,
             'label' => 'Content',
             'help_text' => 'Content related to asset'
+        ));
+        $this->fields['drive_id'] = new Pluf_Form_Field_Integer(array(
+            'required' => false,
+            'label' => 'Drive',
+            'help_text' => 'Drive to store asset'
         ));
         
         // initial asset data
@@ -129,19 +132,26 @@ class SDP_Form_AssetCreate extends Pluf_Form
         return $type;
     }
     
-    public function clean_driver_type()
-    {
-        $dt = trim($this->cleaned_data['driver_type']);
-        if(!isset($dt) || empty($dt) || $dt == ''){
-            $dt = 'local';
-        }
-        return $dt;
-    }
+//     public function clean_driver_type()
+//     {
+//         $dt = trim($this->cleaned_data['driver_type']);
+//         if(!isset($dt) || empty($dt) || $dt == ''){
+//             $dt = 'local';
+//         }
+//         return $dt;
+//     }
     
-    public function clean_driver_id()
+//     public function clean_driver_id()
+//     {
+//         $di = $this->cleaned_data['driver_id'];
+//         $di = isset($di) && strlen($di) > 0 ? $this->cleaned_data['driver_id'] : '0';
+//         return $di;
+//     }
+    
+    public function clean_drive_id()
     {
-        $di = $this->cleaned_data['driver_id'];
-        $di = isset($di) && strlen($di) > 0 ? $this->cleaned_data['driver_id'] : '0';
+        $di = $this->cleaned_data['drive_id'];
+        $di = isset($di) && strlen($di) > 0 ? $this->cleaned_data['drive_id'] : 0;
         return $di;
     }
     

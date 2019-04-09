@@ -1,5 +1,23 @@
 <?php
 
+/**
+ * Finds a driver
+ *
+ * @param string $type
+ * @throws SDP_Exception_DriverNotFound
+ * @return SDP_Driver
+ */
+function SDP_Shortcuts_GetDriverOr404($type)
+{
+    $items = SDP_Service::drivers();
+    foreach ($items as $item) {
+        if ($item->getType() === $type) {
+            return $item;
+        }
+    }
+    throw new SDP_Exception_DriverNotFound("Driver not found: " . $type);
+}
+
 function SDP_Shortcuts_GetLinkBySecureIdOr404 ($secure_id)
 {
     $item = SDP_Link::getLinkBySecureId($secure_id);

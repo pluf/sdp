@@ -36,6 +36,7 @@ class SDP_Service
     {
         return array(
             new SDP_Driver_Local(),
+            new SDP_Driver_Cactus()
 //             new SDP_Driver_Cactus()
         );
     }

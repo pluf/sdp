@@ -24,7 +24,9 @@
 		"pluf/core" : "5.5.x",
 		"pluf/cms" : "5.5.x",
 		"pluf/bank" : "5.5.x",
-		"pluf/discount" : "5.5.x"
+		"pluf/discount" : "5.5.x",
+		"pluf/tenant" : "5.5.x",
+		"firebase/php-jwt" : "^5.0"
 	},
 	"require-dev" : {
 		"pluf/test" : "5.5.x"

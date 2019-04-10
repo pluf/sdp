@@ -207,7 +207,7 @@ class SDP_Asset extends Pluf_Model
      */
     function isLocal()
     {
-        return ! isset($this->drive_id) || $this->drive_id == 0;
+        return $this->drive_id == 0;
     }
 
     function get_drive()

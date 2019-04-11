@@ -27,7 +27,7 @@ class SDP_Views_Link
         if ($asset->price == null || $asset->price == 0) {
             $link->activate();
         }
-        return new Pluf_HTTP_Response_Json($link);
+        return $link;
     }
 
     /**
@@ -62,7 +62,7 @@ class SDP_Views_Link
         $link = Pluf_Shortcuts_GetObjectOr404('SDP_Link', $match['id']);
         // TODO: hadi: check if user is owner of tenant or owner of link
         $link = SDP_Views_Link::updateActivationInfo($link);
-        return new Pluf_HTTP_Response_Json($link);
+        return $link;
     }
 
     public static function find($request, $match)
@@ -105,7 +105,7 @@ class SDP_Views_Link
         $links->configure(array(), $search_fields, $sort_fields);
         $links->items_per_page = SDP_Shortcuts_NormalizeItemPerPage($request);
         $links->setFromRequest($request);
-        return new Pluf_HTTP_Response_Json($links->render_object());
+        return $links;
     }
 
     public static function download($request, $match)
@@ -223,7 +223,7 @@ class SDP_Views_Link
 
         $link->payment = $payment;
         $link->update();
-        return new Pluf_HTTP_Response_Json($payment);
+        return $payment;
     }
 
     /**

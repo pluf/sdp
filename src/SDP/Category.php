@@ -75,7 +75,8 @@ class SDP_Category extends Pluf_Model
                 'model' => 'SDP_Asset',
                 'relate_name' => 'categories',
                 'blank' => false,
-                'editable' => false
+                'editable' => false,
+                'readable' => false
             )
         );
         

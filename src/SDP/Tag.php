@@ -51,7 +51,8 @@ class SDP_Tag extends Pluf_Model
                 'model' => 'SDP_Asset',
                 'relate_name' => 'tags',
                 'blank' => false,
-                'editable' => false
+                'editable' => false,
+                'readable' => false
             )
         );
         

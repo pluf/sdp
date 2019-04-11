@@ -29,10 +29,12 @@ class Asset_OwnerRestTest extends TestCase
 {
 
     /**
-     * 
+     *
      * @var Test_Client
      */
     public static $ownerClient;
+
+    var $drive;
 
     /**
      *
@@ -40,10 +42,10 @@ class Asset_OwnerRestTest extends TestCase
      */
     public static function createDataBase()
     {
-        Pluf::start(__DIR__.'/../conf/config.php');
+        Pluf::start(__DIR__ . '/../conf/config.php');
         $m = new Pluf_Migration(Pluf::f('installed_apps'));
         $m->install();
-        
+
         // Test user
         $user = new User_Account();
         $user->login = 'test';
@@ -60,7 +62,7 @@ class Asset_OwnerRestTest extends TestCase
         if (true !== $credit->create()) {
             throw new Exception();
         }
-        
+
         $per = User_Role::getFromString('tenant.owner');
         $user->setAssoc($per);
 
@@ -97,6 +99,21 @@ class Asset_OwnerRestTest extends TestCase
 
     /**
      *
+     * @before
+     */
+    public function init()
+    {
+        $this->drive = new SDP_Drive();
+        $this->drive->title = 'CactusDrive-' . rand();
+        $this->drive->home = 'www.test.com';
+        $this->drive->setMeta('key', 'test_key');
+        $this->drive->setMeta('algorithm', 'HS512');
+        $this->drive->driver = 'cactus';
+        Test_Assert::assertTrue($this->drive->create(), 'Impossible to create cactus drive');
+    }
+
+    /**
+     *
      * @test
      */
     public function createRestTest()
@@ -109,9 +126,43 @@ class Asset_OwnerRestTest extends TestCase
         $response = self::$ownerClient->post('/api/sdp/assets', $form);
         $this->assertNotNull($response);
         $this->assertEquals($response->status_code, 200);
-        
     }
-    
+
+    /**
+     *
+     * @test
+     */
+    public function createRemoteAssetRestTest()
+    {
+        $name = 'asset-' . rand();
+        $path = '/path/to/file';
+        $fileName = 'example.txt';
+        $size = 72313;
+        $price = rand();
+        $form = array(
+            'name' => $name,
+            'description' => 'description ' . rand(),
+            'price' => $price,
+            'path' => $path,
+            'file_name' => $fileName,
+            'size' => $size,
+            'drive_id' => $this->drive->id
+        );
+        $response = self::$ownerClient->post('/api/sdp/assets', $form);
+        $this->assertNotNull($response);
+        $this->assertEquals($response->status_code, 200);
+        Test_Assert::assertResponseAsModel($response);
+        $actual = json_decode($response->content, true);
+        $this->assertEquals($actual['name'], $name);
+        $this->assertEquals($actual['file_name'], $fileName);
+        $this->assertEquals($actual['size'], $size);
+        $this->assertEquals($actual['price'], $price);
+        $this->assertEquals($actual['drive_id'], $this->drive->id);
+        // Check unreadable feilds
+        $newItem = new SDP_Asset($actual['id']);
+        $this->assertEquals($newItem->path, $path);
+    }
+
     /**
      *
      * @test
@@ -129,7 +180,7 @@ class Asset_OwnerRestTest extends TestCase
         $this->assertNotNull($response);
         $this->assertEquals($response->status_code, 200);
     }
-    
+
     /**
      *
      * @test
@@ -150,7 +201,49 @@ class Asset_OwnerRestTest extends TestCase
         $this->assertNotNull($response);
         $this->assertEquals($response->status_code, 200);
     }
-    
+
+    /**
+     *
+     * @test
+     */
+    public function updateRemoteAssetRestTest()
+    {
+        $item = new SDP_Asset();
+        $item->name = 'asset-' . rand();
+        $item->description = 'description ' . rand();
+        $item->price = rand();
+        $item->path = '/path/to/file';
+        $item->file_name = 'example.txt';
+        $item->size = 72313;
+        $item->drive_id = $this->drive;
+        $item->create();
+        Test_Assert::assertFalse($item->isAnonymous(), 'Could not create SDP_Asset');
+
+        $newPath = '/new/path/to/file';
+        $newFileName = 'newname.txt';
+        $newName = 'newname' . rand();
+        $newPrice = 72000;
+        // Update item
+        $form = array(
+            'name' => $newName,
+            'price' => $newPrice,
+            'path' => $newPath,
+            'file_name' => $newFileName
+        );
+        $response = self::$ownerClient->post('/api/sdp/assets/' . $item->id, $form);
+        $this->assertNotNull($response);
+        $this->assertEquals($response->status_code, 200);
+        Test_Assert::assertResponseAsModel($response);
+        $actual = json_decode($response->content, true);
+        $this->assertEquals($actual['name'], $newName);
+        $this->assertEquals($actual['file_name'], $newFileName);
+        $this->assertEquals($actual['price'], $newPrice);
+        
+        // Chech unreadable feilds
+        $updated = new SDP_Asset($item->id);
+        $this->assertEquals($updated->path, $newPath);
+    }
+
     /**
      *
      * @test
@@ -163,13 +256,13 @@ class Asset_OwnerRestTest extends TestCase
         $item->price = rand();
         $item->create();
         Test_Assert::assertFalse($item->isAnonymous(), 'Could not create SDP_Asset');
-        
+
         // delete
         $response = self::$ownerClient->delete('/api/sdp/assets/' . $item->id);
         $this->assertNotNull($response);
         $this->assertEquals($response->status_code, 200);
     }
-    
+
     /**
      *
      * @test
@@ -180,7 +273,6 @@ class Asset_OwnerRestTest extends TestCase
         $this->assertNotNull($response);
         $this->assertEquals($response->status_code, 200);
     }
-   
 }
 
 

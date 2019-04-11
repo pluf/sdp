@@ -5,14 +5,15 @@
  * or on a remote storage.
  * 
  * Attributes of an asset are as the following:
- * 
- * name: the name of the asset
- * description: a description about the asset
- * drive_id: a foreign key to a SDP_Drive entity which determines where the content of the asset is placed.
- * path: the path which content of the asset is stored. This field is not editable/readable for assets on local storage (local drive).
- * size: the size of the content of the asset in byte. This field is not editable for assets stored on local storage (local drive) and will be computed automatically from given file.
- * file_name: the name of the file which is set as content of the asset.
- * mime_type: the mime_type of file which is set as content of the asset. This field should be manually set for assets stored on the remote storages.
+ * <ul>
+ * <li>name: the name of the asset</li>
+ * <li>description: a description about the asset</li>
+ * <li>drive_id: a foreign key to a SDP_Drive entity which determines where the content of the asset is placed.</li>
+ * <li>path: the path which content of the asset is stored. This field is not editable/readable for assets on local storage (local drive).</li>
+ * <li>size: the size of the content of the asset in byte. This field is not editable for assets stored on local storage (local drive) and will be computed automatically from given file.</li>
+ * <li>file_name: the name of the file which is set as content of the asset.</li>
+ * <li>mime_type: the mime_type of file which is set as content of the asset. This field should be manually set for assets stored on the remote storages.</li>
+ * </ul>
  * 
  * @author hadi
  *
@@ -33,34 +34,34 @@ class SDP_Asset extends Pluf_Model
         $this->_a['cols'] = array(
             'id' => array(
                 'type' => 'Pluf_DB_Field_Sequence',
-                'blank' => false,
+                'is_null' => false,
                 'editable' => false,
                 'readable' => true
             ),
             'name' => array(
                 'type' => 'Pluf_DB_Field_Varchar',
-                'blank' => false,
+                'is_null' => false,
                 'size' => 250,
                 'editable' => true,
                 'readable' => true
             ),
             'path' => array(
                 'type' => 'Pluf_DB_Field_Varchar',
-                'blank' => true,
+                'is_null' => true,
                 'size' => 250,
                 'editable' => false,
                 'readable' => false
             ),
             'size' => array(
                 'type' => 'Pluf_DB_Field_Integer',
-                'blank' => false,
+                'is_null' => false,
                 'default' => 0,
                 'editable' => false,
                 'readable' => true
             ),
             'file_name' => array(
                 'type' => 'Pluf_DB_Field_Varchar',
-                'blank' => true,
+                'is_null' => true,
                 'default' => 'noname',
                 'size' => 256,
                 'editable' => true,
@@ -68,80 +69,82 @@ class SDP_Asset extends Pluf_Model
             ),
             'download' => array(
                 'type' => 'Pluf_DB_Field_Integer',
-                'blank' => false,
+                'is_null' => false,
                 'default' => 0,
                 'editable' => false,
                 'readable' => true
             ),
             'creation_dtime' => array(
                 'type' => 'Pluf_DB_Field_Datetime',
-                'blank' => true,
+                'is_null' => true,
                 'editable' => false,
                 'readable' => true
             ),
             'modif_dtime' => array(
                 'type' => 'Pluf_DB_Field_Datetime',
-                'blank' => true,
+                'is_null' => true,
                 'editable' => false,
                 'readable' => true
             ),
             'type' => array(
                 'type' => 'Pluf_DB_Field_Varchar',
-                'blank' => false,
+                'is_null' => false,
                 'size' => 250,
                 'editable' => false,
                 'readable' => true
             ),
             'description' => array(
                 'type' => 'Pluf_DB_Field_Varchar',
-                'blank' => false,
+                'is_null' => true,
                 'size' => 250,
                 'editable' => true,
                 'readable' => true
             ),
             'mime_type' => array(
                 'type' => 'Pluf_DB_Field_Varchar',
-                'blank' => false,
+                'is_null' => true,
                 'size' => 250,
                 'editable' => false,
                 'readable' => true
             ),
             'price' => array(
                 'type' => 'Pluf_DB_Field_Integer',
-                'blank' => true,
+                'is_null' => false,
                 'default' => 0,
                 'editable' => true,
                 'readable' => true
             ),
+            'thumbnail' => array(
+                'type' => 'Pluf_DB_Field_Varchar',
+                'size' => 1024,
+                'is_null' => true,
+                'editable' => true,
+                'readable' => true
+            ),
             // relations
-            'parent' => array(
+            'parent_id' => array(
                 'type' => 'Pluf_DB_Field_Foreignkey',
                 'model' => 'SDP_Asset',
-                'blank' => false,
+                'name' => 'parent',
+                'graphql_name' => 'parent',
                 'relate_name' => 'children',
+                'is_null' => true,
                 'editable' => true,
                 'readable' => true
             ),
-            'content' => array(
+            'content_id' => array(
                 'type' => 'Pluf_DB_Field_Foreignkey',
                 'model' => 'CMS_Content',
-                'blank' => true,
+                'name' => 'content',
+                'graphql_name' => 'content',
                 'relate_name' => 'assets',
-                'editable' => true,
-                'readable' => true
-            ),
-            'thumbnail' => array(
-                'type' => 'Pluf_DB_Field_Foreignkey',
-                'model' => 'CMS_Content',
-                'blank' => true,
-                'relate_name' => 'assets',
+                'is_null' => true,
                 'editable' => true,
                 'readable' => true
             ),
             'drive_id' => array(
                 'type' => 'Pluf_DB_Field_Foreignkey',
                 'model' => 'SDP_Drive',
-                'blank' => true,
                 'is_null' => true,
                 // Note: Hadi, 1398: do not set 'name' => 'drive'. It will cause to error.
                 'relate_name' => 'assets',

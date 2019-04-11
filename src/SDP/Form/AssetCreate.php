@@ -36,7 +36,7 @@ class SDP_Form_AssetCreate extends Pluf_Form
             'label' => 'Type',
             'help_text' => 'Type of asset'
         ));
-        $this->fields['parent'] = new Pluf_Form_Field_Integer(array(
+        $this->fields['parent_id'] = new Pluf_Form_Field_Integer(array(
             'required' => false,
             'label' => 'Folder',
             'help_text' => 'Folder of asset'
@@ -51,7 +51,7 @@ class SDP_Form_AssetCreate extends Pluf_Form
             'label' => 'Price',
             'help_text' => 'Price of asset'
         ));
-        $this->fields['content'] = new Pluf_Form_Field_Integer(array(
+        $this->fields['content_id'] = new Pluf_Form_Field_Integer(array(
             'required' => false,
             'label' => 'Content',
             'help_text' => 'Content related to asset'
@@ -132,22 +132,6 @@ class SDP_Form_AssetCreate extends Pluf_Form
         return $type;
     }
     
-//     public function clean_driver_type()
-//     {
-//         $dt = trim($this->cleaned_data['driver_type']);
-//         if(!isset($dt) || empty($dt) || $dt == ''){
-//             $dt = 'local';
-//         }
-//         return $dt;
-//     }
-    
-//     public function clean_driver_id()
-//     {
-//         $di = $this->cleaned_data['driver_id'];
-//         $di = isset($di) && strlen($di) > 0 ? $this->cleaned_data['driver_id'] : '0';
-//         return $di;
-//     }
-    
     public function clean_drive_id()
     {
         $di = $this->cleaned_data['drive_id'];
@@ -155,10 +139,10 @@ class SDP_Form_AssetCreate extends Pluf_Form
         return $di;
     }
     
-    public function clean_parent()
+    public function clean_parent_id()
     {
         // check parent and check if parent is folder and existed
-        $parentId = $this->cleaned_data['parent'];
+        $parentId = $this->cleaned_data['parent_id'];
         if (isset($parentId) && $parentId != 0) {
             // Note: Hadi, 1395-09: It throw exception if asset dose not exist
             $assetFolder = Pluf_Shortcuts_GetObjectOr404('SDP_Asset', $parentId);

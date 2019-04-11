@@ -50,10 +50,10 @@ class SDP_Form_AssetUpdate extends Pluf_Form
             'help_text' => 'description of Asset'
         ));
         
-        $this->fields['parent'] = new Pluf_Form_Field_Integer(array(
+        $this->fields['parent_id'] = new Pluf_Form_Field_Integer(array(
             'required' => false,
             'label' => 'Parent',
-            'initial' => $this->asset->parent,
+            'initial' => $this->asset->parent_id,
             'help_text' => 'Parent of asset'
         ));
         $this->fields['price'] = new Pluf_Form_Field_Integer(array(
@@ -62,13 +62,13 @@ class SDP_Form_AssetUpdate extends Pluf_Form
             'initial' => $this->asset->price,
             'help_text' => 'Price of asset'
         ));
-        $this->fields['content'] = new Pluf_Form_Field_Integer(array(
+        $this->fields['content_id'] = new Pluf_Form_Field_Integer(array(
             'required' => false,
             'label' => 'content id of Asset',
-            'initial' => $this->asset->content,
+            'initial' => $this->asset->content_id,
             'help_text' => 'content of Asset'
         ));
-        $this->fields['thumbnail'] = new Pluf_Form_Field_Integer(array(
+        $this->fields['thumbnail'] = new Pluf_Form_Field_Varchar(array(
             'required' => false,
             'label' => 'thumbnail of Asset',
             'initial' => $this->asset->thumbnail,

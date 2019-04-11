@@ -11,7 +11,7 @@ class SDP_Views_Tag
         // حق دسترسی
         // CMS_Precondition::userCanAccessContent($request, $content);
         // اجرای درخواست
-        return new Pluf_HTTP_Response_Json($tag);
+        return $tag;
     }
 
     public static function assets($request, $match)
@@ -47,7 +47,7 @@ class SDP_Views_Tag
         );
         $page->configure(array(), $search_fields, $sort_fields);
         $page->setFromRequest($request);
-        return new Pluf_HTTP_Response_Json($page->render_object());
+        return $page;
     }
 
     public static function addAsset($request, $match)
@@ -60,7 +60,7 @@ class SDP_Views_Tag
         }
         $asset = Pluf_Shortcuts_GetObjectOr404('SDP_Asset', $assetId);
         $tag->setAssoc($asset);
-        return new Pluf_HTTP_Response_Json($asset);
+        return $asset;
     }
 
     public static function removeAsset($request, $match)
@@ -73,6 +73,6 @@ class SDP_Views_Tag
         }
         $asset = Pluf_Shortcuts_GetObjectOr404('SDP_Asset', $assetId);
         $tag->delAssoc($asset);
-        return new Pluf_HTTP_Response_Json($asset);
+        return $asset;
     }
 }

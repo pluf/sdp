@@ -50,7 +50,7 @@ class SDP_Views_AssetRelation
             }
         }
         if($exception == null)
-            return new Pluf_HTTP_Response_Json($resultObj);
+            return $resultObj;
         throw $exception;
     }
 }

@@ -15,46 +15,46 @@ class SDP_Link extends Pluf_Model
         $this->_a['cols'] = array(
             'id' => array(
                 'type' => 'Pluf_DB_Field_Sequence',
-                'blank' => false,
+                'is_null' => false,
                 'editable' => false,
                 'readable' => true
             ),
             'secure_link' => array(
                 'type' => 'Pluf_DB_Field_Varchar',
-                'blank' => false,
+                'is_null' => false,
                 'size' => 50,
                 'editable' => false,
                 'readable' => true
             ),
             'expiry' => array(
                 'type' => 'Pluf_DB_Field_Datetime',
-                'blank' => false,
+                'is_null' => false,
                 'size' => 50,
                 'editable' => false,
                 'readable' => true
             ),
             'download' => array(
                 'type' => 'Pluf_DB_Field_Integer',
-                'blank' => false,
+                'is_null' => false,
                 'size' => 50,
                 'editable' => false,
                 'readable' => true
             ),
             'creation_dtime' => array(
                 'type' => 'Pluf_DB_Field_Datetime',
-                'blank' => true,
+                'is_null' => false,
                 'editable' => false,
                 'readable' => true
             ),
             'modif_dtime' => array(
                 'type' => 'Pluf_DB_Field_Datetime',
-                'blank' => true,
+                'is_null' => false,
                 'editable' => false,
                 'readable' => true
             ),
             'active' => array(
                 'type' => 'Pluf_DB_Field_Boolean',
-                'blank' => false,
+                'is_null' => false,
                 'editable' => false,
                 'readable' => true
             ),

@@ -217,7 +217,6 @@ class Category_RestTest extends TestCase
         $response = self::$client->get('/api/sdp/categories', $params);
         Test_Assert::assertResponseNotNull($response, 'Find result is empty');
         Test_Assert::assertResponseStatusCode($response, 200, 'Find status code is not 200');
-        Test_Assert::assertResponsePaginateList($response, 'Find result is not JSON paginated list');
     }
 
     /**

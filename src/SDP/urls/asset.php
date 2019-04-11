@@ -11,10 +11,13 @@ return array(
         )
     ),
     array( // Read
-        'regex' => '#^/assets/(?P<id>\d+)$#',
-        'model' => 'SDP_Views_Asset',
-        'method' => 'get',
-        'http-method' => 'GET'
+        'regex' => '#^/assets/(?P<modelId>\d+)$#',
+        'model' => 'Pluf_Views',
+        'method' => 'getObject',
+        'http-method' => 'GET',
+        'params' => array(
+            'model' => 'SDP_Asset'
+        )
     ),
     array( // Read (list)
         'regex' => '#^/assets$#',

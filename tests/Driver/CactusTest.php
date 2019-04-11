@@ -148,10 +148,10 @@ class Driver_CactusTest extends TestCase
         // Link
         $this->link = new SDP_Link();
         $this->link->secure_link = rand(1000000000, 9999999999) .''. rand(1000000000, 9999999999);
-        $this->link->asset = $this->asset;
+        $this->link->asset_id = $this->asset;
         $this->link->active = true;
         $this->link->expiry = '2050-1-1 00:00:00';
-        $this->link->user = $this->user;
+        $this->link->user_id = $this->user;
         Test_Assert::assertTrue($this->link->create(), 'Impossible to create link');
     }
 

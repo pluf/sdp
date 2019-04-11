@@ -111,8 +111,9 @@ class SDP_Views_Link
     public static function download($request, $match)
     {
         $link = SDP_Shortcuts_GetLinkBySecureIdOr404($match['secure_link']);
+        $asset = $link->get_asset();
         // Check that asset has price or not
-        if ($link->get_asset()->price != null && $link->get_asset()->price > 0) {
+        if ($asset->price != null && $asset->price > 0) {
             if (! $link->active)
                 throw new SDP_Exception_ObjectNotFound("Link is not active.");
         }
@@ -122,7 +123,6 @@ class SDP_Views_Link
             throw new SDP_Exception_ObjectNotFound("Link has been expired.");
         }
 
-        $asset = $link->get_asset();
         $drive = $asset->get_drive();
         $driver = $drive->get_driver();
         $response = $driver->getDownloadResponse($link, $request);

@@ -139,10 +139,10 @@ class Link_OwnerRestTest extends TestCase
         // Link
         $this->link = new SDP_Link();
         $this->link->secure_link = rand(1000000000, 9999999999) .''. rand(1000000000, 9999999999);
-        $this->link->asset = $this->asset;
+        $this->link->asset_id = $this->asset;
         $this->link->active = true;
         $this->link->expiry = '2050-1-1 00:00:00';
-        $this->link->user = $this->user;
+        $this->link->user_id = $this->user;
         Test_Assert::assertTrue($this->link->create(), 'Impossible to create link');
     }
 
@@ -155,6 +155,12 @@ class Link_OwnerRestTest extends TestCase
         $response = $this->client->post('/api/sdp/assets/' . $this->asset->id . '/links');
         $this->assertNotNull($response);
         $this->assertEquals($response->status_code, 200);
+        Test_Assert::assertResponseAsModel($response);
+        $actual = json_decode($response->content, true);
+        $this->assertNotNull($actual['secure_link']);
+        $this->assertNotNull($actual['expiry']);
+        $this->assertEquals($actual['asset_id'], $this->asset->id);
+        $this->assertEquals($actual['user_id'], $this->user->id);
     }
 
     /**
@@ -169,7 +175,6 @@ class Link_OwnerRestTest extends TestCase
     }
     
     /**
-     * Anonymous user should not be able to get list of links
      *
      * @test
      */
@@ -179,6 +184,20 @@ class Link_OwnerRestTest extends TestCase
         $this->assertNotNull($response);
         $this->assertEquals($response->status_code, 200);
         Test_Assert::assertResponsePaginateList($response, 'Find result is not JSON paginated list');
+    }
+    
+    /**
+     *
+     * @test
+     */
+    public function getListOfLinksWithGraphqlTest()
+    {
+        $params = array(
+            'graphql' => '{items{id,secure_link,expiry,download,asset{id,name},user{id,login},payment{id}}}'
+        );
+        $response = $this->client->get('/api/sdp/links', $params);
+        $this->assertNotNull($response);
+        $this->assertEquals($response->status_code, 200);
     }
 
 }

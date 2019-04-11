@@ -111,7 +111,7 @@ class SDP_Driver_Cactus extends SDP_Driver
         $asset = $link->get_asset();
         $requester = isset($request->user) && $request->user->id ? $request->user : $link->get_user();
         $token = array(
-            'file' => $asset->path,
+            'file' => $asset->path . '/' . $asset->file_name,
             'expiry' => $link->expiry,
             'access' => 'r',
             'account' => array(

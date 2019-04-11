@@ -140,7 +140,8 @@ class Driver_CactusTest extends TestCase
         $this->asset->type = 'file';
         $this->asset->description = 'It is my asset description';
         $this->asset->price = 0;
-        $this->asset->path = '/test/for/cactus/test.png';
+        $this->asset->path = '/test/for/cactus';
+        $this->asset->file_name = 'test.png';
         $this->asset->drive_id = $this->drive;
         Test_Assert::assertTrue($this->asset->create(), 'Impossible to create asset');
 
@@ -201,7 +202,7 @@ class Driver_CactusTest extends TestCase
             $this->drive->getMeta('algorithm')
         ));
 
-        $this->assertEquals($decode->file, $this->asset->path);
+        $this->assertEquals($decode->file, $this->asset->path . '/' . $this->asset->file_name);
         $this->assertEquals($decode->expiry, $this->link->expiry);
         $this->assertEquals($decode->access, 'r');
         $this->assertEquals($decode->account->id, $this->user->id);

@@ -319,7 +319,7 @@ class SDP_Views_Asset
         );
 
         $page = new Pluf_Paginator($relatedAsset);
-        $sql = new Pluf_SQL('start=%s', array(
+        $sql = new Pluf_SQL('start_id=%s', array(
             $asset->id
         ));
         $page->forced_where = $sql;
@@ -369,11 +369,11 @@ class SDP_Views_Asset
         if (isset($match['endId'])) {
             $endId = $match['endId'];
         } else {
-            $endId = $request->REQUEST['endId'];
+            $endId = $request->REQUEST['end_id'];
         }
         $endAsset = Pluf_Shortcuts_GetObjectOr404('SDP_Asset', $endId);
-        $request->REQUEST['start'] = $asset->getId();
-        $request->REQUEST['end'] = $endAsset->getId();
+        $request->REQUEST['start_id'] = $asset->getId();
+        $request->REQUEST['end_id'] = $endAsset->getId();
         $form = Pluf_Shortcuts_GetFormForModel(new SDP_AssetRelation(), $request->REQUEST, array());
         return new Pluf_HTTP_Response_Json($form->save());
     }
@@ -384,14 +384,14 @@ class SDP_Views_Asset
         if (isset($match['endId'])) {
             $endId = $match['endId'];
         } else {
-            $endId = $request->REQUEST['endId'];
+            $endId = $request->REQUEST['end_id'];
         }
         $endAsset = Pluf_Shortcuts_GetObjectOr404('SDP_Asset', $endId);
         $relation = new SDP_AssetRelation();
         $relationList = $relation->getList(array(
             'filter' => array(
-                'start=' . $asset->id,
-                'end=' . $endAsset->id
+                'start_id=' . $asset->id,
+                'end_id=' . $endAsset->id
             )
         ));
         $relateListCopy = array();

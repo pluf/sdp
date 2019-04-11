@@ -21,9 +21,9 @@ class SDP_Views_AssetRelation
     public function create($request, $match, $p)
     {
         // check start
-        $startAsset = Pluf_Shortcuts_GetObjectOr404('SDP_Asset', $request->REQUEST['start']);
+        $startAsset = Pluf_Shortcuts_GetObjectOr404('SDP_Asset', $request->REQUEST['start_id']);
         // check end
-        $endAsset = Pluf_Shortcuts_GetObjectOr404('SDP_Asset', $request->REQUEST['end']);
+        $endAsset = Pluf_Shortcuts_GetObjectOr404('SDP_Asset', $request->REQUEST['end_id']);
         // create relation
         $plufService = new Pluf_Views();
         $exception = null;
@@ -39,9 +39,9 @@ class SDP_Views_AssetRelation
         // create reverse relation if relation should be bidirectional
         if (array_key_exists('bidirectional', $request->REQUEST) && $request->REQUEST['bidirectional'] == 'true') {
             // swap start and end
-            $start = $request->REQUEST['start'];
-            $request->REQUEST['start'] = $request->REQUEST['end'];
-            $request->REQUEST['end'] = $start;
+            $start = $request->REQUEST['start_id'];
+            $request->REQUEST['start_id'] = $request->REQUEST['end_id'];
+            $request->REQUEST['end_id'] = $start;
             // create reverse relation
             try {
                 $plufService->createObject($request, $match, $p);

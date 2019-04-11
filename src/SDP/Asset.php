@@ -156,7 +156,7 @@ class SDP_Asset extends Pluf_Model
 
         $this->_a['idx'] = array(
             'page_class_idx' => array(
-                'col' => 'parent, name',
+                'col' => 'parent_id, name',
                 'type' => 'unique', // normal, unique, fulltext, spatial
                 'index_type' => '', // hash, btree
                 'index_option' => '',

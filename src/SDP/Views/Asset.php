@@ -329,36 +329,33 @@ class SDP_Views_Asset
             'name',
             'size',
             'download',
-            'driver_type',
-            'driver_id',
             'creation_dtime',
             'modif_dtime',
             'type',
             'mime_type',
             'price',
-            'parent'
+            'drive_id',
+            'parent_id'
         );
         $search_fields = array(
             'name',
-            'driver_type',
-            'driver_id',
             'type',
             'description',
-            'mime_type'
+            'mime_type',
+            'drive_id'
         );
         $sort_fields = array(
             'id',
             'name',
             'size',
             'download',
-            'driver_type',
-            'driver_id',
             'creation_dtime',
             'modif_dtime',
             'type',
             'mime_type',
             'price',
-            'parent'
+            'driver_id',
+            'parent_id'
         );
         $page->configure(array(), $search_fields, $sort_fields);
         $page->items_per_page = SDP_Shortcuts_NormalizeItemPerPage($request);

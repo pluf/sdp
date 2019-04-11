@@ -76,13 +76,13 @@ class SDP_Asset extends Pluf_Model
             ),
             'creation_dtime' => array(
                 'type' => 'Pluf_DB_Field_Datetime',
-                'is_null' => true,
+                'is_null' => false,
                 'editable' => false,
                 'readable' => true
             ),
             'modif_dtime' => array(
                 'type' => 'Pluf_DB_Field_Datetime',
-                'is_null' => true,
+                'is_null' => false,
                 'editable' => false,
                 'readable' => true
             ),

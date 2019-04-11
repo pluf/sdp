@@ -15,32 +15,32 @@ class SDP_Tag extends Pluf_Model
         $this->_a['cols'] = array(
             'id' => array(
                 'type' => 'Pluf_DB_Field_Sequence',
-                'blank' => false,
+                'is_null' => false,
                 'editable' => false,
                 'readable' => true
             ),
             'name' => array(
                 'type' => 'Pluf_DB_Field_Varchar',
-                'blank' => false,
+                'is_null' => false,
                 'size' => 250,
                 'editable' => true,
                 'readable' => true
             ),
             'creation_dtime' => array(
                 'type' => 'Pluf_DB_Field_Datetime',
-                'blank' => true,
+                'is_null' => false,
                 'editable' => false,
                 'readable' => true
             ),
             'modif_dtime' => array(
                 'type' => 'Pluf_DB_Field_Datetime',
-                'blank' => true,
+                'is_null' => false,
                 'editable' => false,
                 'readable' => true
             ),
             'description' => array(
                 'type' => 'Pluf_DB_Field_Varchar',
-                'blank' => true,
+                'is_null' => true,
                 'size' => 250,
                 'editable' => true,
                 'readable' => true

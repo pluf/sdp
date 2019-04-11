@@ -1,5 +1,15 @@
 <?php
 return array(
+    // ************************************************************* Schema
+    array(
+        'regex' => '#^/links/schema$#',
+        'model' => 'Pluf_Views',
+        'method' => 'getSchema',
+        'http-method' => 'GET',
+        'params' => array(
+            'model' => 'SDP_Link'
+        )
+    ),
     // ************************************************************* Link
     array( // Read (and check activation status of link)
         'regex' => '#^/links/(?P<id>\d+)$#',

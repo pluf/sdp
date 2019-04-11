@@ -1,6 +1,16 @@
-<?php 
-
-return array(// ************************************************************* AssetRelation
+<?php
+return array(
+    // ************************************************************* Schema
+    array(
+        'regex' => '#^/asset-relations/schema$#',
+        'model' => 'Pluf_Views',
+        'method' => 'getSchema',
+        'http-method' => 'GET',
+        'params' => array(
+            'model' => 'SDP_AssetRelation'
+        )
+    ),
+    // ************************************************************* AssetRelation
     array( // Create
         'regex' => '#^/asset-relations$#',
         'model' => 'SDP_Views_AssetRelation',
@@ -55,5 +65,5 @@ return array(// ************************************************************* As
         'precond' => array(
             'User_Precondition::ownerRequired'
         )
-    ),
+    )
 );

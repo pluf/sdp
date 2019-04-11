@@ -1,5 +1,15 @@
 <?php
 return array(
+    // ************************************************************* Schema
+    array(
+        'regex' => '#^/profiles/schema$#',
+        'model' => 'Pluf_Views',
+        'method' => 'getSchema',
+        'http-method' => 'GET',
+        'params' => array(
+            'model' => 'SDP_Profile'
+        )
+    ),
     // ************************************************** SDP Profile
     array( // Create / Update
         'regex' => '#^/accounts/(?P<userId>\d+)/profiles$#',

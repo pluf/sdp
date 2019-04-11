@@ -21,11 +21,11 @@ class SDP_Form_AssetCreate extends Pluf_Form
 {
 
     private $userRequest = null;
-    
+
     public function initFields($extra = array())
     {
         $this->userRequest = $extra['request'];
-        
+
         $this->fields['name'] = new Pluf_Form_Field_Varchar(array(
             'required' => false,
             'label' => 'Name',
@@ -66,18 +66,17 @@ class SDP_Form_AssetCreate extends Pluf_Form
             'label' => 'Drive',
             'help_text' => 'Drive to store asset'
         ));
-        
+
         // initial asset data
-//         if (! isset($request->REQUEST['name']) || strlen($request->REQUEST['name']) == 0) {
-//             if (isset($request->FILES['file'])) {
-//                 $file = $request->FILES['file'];
-//                 $request->REQUEST['name'] = basename($file['name']);
-//                 $request->REQUEST['type'] = 'file';
-//             } else {
-//                 $request->REQUEST['name'] = "noname" . rand(0, 9999);
-//             }
-//         }
-        
+        // if (! isset($request->REQUEST['name']) || strlen($request->REQUEST['name']) == 0) {
+        // if (isset($request->FILES['file'])) {
+        // $file = $request->FILES['file'];
+        // $request->REQUEST['name'] = basename($file['name']);
+        // $request->REQUEST['type'] = 'file';
+        // } else {
+        // $request->REQUEST['name'] = "noname" . rand(0, 9999);
+        // }
+        // }
     }
 
     function save($commit = true)
@@ -88,7 +87,7 @@ class SDP_Form_AssetCreate extends Pluf_Form
         // Create the asset
         $asset = new SDP_Asset();
         $asset->setFromFormData($this->cleaned_data);
-        if (array_key_exists('file', $_FILES)) {
+        if ($asset->isLocal() && array_key_exists('file', $_FILES)) {
             $asset->type = 'file';
             $asset->mime_type = $this->userRequest->FILES['file']['type'];
             $asset->path = Pluf::f('upload_path') . '/' . Pluf_Tenant::current()->id . '/sdp';
@@ -99,9 +98,8 @@ class SDP_Form_AssetCreate extends Pluf_Form
             }
         }
         // Note: Mahdi, 1395-09: For folders there is no path attribute
-        if (isset($_REQUEST['type'])) {
-            if ($_REQUEST['type'] == 'folder')
-                $asset->path = '';
+        if ($asset->type === 'folder') {
+            $asset->path = '';
         }
         if ($commit) {
             $asset->create();
@@ -112,7 +110,7 @@ class SDP_Form_AssetCreate extends Pluf_Form
     public function clean_name()
     {
         $fullname = trim($this->cleaned_data['name']);
-        if (!isset($fullname) || strlen($fullname) == 0) {
+        if (! isset($fullname) || strlen($fullname) == 0) {
             if (isset($this->userRequest->FILES['file'])) {
                 $file = $this->userRequest->FILES['file'];
                 $fullname = basename($file['name']);
@@ -126,19 +124,22 @@ class SDP_Form_AssetCreate extends Pluf_Form
     public function clean_type()
     {
         $type = trim($this->cleaned_data['type']);
-        if($type !== 'file' && $type !== 'folder'){
+        if ($type !== 'file' && $type !== 'folder') {
             $type = array_key_exists('file', $this->userRequest->FILES) ? 'file' : 'folder';
         }
         return $type;
     }
-    
+
     public function clean_drive_id()
     {
         $di = $this->cleaned_data['drive_id'];
         $di = isset($di) && strlen($di) > 0 ? $this->cleaned_data['drive_id'] : 0;
+        if ($di > 0) {
+            Pluf_Shortcuts_GetObjectOr404('SDP_Drive', $di);
+        }
         return $di;
     }
-    
+
     public function clean_parent_id()
     {
         // check parent and check if parent is folder and existed

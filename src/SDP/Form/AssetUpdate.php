@@ -22,15 +22,16 @@
  */
 class SDP_Form_AssetUpdate extends Pluf_Form
 {
-    
+
     private $userRequest = null;
+
     public $asset = null;
 
     public function initFields($extra = array())
     {
         $this->userRequest = $extra['request'];
         $this->asset = $extra['asset'];
-        
+
         $this->fields['name'] = new Pluf_Form_Field_Varchar(array(
             'required' => false,
             'label' => 'Name of Asset',
@@ -49,7 +50,7 @@ class SDP_Form_AssetUpdate extends Pluf_Form
             'initial' => $this->asset->description,
             'help_text' => 'description of Asset'
         ));
-        
+
         $this->fields['parent_id'] = new Pluf_Form_Field_Integer(array(
             'required' => false,
             'label' => 'Parent',
@@ -74,8 +75,8 @@ class SDP_Form_AssetUpdate extends Pluf_Form
             'initial' => $this->asset->thumbnail,
             'help_text' => 'thumbnail of Asset'
         ));
-        
-        if($this->asset->isLocal()){ // Asset is local
+
+        if ($this->asset->isLocal()) { // Asset is local
             $this->fields['file'] = new Pluf_Form_Field_File(array(
                 'required' => false,
                 'max_size' => Pluf::f('upload_max_size', 52428800), // default value: 50 MB
@@ -86,7 +87,7 @@ class SDP_Form_AssetUpdate extends Pluf_Form
                     'upload_overwrite' => true
                 )
             ));
-        }else{ // Asset is not local
+        } else { // Asset is not local
             $this->fields['path'] = new Pluf_Form_Field_Varchar(array(
                 'required' => false,
                 'label' => 'Path of Asset',
@@ -103,7 +104,7 @@ class SDP_Form_AssetUpdate extends Pluf_Form
                 'required' => false,
                 'label' => 'File Name of Asset',
                 'initial' => $this->asset->file_name,
-                'help_text' => 'Name of the file of asset contain extension',
+                'help_text' => 'Name of the file of asset contain extension'
             ));
         }
     }
@@ -115,19 +116,20 @@ class SDP_Form_AssetUpdate extends Pluf_Form
         }
         // update the asset
         $this->asset->setFromFormData($this->cleaned_data);
-        
+
         if ($this->asset->isLocal() && array_key_exists('file', $this->userRequest->FILES)) {
             // Extract information of file
             $myFile = $this->userRequest->FILES['file'];
             $this->asset->mime_type = $myFile['type'];
             $this->asset->size = filesize($this->asset->path . '/' . $this->asset->id);
         }
-        
-        if(!$this->asset->isLocal()){
-            // Extract MIME typr from file name
-            $this->asset->mime_type = mime_content_type($this->asset->file_name);
+
+        if (! $this->asset->isLocal() && strlen($this->asset->file_name) > 0) {
+            // Extract MIME type from file name
+            $fileInfo = Pluf_FileUtil::getMimeType($this->asset->file_name);
+            $this->asset->mime_type = $fileInfo[0];
         }
-        
+
         if ($commit) {
             $this->asset->update();
         }
@@ -137,7 +139,7 @@ class SDP_Form_AssetUpdate extends Pluf_Form
     function clean_name()
     {
         $fileName = $this->cleaned_data['name'];
-        if (! $fileName){
+        if (! $fileName) {
             return array_key_exists('file', $this->data) ? $this->data['file']['name'] : $this->asset->name;
         }
         return $fileName;

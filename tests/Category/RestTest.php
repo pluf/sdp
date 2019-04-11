@@ -204,6 +204,21 @@ class Category_RestTest extends TestCase
         Test_Assert::assertResponseStatusCode($response, 200, 'Find status code is not 200');
         Test_Assert::assertResponsePaginateList($response, 'Find result is not JSON paginated list');
     }
+    
+    /**
+     *
+     * @test
+     */
+    public function getListofCategoriesWithGraphqlTest()
+    {
+        $params = array(
+            'graphql' => '{items{id,name,description,thumbnail,parent{id,name},content{id,name}}}'
+        );
+        $response = self::$client->get('/api/sdp/categories', $params);
+        Test_Assert::assertResponseNotNull($response, 'Find result is empty');
+        Test_Assert::assertResponseStatusCode($response, 200, 'Find status code is not 200');
+        Test_Assert::assertResponsePaginateList($response, 'Find result is not JSON paginated list');
+    }
 
     /**
      * Sort categories based on id

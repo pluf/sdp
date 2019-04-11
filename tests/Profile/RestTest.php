@@ -242,6 +242,23 @@ class Profile_RestTest extends TestCase
         Test_Assert::assertResponseStatusCode($response, 200, 'Find status code is not 200');
         Test_Assert::assertResponsePaginateList($response, 'Find result is not JSON paginated list');
     }
+    
+    /**
+     *
+     * @test
+     */
+    public function getListofProfilesWithGraphqlTest()
+    {
+        $user = new User_Account();
+        $user = $user->getUser('test');
+        $params = array(
+            'graphql' => '{items{id,validate,activity_field,address,mobile_number,account{id,login}}}'
+        );
+
+        $response = self::$client->get('/api/sdp/accounts/' . $user->id . '/profiles', $params);
+        Test_Assert::assertResponseNotNull($response, 'Find result is empty');
+        Test_Assert::assertResponseStatusCode($response, 200, 'Find status code is not 200');
+    }
 }
 
 

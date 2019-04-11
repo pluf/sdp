@@ -363,6 +363,20 @@ class AssetRelation_RestTest extends TestCase
         $item2->delete();
         $item3->delete();
     }
+
+    /**
+     *
+     * @test
+     */
+    public function getListofAssetRelationsWithGraphqlTest()
+    {
+        $params = array(
+            'graphql' => '{items{id,type,description,start{id,name},end{id,name}}}'
+        );
+        $response = self::$client->get('/api/sdp/asset-relations', $params);
+        Test_Assert::assertResponseNotNull($response, 'Find result is empty');
+        Test_Assert::assertResponseStatusCode($response, 200, 'Find status code is not 200');
+    }
 }
 
 

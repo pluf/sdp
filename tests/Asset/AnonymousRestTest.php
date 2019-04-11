@@ -192,7 +192,7 @@ class Asset_AnonymousRestTest extends TestCase
         $params = array(
             'graphql' => '{items{id,name,price,thumbnail,content{id,name},parent{id,name},drive{id,home,driver}}}'
         );
-        $response = self::$client->get('/api/sdp/assets');
+        $response = self::$client->get('/api/sdp/assets', $params);
         $this->assertNotNull($response);
         $this->assertEquals($response->status_code, 200);
     }

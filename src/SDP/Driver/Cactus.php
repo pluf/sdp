@@ -60,7 +60,7 @@ class SDP_Driver_Cactus extends SDP_Driver
                 'editable' => true,
                 'visible' => true,
                 'priority' => 5,
-                'symbol' => 'id',
+                'symbol' => 'key',
                 'defaultValue' => 'examplekey',
                 'validators' => [
                     'NotNull',
@@ -76,7 +76,7 @@ class SDP_Driver_Cactus extends SDP_Driver
                 'editable' => true,
                 'visible' => true,
                 'priority' => 5,
-                'symbol' => 'id',
+                'symbol' => 'algorithm',
                 'defaultValue' => 'HS512',
                 'validators' => [
                     'NotNull',

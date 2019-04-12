@@ -32,50 +32,54 @@ class SDP_AssetRelation extends Pluf_Model
         $this->_a['cols'] = array(
             'id' => array(
                 'type' => 'Pluf_DB_Field_Sequence',
-                'blank' => false,
+                'is_null' => false,
                 'editable' => false,
                 'readable' => true
             ),
             'type' => array(
                 'type' => 'Pluf_DB_Field_Varchar',
-                'blank' => false,
+                'is_null' => false,
                 'size' => 250,
                 'editable' => true,
                 'readable' => true
             ),
             'creation_dtime' => array(
                 'type' => 'Pluf_DB_Field_Datetime',
-                'blank' => true,
+                'is_null' => false,
                 'editable' => false,
                 'readable' => true
             ),
             'modif_dtime' => array(
                 'type' => 'Pluf_DB_Field_Datetime',
-                'blank' => true,
+                'is_null' => false,
                 'editable' => false,
                 'readable' => true
             ),
             'description' => array(
                 'type' => 'Pluf_DB_Field_Varchar',
-                'blank' => true,
+                'is_null' => true,
                 'size' => 250,
                 'editable' => true,
                 'readable' => true
             ),
             // relations
-            'start' => array(
+            'start_id' => array(
                 'type' => 'Pluf_DB_Field_Foreignkey',
                 'model' => 'SDP_Asset',
-                'blank' => false,
-                'relate_name' => 'parent_asset',
+                'is_null' => false,
+                'name' => 'start',
+                'graphql_name' => 'start',
+                'relate_name' => 'start_relations',
                 'editable' => true,
                 'readable' => true
             ),
-            'end' => array(
+            'end_id' => array(
                 'type' => 'Pluf_DB_Field_Foreignkey',
                 'model' => 'SDP_Asset',
-                'blank' => false,
-                'relate_name' => 'child_asset',
+                'is_null' => false,
+                'name' => 'end',
+                'graphql_name' => 'end',
+                'relate_name' => 'end_relations',
                 'editable' => true,
                 'readable' => true
             ),
@@ -83,7 +87,7 @@ class SDP_AssetRelation extends Pluf_Model
         
         $this->_a['idx'] = array(
             'assetrelation_class_idx' => array(
-                'col' => 'type, start, end',
+                'col' => 'type, start_id, end_id',
                 'type' => 'unique', // normal, unique, fulltext, spatial
                 'index_type' => '', // hash, btree
                 'index_option' => '',

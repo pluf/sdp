@@ -4,6 +4,7 @@ class SDP_Link extends Pluf_Model
 {
 
     /**
+     *
      * @brief مدل داده‌ای را بارگذاری می‌کند.
      *
      * @see Pluf_Model::init()
@@ -15,46 +16,46 @@ class SDP_Link extends Pluf_Model
         $this->_a['cols'] = array(
             'id' => array(
                 'type' => 'Pluf_DB_Field_Sequence',
-                'blank' => false,
+                'is_null' => false,
                 'editable' => false,
                 'readable' => true
             ),
             'secure_link' => array(
                 'type' => 'Pluf_DB_Field_Varchar',
-                'blank' => false,
+                'is_null' => false,
                 'size' => 50,
                 'editable' => false,
                 'readable' => true
             ),
             'expiry' => array(
                 'type' => 'Pluf_DB_Field_Datetime',
-                'blank' => false,
+                'is_null' => false,
                 'size' => 50,
                 'editable' => false,
                 'readable' => true
             ),
             'download' => array(
                 'type' => 'Pluf_DB_Field_Integer',
-                'blank' => false,
+                'is_null' => false,
                 'size' => 50,
                 'editable' => false,
                 'readable' => true
             ),
             'creation_dtime' => array(
                 'type' => 'Pluf_DB_Field_Datetime',
-                'blank' => true,
+                'is_null' => false,
                 'editable' => false,
                 'readable' => true
             ),
             'modif_dtime' => array(
                 'type' => 'Pluf_DB_Field_Datetime',
-                'blank' => true,
+                'is_null' => false,
                 'editable' => false,
                 'readable' => true
             ),
             'active' => array(
                 'type' => 'Pluf_DB_Field_Boolean',
-                'blank' => false,
+                'is_null' => false,
                 'editable' => false,
                 'readable' => true
             ),
@@ -67,32 +68,38 @@ class SDP_Link extends Pluf_Model
                 'readable' => true
             ),
             // relations
-            'asset' => array(
+            'asset_id' => array(
                 'type' => 'Pluf_DB_Field_Foreignkey',
                 'model' => 'SDP_Asset',
-                'blank' => false,
+                'name' => 'asset',
+                'graphql_name' => 'asset',
+                'relate_name' => 'links',
+                'is_null' => false,
                 'editable' => false,
-                'readable' => true,
-                'relate_name' => 'links'
+                'readable' => true
             ),
-            'user' => array(
+            'user_id' => array(
                 'type' => 'Pluf_DB_Field_Foreignkey',
                 'model' => 'User_Account',
-                'blank' => false,
+                'name' => 'user',
+                'graphql_name' => 'user',
+                'relate_name' => 'links',
+                'is_null' => false,
                 'editable' => false,
                 'readable' => true,
-                'relate_name' => 'links'
             ),
-            'payment' => array(
+            'payment_id' => array(
                 'type' => 'Pluf_DB_Field_Foreignkey',
                 'model' => 'Bank_Receipt',
-                'blank' => false,
+                'name' => 'payment',
+                'graphql_name' => 'payment',
+                'relate_name' => 'links',
+                'is_null' => false,
                 'editable' => false,
                 'readable' => true,
-                'relate_name' => 'links'
             )
         );
-        
+
         $this->_a['idx'] = array(
             'secure_link_idx' => array(
                 'col' => 'secure_link',
@@ -142,14 +149,14 @@ class SDP_Link extends Pluf_Model
 
     function activate()
     {
-        if($this->active){
+        if ($this->active) {
             return;
         }
         // It is first time to activate link
         // Note: Hadi - 1396-04: time is base on day
         $day = Tenant_Service::setting(SDP_Constants::SETTING_KEY_LINK_VALID_DAY, '30');
-        $expiryDay = ' +'.$day.' day';
-        $this->expiry = date('Y-m-d H:i:s' , strtotime($expiryDay));
+        $expiryDay = ' +' . $day . ' day';
+        $this->expiry = date('Y-m-d H:i:s', strtotime($expiryDay));
         $this->active = true;
         $this->update();
     }

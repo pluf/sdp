@@ -8,7 +8,8 @@
 		"SDP_AssetRelation",
 		"SDP_Tag",
 		"SDP_Category",
-		"SDP_Profile"
+		"SDP_Profile",
+		"SDP_Drive"
 	],
 	"permisson": []
 }

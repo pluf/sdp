@@ -138,8 +138,8 @@ class AssetRelation_RestTest extends TestCase
         $form = array(
             'type' => 'sample',
             'description' => 'description',
-            'start' => self::getRandomAsset()->id,
-            'end' => self::getRandomAsset()->id
+            'start_id' => self::getRandomAsset()->id,
+            'end_id' => self::getRandomAsset()->id
         );
         $response = self::$ownerClient->post('/api/sdp/asset-relations', $form);
         $this->assertNotNull($response);
@@ -155,8 +155,8 @@ class AssetRelation_RestTest extends TestCase
         $item = new SDP_AssetRelation();
         $item->type = 'sample';
         $item->description = 'description';
-        $item->start = self::getRandomAsset();
-        $item->end = self::getRandomAsset();
+        $item->start_id = self::getRandomAsset();
+        $item->end_id = self::getRandomAsset();
         $item->create();
         Test_Assert::assertFalse($item->isAnonymous(), 'Could not create SDP_AssetRelation');
         // Get item
@@ -174,8 +174,8 @@ class AssetRelation_RestTest extends TestCase
         $item = new SDP_AssetRelation();
         $item->type = 'sample';
         $item->description = 'description';
-        $item->start = self::getRandomAsset();
-        $item->end = self::getRandomAsset();
+        $item->start_id = self::getRandomAsset();
+        $item->end_id = self::getRandomAsset();
         $item->create();
         Test_Assert::assertFalse($item->isAnonymous(), 'Could not create SDP_AssetRelation');
         // Update item
@@ -196,8 +196,8 @@ class AssetRelation_RestTest extends TestCase
         $item = new SDP_AssetRelation();
         $item->type = 'sample';
         $item->description = 'description';
-        $item->start = self::getRandomAsset();
-        $item->end = self::getRandomAsset();
+        $item->start_id = self::getRandomAsset();
+        $item->end_id = self::getRandomAsset();
         $item->create();
         Test_Assert::assertFalse($item->isAnonymous(), 'Could not create SDP_AssetRelation');
 
@@ -240,15 +240,15 @@ class AssetRelation_RestTest extends TestCase
         $item1 = new SDP_AssetRelation();
         $item1->type = 'sample';
         $item1->description = 'description';
-        $item1->start = self::getRandomAsset();
-        $item1->end = self::getRandomAsset();
+        $item1->start_id = self::getRandomAsset();
+        $item1->end_id = self::getRandomAsset();
         $item1->create();
 
         $item2 = new SDP_AssetRelation();
         $item2->type = 'sample';
         $item2->description = 'description';
-        $item2->start = self::getRandomAsset();
-        $item2->end = self::getRandomAsset();
+        $item2->start_id = self::getRandomAsset();
+        $item2->end_id = self::getRandomAsset();
         $item2->create();
 
         // DESC
@@ -313,22 +313,22 @@ class AssetRelation_RestTest extends TestCase
         $item1 = new SDP_AssetRelation();
         $item1->type = 'sample';
         $item1->description = 'description';
-        $item1->start = self::getRandomAsset();
-        $item1->end = self::getRandomAsset();
+        $item1->start_id = self::getRandomAsset();
+        $item1->end_id = self::getRandomAsset();
         $item1->create();
 
         $item2 = new SDP_AssetRelation();
         $item2->type = 'relate';
         $item2->description = 'description';
-        $item2->start = self::getRandomAsset();
-        $item2->end = self::getRandomAsset();
+        $item2->start_id = self::getRandomAsset();
+        $item2->end_id = self::getRandomAsset();
         $item2->create();
 
         $item3 = new SDP_AssetRelation();
         $item3->type = 'sample';
         $item3->description = 'description';
-        $item3->start = self::getRandomAsset();
-        $item3->end = self::getRandomAsset();
+        $item3->start_id = self::getRandomAsset();
+        $item3->end_id = self::getRandomAsset();
         $item3->create();
 
         // Filter types sample
@@ -362,6 +362,20 @@ class AssetRelation_RestTest extends TestCase
         $item1->delete();
         $item2->delete();
         $item3->delete();
+    }
+
+    /**
+     *
+     * @test
+     */
+    public function getListofAssetRelationsWithGraphqlTest()
+    {
+        $params = array(
+            'graphql' => '{items{id,type,description,start{id,name},end{id,name}}}'
+        );
+        $response = self::$client->get('/api/sdp/asset-relations', $params);
+        Test_Assert::assertResponseNotNull($response, 'Find result is empty');
+        Test_Assert::assertResponseStatusCode($response, 200, 'Find status code is not 200');
     }
 }
 

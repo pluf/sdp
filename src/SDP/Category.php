@@ -15,58 +15,61 @@ class SDP_Category extends Pluf_Model
         $this->_a['cols'] = array(
             'id' => array(
                 'type' => 'Pluf_DB_Field_Sequence',
-                'blank' => false,
+                'is_null' => false,
                 'editable' => false,
                 'readable' => true
             ),
             'name' => array(
                 'type' => 'Pluf_DB_Field_Varchar',
-                'blank' => false,
+                'is_null' => false,
                 'size' => 250,
                 'editable' => true,
                 'readable' => true
             ),
             'creation_dtime' => array(
                 'type' => 'Pluf_DB_Field_Datetime',
-                'blank' => true,
+                'is_null' => false,
                 'editable' => false,
                 'readable' => true
             ),
             'modif_dtime' => array(
                 'type' => 'Pluf_DB_Field_Datetime',
-                'blank' => true,
+                'is_null' => false,
                 'editable' => false,
                 'readable' => true
             ),
             'description' => array(
                 'type' => 'Pluf_DB_Field_Varchar',
-                'blank' => true,
+                'is_null' => true,
                 'size' => 250,
                 'editable' => true,
                 'readable' => true
             ),
-            // relations
-            'parent' => array(
-                'type' => 'Pluf_DB_Field_Foreignkey',
-                'model' => 'SDP_Category',
-                'blank' => true,
-                'relate_name' => 'children',
+            'thumbnail' => array(
+                'type' => 'Pluf_DB_Field_Varchar',
+                'size' => 1024,
+                'is_null' => true,
                 'editable' => true,
                 'readable' => true
             ),
-            'content' => array(
+            // relations
+            'parent_id' => array(
                 'type' => 'Pluf_DB_Field_Foreignkey',
-                'model' => 'CMS_Content',
-                'blank' => true,
-                'relate_name' => 'categories',
+                'model' => 'SDP_Category',
+                'name' => 'parent',
+                'graphql_name' => 'parent',
+                'relate_name' => 'children',
+                'is_null' => true,
                 'editable' => true,
-                'readable' => true,
+                'readable' => true
             ),
-            'thumbnail' => array(
+            'content_id' => array(
                 'type' => 'Pluf_DB_Field_Foreignkey',
                 'model' => 'CMS_Content',
-                'blank' => true,
+                'name' => 'content',
+                'graphql_name' => 'content',
                 'relate_name' => 'categories',
+                'is_null' => true,
                 'editable' => true,
                 'readable' => true,
             ),
@@ -75,13 +78,14 @@ class SDP_Category extends Pluf_Model
                 'model' => 'SDP_Asset',
                 'relate_name' => 'categories',
                 'blank' => false,
-                'editable' => false
+                'editable' => false,
+                'readable' => false
             )
         );
         
         $this->_a['idx'] = array(
             'category_idx' => array(
-                'col' => 'parent, name',
+                'col' => 'parent_id, name',
                 'type' => 'unique', // normal, unique, fulltext, spatial
                 'index_type' => '', // hash, btree
                 'index_option' => '',

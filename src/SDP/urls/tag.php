@@ -1,5 +1,15 @@
 <?php
 return array(
+    // ************************************************************* Schema
+    array(
+        'regex' => '#^/tags/schema$#',
+        'model' => 'Pluf_Views',
+        'method' => 'getSchema',
+        'http-method' => 'GET',
+        'params' => array(
+            'model' => 'SDP_Tag'
+        )
+    ),
     // ************************************************************* Tag
     array( // Create
         'regex' => '#^/tags$#',
@@ -96,5 +106,5 @@ return array(
         'precond' => array(
             'User_Precondition::ownerRequired'
         )
-    ),
+    )
 );

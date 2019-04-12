@@ -1,5 +1,15 @@
 <?php
 return array(
+    // ************************************************************* Schema
+    array(
+        'regex' => '#^/assets/schema$#',
+        'model' => 'Pluf_Views',
+        'method' => 'getSchema',
+        'http-method' => 'GET',
+        'params' => array(
+            'model' => 'SDP_Asset'
+        )
+    ),
     // ************************************************************* Assets
     array( // Create
         'regex' => '#^/assets$#',
@@ -11,10 +21,13 @@ return array(
         )
     ),
     array( // Read
-        'regex' => '#^/assets/(?P<id>\d+)$#',
-        'model' => 'SDP_Views_Asset',
-        'method' => 'get',
-        'http-method' => 'GET'
+        'regex' => '#^/assets/(?P<modelId>\d+)$#',
+        'model' => 'Pluf_Views',
+        'method' => 'getObject',
+        'http-method' => 'GET',
+        'params' => array(
+            'model' => 'SDP_Asset'
+        )
     ),
     array( // Read (list)
         'regex' => '#^/assets$#',
@@ -163,6 +176,6 @@ return array(
     )
     // TODO: Hadi 1397-09-20: Add API to list links created for an asset
     // TODO: Hadi 1397-09-20: Add API to delete links (only links which have not payment)
-    
+
     // TODO: Hadi 1397-09-20: Add API to list payments for an asset
 );

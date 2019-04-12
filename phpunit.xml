@@ -6,10 +6,15 @@
 		</testsuite>
 		<testsuite name="Entities">
 			<directory>tests/Asset/</directory>
+			<directory>tests/AssetRelation/</directory>
+			<directory>tests/Link/</directory>
 			<directory>tests/Category/</directory>
 			<directory>tests/Tag/</directory>
-			<directory>tests/AssetRelation/</directory>
 			<directory>tests/Profile/</directory>
+		</testsuite>
+		<testsuite name="Driver">
+			<directory>tests/Driver/</directory>
+			<directory>tests/Drive/</directory>
 		</testsuite>
 		
 	</testsuites>

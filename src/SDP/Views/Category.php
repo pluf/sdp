@@ -21,8 +21,7 @@ class SDP_Views_Category
         )))
             ->setView('myView')
             ->setRequest($request)
-            ->build()
-            ->render_object();
+            ->build();
     }
 
     public static function addAsset($request, $match)
@@ -35,7 +34,7 @@ class SDP_Views_Category
         }
         $asset = Pluf_Shortcuts_GetObjectOr404('SDP_Asset', $assetId);
         $category->setAssoc($asset);
-        return new Pluf_HTTP_Response_Json($asset);
+        return $asset;
     }
 
     public static function removeAsset($request, $match)
@@ -48,6 +47,6 @@ class SDP_Views_Category
         }
         $asset = Pluf_Shortcuts_GetObjectOr404('SDP_Asset', $assetId);
         $category->delAssoc($asset);
-        return new Pluf_HTTP_Response_Json($asset);
+        return $asset;
     }
 }

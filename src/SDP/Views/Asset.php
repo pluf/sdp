@@ -15,8 +15,7 @@ class SDP_Views_Asset
         $form = new SDP_Form_AssetCreate($request->REQUEST, $extra);
         $asset = $form->save();
 
-        // Upload asset file and extract information about it (by updating
-        // asset)
+        // Upload asset file (for local assets) and extract information about it
         $extra['asset'] = $asset;
         $form = new SDP_Form_AssetUpdate(array_merge($request->REQUEST, $request->FILES), $extra);
         try {
@@ -25,8 +24,7 @@ class SDP_Views_Asset
             $asset->delete();
             throw $e;
         }
-
-        return new Pluf_HTTP_Response_Json($asset);
+        return $asset;
     }
 
     /**
@@ -50,7 +48,7 @@ class SDP_Views_Asset
         }
         // TODO: maso, 2018: set item per page SDP_Shortcuts_NormalizeItemPerPage($request);
         $builder->setRequest($request);
-        return $builder->build()->render_object();
+        return $builder->build();
     }
 
     /**
@@ -102,16 +100,6 @@ class SDP_Views_Asset
         return $query;
     }
 
-    public static function get($request, $match)
-    {
-        // تعیین داده‌ها
-        $asset = Pluf_Shortcuts_GetObjectOr404('SDP_Asset', $match["id"]);
-        // حق دسترسی
-        // CMS_Precondition::userCanAccessContent($request, $content);
-        // اجرای درخواست
-        return new Pluf_HTTP_Response_Json($asset);
-    }
-
     public static function update($request, $match)
     {
         // تعیین داده‌ها
@@ -125,7 +113,7 @@ class SDP_Views_Asset
         );
         $form = new SDP_Form_AssetUpdate(array_merge($request->REQUEST, $request->FILES), $extra);
         $asset = $form->update();
-        return new Pluf_HTTP_Response_Json($asset);
+        return $asset;
     }
 
     public static function delete($request, $match)
@@ -140,7 +128,7 @@ class SDP_Views_Asset
 
         $asset->delete();
 
-        return new Pluf_HTTP_Response_Json($asset_copy);
+        return $asset_copy;
     }
 
     public static function updateFile($request, $match)
@@ -151,15 +139,16 @@ class SDP_Views_Asset
         // Precondition::userCanAccessApplication($request, $app);
         // Precondition::userCanAccessResource($request, $content);
 
+        if(!$asset->isLocal()){
+            return new Pluf_Exception_BadRequest('Could not change file of a non local asset');
+        }
         if (array_key_exists('file', $request->FILES)) {
             $extra = array(
                 'asset' => $asset
             );
             $form = new SDP_Form_AssetUpdate(array_merge($request->REQUEST, $request->FILES), $extra);
             $asset = $form->update();
-            // return new Pluf_HTTP_Response_Json($content);
         } else {
-
             // Do
             $myfile = fopen($asset->path . '/' . $asset->id, "w") or die("Unable to open file!");
             $entityBody = file_get_contents('php://input', 'r');
@@ -168,7 +157,7 @@ class SDP_Views_Asset
             $asset->file_size = filesize($asset->path . '/' . $asset->id);
             $asset->update();
         }
-        return new Pluf_HTTP_Response_Json($asset);
+        return $asset;
     }
 
     // *******************************************************************
@@ -208,7 +197,7 @@ class SDP_Views_Asset
         $paginator->configure(array(), $search_fields, $sort_fields);
         $paginator->items_per_page = SDP_Shortcuts_NormalizeItemPerPage($request);
         $paginator->setFromRequest($request);
-        return new Pluf_HTTP_Response_Json($paginator->render_object());
+        return $paginator;
     }
 
     public static function addTag($request, $match)
@@ -221,7 +210,7 @@ class SDP_Views_Asset
         }
         $tag = Pluf_Shortcuts_GetObjectOr404('SDP_Tag', $tagId);
         $asset->setAssoc($tag);
-        return new Pluf_HTTP_Response_Json($tag);
+        return $tag;
     }
 
     public static function removeTag($request, $match)
@@ -234,7 +223,7 @@ class SDP_Views_Asset
         }
         $tag = Pluf_Shortcuts_GetObjectOr404('SDP_Tag', $tagId);
         $asset->delAssoc($tag);
-        return new Pluf_HTTP_Response_Json($tag);
+        return $tag;
     }
 
     // *******************************************************************
@@ -276,7 +265,7 @@ class SDP_Views_Asset
         $paginator->configure(array(), $search_fields, $sort_fields);
         $paginator->items_per_page = SDP_Shortcuts_NormalizeItemPerPage($request);
         $paginator->setFromRequest($request);
-        return new Pluf_HTTP_Response_Json($paginator->render_object());
+        return $paginator;
     }
 
     public static function addCategory($request, $match)
@@ -289,7 +278,7 @@ class SDP_Views_Asset
         }
         $category = Pluf_Shortcuts_GetObjectOr404('SDP_Category', $categoryId);
         $asset->setAssoc($category);
-        return new Pluf_HTTP_Response_Json($category);
+        return $category;
     }
 
     public static function removeCategory($request, $match)
@@ -302,7 +291,7 @@ class SDP_Views_Asset
         }
         $category = Pluf_Shortcuts_GetObjectOr404('SDP_Category', $categoryId);
         $asset->delAssoc($category);
-        return new Pluf_HTTP_Response_Json($category);
+        return $category;
     }
 
     // *******************************************************************
@@ -320,7 +309,7 @@ class SDP_Views_Asset
         );
 
         $page = new Pluf_Paginator($relatedAsset);
-        $sql = new Pluf_SQL('start=%s', array(
+        $sql = new Pluf_SQL('start_id=%s', array(
             $asset->id
         ));
         $page->forced_where = $sql;
@@ -330,41 +319,38 @@ class SDP_Views_Asset
             'name',
             'size',
             'download',
-            'driver_type',
-            'driver_id',
             'creation_dtime',
             'modif_dtime',
             'type',
             'mime_type',
             'price',
-            'parent'
+            'drive_id',
+            'parent_id'
         );
         $search_fields = array(
             'name',
-            'driver_type',
-            'driver_id',
             'type',
             'description',
-            'mime_type'
+            'mime_type',
+            'drive_id'
         );
         $sort_fields = array(
             'id',
             'name',
             'size',
             'download',
-            'driver_type',
-            'driver_id',
             'creation_dtime',
             'modif_dtime',
             'type',
             'mime_type',
             'price',
-            'parent'
+            'driver_id',
+            'parent_id'
         );
         $page->configure(array(), $search_fields, $sort_fields);
         $page->items_per_page = SDP_Shortcuts_NormalizeItemPerPage($request);
         $page->setFromRequest($request);
-        return new Pluf_HTTP_Response_Json($page->render_object());
+        return $page;
     }
 
     public static function addRelation($request, $match)
@@ -373,13 +359,13 @@ class SDP_Views_Asset
         if (isset($match['endId'])) {
             $endId = $match['endId'];
         } else {
-            $endId = $request->REQUEST['endId'];
+            $endId = $request->REQUEST['end_id'];
         }
         $endAsset = Pluf_Shortcuts_GetObjectOr404('SDP_Asset', $endId);
-        $request->REQUEST['start'] = $asset->getId();
-        $request->REQUEST['end'] = $endAsset->getId();
+        $request->REQUEST['start_id'] = $asset->getId();
+        $request->REQUEST['end_id'] = $endAsset->getId();
         $form = Pluf_Shortcuts_GetFormForModel(new SDP_AssetRelation(), $request->REQUEST, array());
-        return new Pluf_HTTP_Response_Json($form->save());
+        return $form->save();
     }
 
     public static function removeRelation($request, $match)
@@ -388,14 +374,14 @@ class SDP_Views_Asset
         if (isset($match['endId'])) {
             $endId = $match['endId'];
         } else {
-            $endId = $request->REQUEST['endId'];
+            $endId = $request->REQUEST['end_id'];
         }
         $endAsset = Pluf_Shortcuts_GetObjectOr404('SDP_Asset', $endId);
         $relation = new SDP_AssetRelation();
         $relationList = $relation->getList(array(
             'filter' => array(
-                'start=' . $asset->id,
-                'end=' . $endAsset->id
+                'start_id=' . $asset->id,
+                'end_id=' . $endAsset->id
             )
         ));
         $relateListCopy = array();
@@ -404,6 +390,6 @@ class SDP_Views_Asset
             array_push($relateListCopy, $val);
             $rel->delete();
         }
-        return new Pluf_HTTP_Response_Json($relateListCopy);
+        return $relateListCopy;
     }
 }

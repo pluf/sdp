@@ -1,5 +1,15 @@
 <?php
 return array(
+    // ************************************************************* Schema
+    array(
+        'regex' => '#^/categories/schema$#',
+        'model' => 'Pluf_Views',
+        'method' => 'getSchema',
+        'http-method' => 'GET',
+        'params' => array(
+            'model' => 'SDP_Category'
+        )
+    ),
     // ************************************************************* Category
     array( // Create
         'regex' => '#^/categories$#',
@@ -89,5 +99,5 @@ return array(
         'precond' => array(
             'User_Precondition::ownerRequired'
         )
-    ),
+    )
 );

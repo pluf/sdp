@@ -52,6 +52,12 @@ class SDP_ApiTest extends TestCase
         $this->assertTrue(isset($object), 'SDP_Link could not be created!');
         $object = new SDP_Profile();
         $this->assertTrue(isset($object), 'SDP_Profile could not be created!');
+        $object = new SDP_Drive();
+        $this->assertTrue(isset($object), 'SDP_Drive could not be created!');
+        $object = new SDP_Driver_Local();
+        $this->assertTrue(isset($object), 'SDP_Driver_Local could not be created!');
+        $object = new SDP_Driver_Cactus();
+        $this->assertTrue(isset($object), 'SDP_Driver_Cactus could not be created!');
     }
 }
 

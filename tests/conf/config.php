@@ -59,5 +59,7 @@ $cfg['template_tags'] = array(
 // It can be overwritten for a given response if needed.
 $cfg['mimetype'] = 'text/html';
 
+$cfg['bank_debug'] = true;
+
 return $cfg;
 

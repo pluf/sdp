@@ -160,4 +160,19 @@ class SDP_Link extends Pluf_Model
         $this->active = true;
         $this->update();
     }
+
+    function hasPayment(){
+        return $this->payment_id != null && $this->payment_id != 0;
+    }
+    
+    function isPayed()
+    {
+        if (! $this->hasPayment()) {
+            return false;
+        }
+        $receipt = $this->get_payment();
+        Bank_Service::update($receipt);
+        return $this->get_payment()->isPayed();
+    }
+
 }

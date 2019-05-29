@@ -1,6 +1,5 @@
 <?php
 Pluf::loadFunction('Pluf_Shortcuts_GetObjectOr404');
-Pluf::loadFunction('SDP_Shortcuts_Mime2Ext');
 
 class SDP_Views_Link
 {
@@ -193,14 +192,32 @@ class SDP_Views_Link
     public static function payment($request, $match)
     {
         $link = Pluf_Shortcuts_GetObjectOr404('SDP_Link', $match['linkId']);
-
-        $user = $request->user;
-        $url = $request->REQUEST['callback'];
-        $backend = $request->REQUEST['backend'];
         $asset = $link->get_asset();
-        $price = $asset->price;
 
-        // check for discount
+        // Check if link is payed
+        if ($link->isPayed()) {
+            throw new Pluf_Exception_PermissionDenied('Could not pay again for an already payed link');
+        }
+
+        // Check if currency of backend is compatible with currency of tenant
+        $backend = Pluf_Shortcuts_GetObjectOr404('Bank_Backend', $request->REQUEST['backend']);
+        $tenantCurrency = Tenant_Service::setting('local.currency');
+        Pluf::loadFunction('Bank_Shortcuts_IsCurrenciesCompatible');
+        if (! Bank_Shortcuts_IsCurrenciesCompatible($backend->currency, $tenantCurrency)) {
+            throw new Pluf_Exception_BadRequest('Invalid payment. ' . //
+            'Could not pay through a bank backend with different currency than the tenant currency ' . //
+            '[tenant: ' . $tenantCurrency . ', backend: ' . $backend->currency);
+        }
+
+        // Check validity of price
+        $price = $asset->price;
+        if ($price <= 0) {
+            throw new Pluf_Exception_BadRequest('Invalid amount: ' . $price);
+        }
+        Pluf::loadFunction('Bank_Shortcuts_ConvertCurrency');
+        $price = Bank_Shortcuts_ConvertCurrency($price, $tenantCurrency, $backend->currency);
+
+        // Check for discount
         if (isset($request->REQUEST['discount_code'])) {
             $discountCode = $request->REQUEST['discount_code'];
             $price = Discount_Service::getPrice($price, $discountCode, $request);
@@ -208,20 +225,22 @@ class SDP_Views_Link
             $link->discount_code = $discountCode;
         }
 
+        $url = $request->REQUEST['callback'];
         $receiptData = array(
-            'amount' => $price, // مقدار پرداخت به تومان
+            'amount' => $price,
             'title' => $asset->name,
             'description' => $asset->id . ' - ' . $asset->name,
-            'email' => $user->email,
+            // 'email' => $user->email,
             // 'phone' => $user->phone,
+            'email' => '',
             'phone' => '',
             'callbackURL' => $url,
-            'backend_id' => $backend
+            'backend_id' => $backend->id
         );
 
         $payment = Bank_Service::create($receiptData, 'sdp-link', $link->id);
 
-        $link->payment = $payment;
+        $link->payment_id = $payment;
         $link->update();
         return $payment;
     }

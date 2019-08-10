@@ -52,11 +52,27 @@ class SDP_Driver_Cactus extends SDP_Driver
     {
         return array(
             array(
-                'name' => 'key',
+                'name' => 'encrypt_key',
                 'type' => 'String',
                 'unit' => 'none',
-                'title' => 'Key',
-                'description' => 'Key to encript/decript JWT',
+                'title' => 'Encrypt Key',
+                'description' => 'Key to ecnrypt JWT',
+                'editable' => true,
+                'visible' => true,
+                'priority' => 5,
+                'symbol' => 'key',
+                'defaultValue' => 'examplekey',
+                'validators' => [
+                    'NotNull',
+                    'NotEmpty'
+                ]
+            ),
+            array(
+                'name' => 'decrypt_key',
+                'type' => 'String',
+                'unit' => 'none',
+                'title' => 'Decrypt Key',
+                'description' => 'Key to decrypt JWT',
                 'editable' => true,
                 'visible' => true,
                 'priority' => 5,
@@ -72,7 +88,7 @@ class SDP_Driver_Cactus extends SDP_Driver
                 'type' => 'String',
                 'unit' => 'none',
                 'title' => 'Algorithm',
-                'description' => 'Algorithm to encript/decript JWT',
+                'description' => 'Algorithm to ecnrypt/decrypt JWT',
                 'editable' => true,
                 'visible' => true,
                 'priority' => 5,
@@ -89,9 +105,9 @@ class SDP_Driver_Cactus extends SDP_Driver
     /**
      * Creats a permanent redirect (code 301) response with an URL as the following pattern:
      *
-     * <code>{cactus_home}/api/v2/cactus/files/{jwt}/content</code>
+     * <code>{home}/api/v2/cactus/files/{jwt}/content</code>
      *
-     * The parameter 'cactus_home' will be fetched from drive of the asset which is related to the given link.
+     * The parameter 'home' will be fetched from drive of the asset which is related to the given link.
      * The parameter 'jwt' is a JSON Web Token which is contain at least the following information:
      * - file: path to file
      * - expiry: unix timestamp
@@ -111,7 +127,7 @@ class SDP_Driver_Cactus extends SDP_Driver
         $asset = $link->get_asset();
         $requester = isset($request->user) && $request->user->id ? $request->user : $link->get_user();
         $token = array(
-            'file' => $asset->path . '/' . $asset->file_name,
+            'path' => $asset->path . '/' . $asset->file_name,
             'expiry' => $link->expiry,
             'access' => 'r',
             'account' => array(
@@ -122,7 +138,7 @@ class SDP_Driver_Cactus extends SDP_Driver
             )
         );
         $drive = $asset->get_drive();
-        $key = $drive->getMeta('key');
+        $key = $drive->getMeta('encrypt_key');
         $alg = $drive->getMeta('algorithm');
 
         $jwt = JWT::encode($token, $key, $alg);

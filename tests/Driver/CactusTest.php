@@ -193,16 +193,17 @@ class Driver_CactusTest extends TestCase
         Test_Assert::assertResponseStatusCode($response, 301);
 
         $url = $response->headers['Location'];
+        $matches = null;
         preg_match("/^(?P<home>.+)\/api\/v2\/cactus\/files\/(?P<jwt>.+)\/content$/", $url, $matches);
         $this->assertNotNull($matches);
         $this->assertNotNull($matches['jwt']);
         $this->assertEquals($matches['home'], $this->drive->home);
 
-        $decode = JWT::decode($matches['jwt'], $this->drive->getMeta('key'), array(
+        $decode = JWT::decode($matches['jwt'], $this->drive->getMeta('decrypt_key'), array(
             $this->drive->getMeta('algorithm')
         ));
 
-        $this->assertEquals($decode->file, $this->asset->path . '/' . $this->asset->file_name);
+        $this->assertEquals($decode->path, $this->asset->path . '/' . $this->asset->file_name);
         $this->assertEquals($decode->expiry, $this->link->expiry);
         $this->assertEquals($decode->access, 'r');
         $this->assertEquals($decode->account->id, $this->user->id);

@@ -24,7 +24,7 @@ require_once 'Pluf.php';
  * @backupGlobals disabled
  * @backupStaticAttributes disabled
  */
-class Drive_REST_DriveTest extends TestCase {
+class Drive_DriveTest extends TestCase {
 	private static $client = null;
 
 	/**
@@ -95,17 +95,28 @@ class Drive_REST_DriveTest extends TestCase {
 		Test_Assert::assertResponseStatusCode ( $response, 200, 'Fail to login' );
 
 		// Create a drive
-		$response = self::$client->post ( '/sdp/drives', array (
-				'type' => 'cactus',
-				'symbol' => 'cactus',
-				'home' => 'www.example.com',
-				'title' => 'Cactus Drive',
-				'description' => 'Description',
-				'key' => 'test_key',
-				'algorithm' => 'HS512'
-		) );
+		$params = array (
+		    'type' => 'cactus',
+		    'symbol' => 'cactus',
+		    'home' => 'www.example.com',
+		    'title' => 'Cactus Drive',
+		    'description' => 'Description',
+		    'encrypt_key' => 'test_key',
+		    'decrypt_key' => 'test_key',
+		    'algorithm' => 'HS512'
+		);
+		$response = self::$client->post ( '/sdp/drives', $params);
 		Test_Assert::assertResponseNotNull ( $response, 'Find result is empty' );
 		Test_Assert::assertResponseStatusCode ( $response, 200, 'Find status code is not 200' );
+		$actual = json_decode($response->content, true);
+		$this->assertEquals($actual['driver'], $params['type']);
+		$this->assertEquals($actual['symbole'], $params['symbol']);
+		$this->assertEquals($actual['home'], $params['home']);
+		$this->assertEquals($actual['title'], $params['title']);
+		$drive = new SDP_Drive($actual['id']);
+		$this->assertEquals($drive->getMeta('encrypt_key'), $params['encrypt_key']);
+		$this->assertEquals($drive->getMeta('decrypt_key'), $params['decrypt_key']);
+		$this->assertEquals($drive->getMeta('algorithm'), $params['algorithm']);
 
 		$drive = new SDP_Drive ();
 		$list = $drive->getList ();

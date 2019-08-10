@@ -129,7 +129,8 @@ class Driver_CactusTest extends TestCase
         $this->drive = new SDP_Drive();
         $this->drive->title = 'CactusDrive-' . rand();
         $this->drive->home = 'www.test.com';
-        $this->drive->setMeta('key', $this->jwt_key);
+        $this->drive->setMeta('encrypt_key', $this->jwt_key);
+        $this->drive->setMeta('decrypt_key', $this->jwt_key);
         $this->drive->setMeta('algorithm', $this->jwt_alg);
         $this->drive->driver = 'cactus';
         Test_Assert::assertTrue($this->drive->create(), 'Impossible to create cactus drive');

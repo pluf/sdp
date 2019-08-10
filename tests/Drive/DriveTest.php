@@ -110,9 +110,9 @@ class Drive_DriveTest extends TestCase {
 		Test_Assert::assertResponseStatusCode ( $response, 200, 'Find status code is not 200' );
 		$actual = json_decode($response->content, true);
 		$this->assertEquals($actual['driver'], $params['type']);
-		$this->assertEquals($actual['symbole'], $params['symbol']);
-		$this->assertEquals($actual['home'], $params['home']);
+		$this->assertEquals($actual['symbol'], $params['symbol']);
 		$this->assertEquals($actual['title'], $params['title']);
+		$this->assertEquals($actual['home'], $params['home']);
 		$drive = new SDP_Drive($actual['id']);
 		$this->assertEquals($drive->getMeta('encrypt_key'), $params['encrypt_key']);
 		$this->assertEquals($drive->getMeta('decrypt_key'), $params['decrypt_key']);

@@ -175,6 +175,19 @@ class SDP_Driver implements JsonSerializable
             'validators' => []
         );
         $params[] = array(
+            'name' => 'home',
+            'type' => 'String',
+            'unit' => 'none',
+            'title' => 'Home',
+            'description' => 'Home address of drive',
+            'editable' => true,
+            'visible' => true,
+            'priority' => 5,
+            'symbol' => 'home',
+            'defaultValue' => '',
+            'validators' => []
+        );
+        $params[] = array(
             'name' => 'symbol',
             'type' => 'String',
             'unit' => 'none',

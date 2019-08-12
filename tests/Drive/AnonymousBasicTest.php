@@ -24,7 +24,7 @@ require_once 'Pluf.php';
  * @backupGlobals disabled
  * @backupStaticAttributes disabled
  */
-class SDP_REST_AnonymousBasicTest extends TestCase
+class Drive_AnonymousBasicTest extends TestCase
 {
 
     private static $client = null;

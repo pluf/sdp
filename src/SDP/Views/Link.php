@@ -109,6 +109,7 @@ class SDP_Views_Link
 
     public static function download($request, $match)
     {
+        Pluf::loadFunction('SDP_Shortcuts_GetLinkBySecureIdOr404');
         $link = SDP_Shortcuts_GetLinkBySecureIdOr404($match['secure_link']);
         $asset = $link->get_asset();
         // Check that asset has price or not

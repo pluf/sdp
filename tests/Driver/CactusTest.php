@@ -129,7 +129,8 @@ class Driver_CactusTest extends TestCase
         $this->drive = new SDP_Drive();
         $this->drive->title = 'CactusDrive-' . rand();
         $this->drive->home = 'www.test.com';
-        $this->drive->setMeta('key', $this->jwt_key);
+        $this->drive->setMeta('encrypt_key', $this->jwt_key);
+        $this->drive->setMeta('decrypt_key', $this->jwt_key);
         $this->drive->setMeta('algorithm', $this->jwt_alg);
         $this->drive->driver = 'cactus';
         Test_Assert::assertTrue($this->drive->create(), 'Impossible to create cactus drive');
@@ -193,16 +194,17 @@ class Driver_CactusTest extends TestCase
         Test_Assert::assertResponseStatusCode($response, 301);
 
         $url = $response->headers['Location'];
+        $matches = null;
         preg_match("/^(?P<home>.+)\/api\/v2\/cactus\/files\/(?P<jwt>.+)\/content$/", $url, $matches);
         $this->assertNotNull($matches);
         $this->assertNotNull($matches['jwt']);
         $this->assertEquals($matches['home'], $this->drive->home);
 
-        $decode = JWT::decode($matches['jwt'], $this->drive->getMeta('key'), array(
+        $decode = JWT::decode($matches['jwt'], $this->drive->getMeta('decrypt_key'), array(
             $this->drive->getMeta('algorithm')
         ));
 
-        $this->assertEquals($decode->file, $this->asset->path . '/' . $this->asset->file_name);
+        $this->assertEquals($decode->path, $this->asset->path . '/' . $this->asset->file_name);
         $this->assertEquals($decode->expiry, $this->link->expiry);
         $this->assertEquals($decode->access, 'r');
         $this->assertEquals($decode->account->id, $this->user->id);

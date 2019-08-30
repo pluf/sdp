@@ -30,7 +30,7 @@ class SDP_ApiTest extends TestCase
     /**
      * @before
      */
-    public function setUp ()
+    public function setUpTest ()
     {
         Pluf::start(__DIR__. '/../conf/config.php');
     }

@@ -305,7 +305,7 @@ class SDP_Views_Asset
         $assocTable = 'sdp_assetrelation';
         $relatedAsset->_a['views']['myView'] = array(
             'select' => $relatedAsset->getSelect(),
-            'join' => 'LEFT JOIN ' . $assocTable . ' ON ' . $relatedAssetTable . '.id=' . $assocTable . '.end'
+            'join' => 'LEFT JOIN ' . $assocTable . ' ON ' . $relatedAssetTable . '.id=' . $assocTable . '.end_id'
         );
 
         $page = new Pluf_Paginator($relatedAsset);

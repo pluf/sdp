@@ -87,14 +87,16 @@ class SDP_Form_AssetCreate extends Pluf_Form
         // Create the asset
         $asset = new SDP_Asset();
         $asset->setFromFormData($this->cleaned_data);
-        if ($asset->isLocal() && array_key_exists('file', $_FILES)) {
+        if ($asset->isLocal() && $asset->type !== 'folder') {
             $asset->type = 'file';
-            $asset->mime_type = $this->userRequest->FILES['file']['type'];
             $asset->path = Pluf::f('upload_path') . '/' . Pluf_Tenant::current()->id . '/sdp';
             if (! is_dir($asset->path)) {
                 if (false == @mkdir($asset->path, 0777, true)) {
                     throw new Pluf_Form_Invalid('An error occured when creating the upload path. Please try to send the file again.');
                 }
+            }
+            if (array_key_exists('file', $_FILES)) {
+                $asset->mime_type = $this->userRequest->FILES['file']['type'];
             }
         }
         // Note: Mahdi, 1395-09: For folders there is no path attribute
@@ -125,7 +127,7 @@ class SDP_Form_AssetCreate extends Pluf_Form
     {
         $type = trim($this->cleaned_data['type']);
         if ($type !== 'file' && $type !== 'folder') {
-            $type = array_key_exists('file', $this->userRequest->FILES) ? 'file' : 'folder';
+            $type = 'file'; // default value for type is file
         }
         return $type;
     }

@@ -143,7 +143,7 @@ class SDP_Form_AssetUpdate extends Pluf_Form
 
     function clean_name()
     {
-        $fileName = $this->asset->name ? $this->asset->name : $this->cleaned_data['name'];
+        $fileName = $this->cleaned_data['name'] ? $this->cleaned_data['name'] : $this->asset->name;
         if (! $fileName) {
             return array_key_exists('file', $this->data) ? $this->data['file']['name'] : $this->asset->name;
         }

@@ -102,6 +102,7 @@ class SDP_Views_Link
             'user'
         );
         $links->configure(array(), $search_fields, $sort_fields);
+        Pluf::loadFunction('SDP_Shortcuts_NormalizeItemPerPage');
         $links->items_per_page = SDP_Shortcuts_NormalizeItemPerPage($request);
         $links->setFromRequest($request);
         return $links;

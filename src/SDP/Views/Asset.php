@@ -134,12 +134,8 @@ class SDP_Views_Asset
     public static function updateFile($request, $match)
     {
         // GET data
-        $asset = Pluf_Shortcuts_GetObjectOr404('SDP_Asset', $match["id"]);
-        // Check permission
-        // Precondition::userCanAccessApplication($request, $app);
-        // Precondition::userCanAccessResource($request, $content);
-
-        if(!$asset->isLocal()){
+        $asset = Pluf_Shortcuts_GetObjectOr404('SDP_Asset', $match['modelId']);
+        if (! $asset->isLocal()) {
             return new Pluf_Exception_BadRequest('Could not change file of a non local asset');
         }
         if (array_key_exists('file', $request->FILES)) {
@@ -154,10 +150,28 @@ class SDP_Views_Asset
             $entityBody = file_get_contents('php://input', 'r');
             fwrite($myfile, $entityBody);
             fclose($myfile);
-            $asset->file_size = filesize($asset->path . '/' . $asset->id);
+            $asset->size = filesize($asset->path . '/' . $asset->id);
             $asset->update();
         }
         return $asset;
+    }
+
+    /**
+     * Download content of an asset
+     *
+     * @param Pluf_HTTP_Request $request
+     * @param array $match
+     * @return Pluf_HTTP_Response_File
+     */
+    public function download($request, $match)
+    {
+        $asset = Pluf_Shortcuts_GetObjectOr404('SDP_Asset', $match['modelId']);
+        if (! $asset->isLocal()) {
+            return new Pluf_Exception_BadRequest('Could not get file of a non local asset');
+        }
+        $response = new Pluf_HTTP_Response_File($asset->getAbsloutPath(), $asset->mime_type);
+        $response->headers['Content-Disposition'] = sprintf('attachment; filename="%s"', $asset->file_name);
+        return $response;
     }
 
     // *******************************************************************

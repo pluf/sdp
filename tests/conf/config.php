@@ -47,6 +47,8 @@ $cfg['templates_folder'] = array(
     __DIR__ . '/../templates'
 );
 
+$cfg['upload_path'] = $cfg['tmp_folder'] . '/storage/tenant';
+
 /*
  * Template tags
  */

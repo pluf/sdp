@@ -23,13 +23,10 @@
 class SDP_Form_AssetUpdate extends Pluf_Form
 {
 
-    private $userRequest = null;
-
     public $asset = null;
 
     public function initFields($extra = array())
     {
-        $this->userRequest = $extra['request'];
         $this->asset = $extra['asset'];
 
         $this->fields['name'] = new Pluf_Form_Field_Varchar(array(
@@ -117,11 +114,19 @@ class SDP_Form_AssetUpdate extends Pluf_Form
         // update the asset
         $this->asset->setFromFormData($this->cleaned_data);
 
-        if ($this->asset->isLocal() && array_key_exists('file', $this->userRequest->FILES)) {
+        if ($this->asset->isLocal() && array_key_exists('file', $this->data)) {
             // Extract information of file
-            $myFile = $this->userRequest->FILES['file'];
+            $myFile = $this->data['file'];
             $this->asset->mime_type = $myFile['type'];
-            $this->asset->size = filesize($this->asset->path . '/' . $this->asset->id);
+            $this->asset->file_name = $myFile['name'];
+            // set mime type if not defined
+            if(!array_key_exists('mime_type', $this->data)){
+                $mimeType = Pluf_FileUtil::getMimeType($this->asset->file_name);
+                if(is_array($mimeType)){
+                    $mimeType = $mimeType[0];
+                }
+                $this->asset->mime_type = $mimeType;
+            }
         }
 
         if (! $this->asset->isLocal() && strlen($this->asset->file_name) > 0) {
@@ -138,7 +143,7 @@ class SDP_Form_AssetUpdate extends Pluf_Form
 
     function clean_name()
     {
-        $fileName = $this->cleaned_data['name'];
+        $fileName = $this->cleaned_data['name'] ? $this->cleaned_data['name'] : $this->asset->name;
         if (! $fileName) {
             return array_key_exists('file', $this->data) ? $this->data['file']['name'] : $this->asset->name;
         }

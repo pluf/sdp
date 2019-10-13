@@ -53,6 +53,28 @@ return array(
             'User_Precondition::ownerRequired'
         )
     ),
+    // --------------------------------------------------------------------
+    // Binary content of asset
+    // --------------------------------------------------------------------
+    array( // Read
+        'regex' => '#^/assets/(?P<modelId>\d+)/content$#',
+        'model' => 'SDP_Views_Asset',
+        'method' => 'download',
+        'http-method' => 'GET',
+        'precond' => array(
+            // Note: Other users should use indirect links to download contents of an asset
+            'User_Precondition::ownerRequired'
+        )
+    ),
+    array( // Update
+        'regex' => '#^/assets/(?P<modelId>\d+)/content$#',
+        'model' => 'SDP_Views_Asset',
+        'method' => 'updateFile',
+        'http-method' => 'POST',
+        'precond' => array(
+            'User_Precondition::ownerRequired'
+        )
+    ),
     // ************************************************************* Children of Assets (if asset is folder)
     // TODO: Hadi 1397-09-20: By using categories and define Category in the SDP, I think it could be removed.
     array( // Read children (if asset is folder)

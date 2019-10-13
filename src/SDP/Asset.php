@@ -89,6 +89,7 @@ class SDP_Asset extends Pluf_Model
             'type' => array(
                 'type' => 'Pluf_DB_Field_Varchar',
                 'is_null' => false,
+                'default' => 'file',
                 'size' => 250,
                 'editable' => false,
                 'readable' => true
@@ -178,6 +179,22 @@ class SDP_Asset extends Pluf_Model
             $this->creation_dtime = gmdate('Y-m-d H:i:s');
         }
         $this->modif_dtime = gmdate('Y-m-d H:i:s');
+        if ($this->isLocal()) {
+            // File path
+            $path = $this->getAbsloutPath();
+            // file size
+            if (file_exists($path)) {
+                $this->size = filesize($path);
+            } else {
+                $this->size = 0;
+            }
+        }
+        // mime type (based on file name)
+        $mime_type = $this->mime_type;
+        if (! isset($mime_type) || $mime_type === 'application/octet-stream') {
+            $fileInfo = Pluf_FileUtil::getMimeType($this->file_name);
+            $this->mime_type = $fileInfo[0];
+        }
     }
 
     /**
@@ -219,5 +236,16 @@ class SDP_Asset extends Pluf_Model
             return SDP_Service::defaultLocalDrive();
         }
         return $this->get_drive_id();
+    }
+
+    /**
+     * Returns the full path to the content of the asset.
+     * This path contains the name of the file also.
+     *
+     * @return string
+     */
+    public function getAbsloutPath()
+    {
+        return $this->path . '/' . $this->id;
     }
 }

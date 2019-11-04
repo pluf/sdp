@@ -268,7 +268,7 @@ class SDP_Views_Link
      */
     private static function updateActivationInfo($link)
     {
-        if ($link->active || ! $link->payment) {
+        if ($link->active || ! $link->payment_id) {
             return $link;
         }
         $receipt = $link->get_payment();

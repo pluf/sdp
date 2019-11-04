@@ -171,8 +171,31 @@ class Link_AuthorizedRestTest extends TestCase
         $this->assertEquals($actual['asset_id'], $this->freeAsset->id);
         $this->assertEquals($actual['user_id'], $this->user->id);
         
+        // Get created link for free asset
+        $response = $this->client->get('/api/sdp/links/' . $actual['id']);
+        $this->assertNotNull($response);
+        $this->assertEquals($response->status_code, 200);
+        Test_Assert::assertResponseAsModel($response);
+        $actual = json_decode($response->content, true);
+        $this->assertNotNull($actual['secure_link']);
+        $this->assertNotNull($actual['expiry']);
+        $this->assertTrue($actual['active']);
+        $this->assertEquals($actual['asset_id'], $this->freeAsset->id);
+        $this->assertEquals($actual['user_id'], $this->user->id);
+        
         // Link for priced asset
         $response = $this->client->post('/api/sdp/assets/' . $this->pricedAsset->id . '/links');
+        $this->assertNotNull($response);
+        $this->assertEquals($response->status_code, 200);
+        Test_Assert::assertResponseAsModel($response);
+        $actual = json_decode($response->content, true);
+        $this->assertNotNull($actual['secure_link']);
+        $this->assertNotNull($actual['expiry']);
+        $this->assertEquals($actual['asset_id'], $this->pricedAsset->id);
+        $this->assertEquals($actual['user_id'], $this->user->id);
+        
+        // Get created link for priced asset
+        $response = $this->client->get('/api/sdp/links/' . $actual['id']);
         $this->assertNotNull($response);
         $this->assertEquals($response->status_code, 200);
         Test_Assert::assertResponseAsModel($response);

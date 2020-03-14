@@ -1,11 +1,29 @@
 <?php
 
+/*
+ * This file is part of Pluf Framework, a simple PHP Application Framework.
+ * Copyright (C) 2010-2020 Phoinex Scholars Co. (http://dpq.co.ir)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 /**
  * ارتباط بین دو SDP_Asset را تعریف می‌کند. در یک ارتباط بین دو دارایی موارد زیر باید تعریف شوند:
  * - type: نوع ارتباط. مثلا یک دارایی خلاصه دارایی دیگر است. یا یک دارایی نسخه قبلی دارایی دیگر است.
  * - start: ابتدای ارتباط یا به عبارتی پدر
  * - end: انتهای ارتباط یا به عبارتی فرزند
- 
+
  * مثال: به عنوان مثال اگر یک دارایی با شناسه ۱ داشته باشیم که یک کتاب باشد و 
  * یک دارایی دیگر با شناسه ۲ داشته باشیم که خلاصه آن کتاب باشد می‌توان رابطه‌ای به صورت زیر بین آن‌ها تعریف کرد:
  * {
@@ -21,8 +39,8 @@ class SDP_AssetRelation extends Pluf_Model
 {
 
     /**
-     * @brief مدل داده‌ای را بارگذاری می‌کند.
      *
+     * {@inheritdoc}
      * @see Pluf_Model::init()
      */
     function init()
@@ -82,9 +100,9 @@ class SDP_AssetRelation extends Pluf_Model
                 'relate_name' => 'end_relations',
                 'editable' => true,
                 'readable' => true
-            ),
+            )
         );
-        
+
         $this->_a['idx'] = array(
             'assetrelation_class_idx' => array(
                 'col' => 'type, start_id, end_id',
@@ -98,10 +116,9 @@ class SDP_AssetRelation extends Pluf_Model
     }
 
     /**
-     * \brief پیش ذخیره را انجام می‌دهد
      *
-     * @param $create حالت
-     *            ساخت یا به روز رسانی را تعیین می‌کند
+     * {@inheritdoc}
+     * @see Pluf_Model::preSave()
      */
     function preSave($create = false)
     {
@@ -109,26 +126,5 @@ class SDP_AssetRelation extends Pluf_Model
             $this->creation_dtime = gmdate('Y-m-d H:i:s');
         }
         $this->modif_dtime = gmdate('Y-m-d H:i:s');
-    }
-
-    /**
-     * حالت کار ایجاد شده را به روز می‌کند
-     *
-     * @see Pluf_Model::postSave()
-     */
-    function postSave($create = false)
-    {
-        //
-    }
-
-    /**
-     * \brief عملیاتی که قبل از پاک شدن است انجام می‌شود
-     *
-     * عملیاتی که قبل از پاک شدن است انجام می‌شود
-     * در این متد فایل مربوط به است حذف می شود. این عملیات قابل بازگشت نیست
-     */
-    function preDelete()
-    {
-        //
     }
 }

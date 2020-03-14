@@ -16,22 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-use PHPUnit\Framework\TestCase;
-use PHPUnit\Framework\IncompleteTestError;
-require_once 'Pluf.php';
+use Pluf\Test\Client;
+use Pluf\Test\TestCase;
 
-/**
- *
- * @backupGlobals disabled
- * @backupStaticAttributes disabled
- */
 class Asset_AnonymousRestTest extends TestCase
 {
 
-    /**
-     * 
-     * @var Test_Client
-     */
     public static $client;
 
     /**
@@ -40,10 +30,10 @@ class Asset_AnonymousRestTest extends TestCase
      */
     public static function createDataBase()
     {
-        Pluf::start(__DIR__.'/../conf/config.php');
+        Pluf::start(__DIR__ . '/../conf/config.php');
         $m = new Pluf_Migration(Pluf::f('installed_apps'));
         $m->install();
-        
+
         // Test user
         $user = new User_Account();
         $user->login = 'test';
@@ -60,25 +50,12 @@ class Asset_AnonymousRestTest extends TestCase
         if (true !== $credit->create()) {
             throw new Exception();
         }
-        
+
         $per = User_Role::getFromString('tenant.owner');
         $user->setAssoc($per);
 
         // Anonymouse Client
-        self::$client = new Test_Client(array(
-            array(
-                'app' => 'SDP',
-                'regex' => '#^/api/sdp#',
-                'base' => '',
-                'sub' => include 'SDP/urls.php'
-            ),
-            array(
-                'app' => 'User',
-                'regex' => '#^/api/user#',
-                'base' => '',
-                'sub' => include 'User/urls.php'
-            )
-        ));
+        self::$client = new Client();
     }
 
     /**
@@ -93,7 +70,7 @@ class Asset_AnonymousRestTest extends TestCase
 
     /**
      * Anonymous user should not be able to create new asset
-     * 
+     *
      * @test
      */
     public function createRestTest()
@@ -104,12 +81,11 @@ class Asset_AnonymousRestTest extends TestCase
             'description' => 'description ' . rand(),
             'price' => rand()
         );
-        $response = self::$client->post('/api/sdp/assets', $form);
+        $response = self::$client->post('/sdp/assets', $form);
         $this->assertNotNull($response);
         $this->assertEquals($response->status_code, 401);
-        
     }
-    
+
     /**
      *
      * @test
@@ -121,16 +97,16 @@ class Asset_AnonymousRestTest extends TestCase
         $item->description = 'description';
         $item->price = rand();
         $item->create();
-        Test_Assert::assertFalse($item->isAnonymous(), 'Could not create SDP_Asset');
+        $this->assertFalse($item->isAnonymous(), 'Could not create SDP_Asset');
         // Get item
-        $response = self::$client->get('/api/sdp/assets/' . $item->id);
+        $response = self::$client->get('/sdp/assets/' . $item->id);
         $this->assertNotNull($response);
         $this->assertEquals($response->status_code, 200);
     }
-    
+
     /**
      * Anonymous user should not be able to update an asset
-     * 
+     *
      * @test
      */
     public function updateRestTest()
@@ -141,19 +117,19 @@ class Asset_AnonymousRestTest extends TestCase
         $item->description = 'description';
         $item->price = rand();
         $item->create();
-        Test_Assert::assertFalse($item->isAnonymous(), 'Could not create SDP_Asset');
+        $this->assertFalse($item->isAnonymous(), 'Could not create SDP_Asset');
         // Update item
         $form = array(
             'price' => rand()
         );
-        $response = self::$client->post('/api/sdp/assets/' . $item->id, $form);
+        $response = self::$client->post('/sdp/assets/' . $item->id, $form);
         $this->assertNotNull($response);
         $this->assertEquals($response->status_code, 401);
     }
-    
+
     /**
      * Anonymous user should not be able to delete an asset
-     * 
+     *
      * @test
      */
     public function deleteRestTest()
@@ -164,25 +140,25 @@ class Asset_AnonymousRestTest extends TestCase
         $item->description = 'description';
         $item->price = rand();
         $item->create();
-        Test_Assert::assertFalse($item->isAnonymous(), 'Could not create SDP_Asset');
-        
+        $this->assertFalse($item->isAnonymous(), 'Could not create SDP_Asset');
+
         // delete
-        $response = self::$client->delete('/api/sdp/assets/' . $item->id);
+        $response = self::$client->delete('/sdp/assets/' . $item->id);
         $this->assertNotNull($response);
         $this->assertEquals($response->status_code, 401);
     }
-    
+
     /**
      *
      * @test
      */
     public function findRestTest()
     {
-        $response = self::$client->get('/api/sdp/assets');
+        $response = self::$client->get('/sdp/assets');
         $this->assertNotNull($response);
         $this->assertEquals($response->status_code, 200);
     }
-    
+
     /**
      *
      * @test
@@ -190,25 +166,24 @@ class Asset_AnonymousRestTest extends TestCase
     public function findWithGraphqlRestTest()
     {
         $params = array(
-            'graphql' => '{items{id,name,price,thumbnail,content{id,name},parent{id,name},drive{id,home,driver}}}'
+            'graphql' => '{items{id,name,price,thumbnail,parent{id,name},drive{id,home,driver}}}'
         );
-        $response = self::$client->get('/api/sdp/assets', $params);
+        $response = self::$client->get('/sdp/assets', $params);
         $this->assertNotNull($response);
         $this->assertEquals($response->status_code, 200);
     }
-    
+
     /**
      *
      * @test
      */
     public function getListofAssetsTest()
     {
-        $response = self::$client->get('/api/sdp/assets');
-        Test_Assert::assertResponseNotNull($response, 'Find result is empty');
-        Test_Assert::assertResponseStatusCode($response, 200, 'Find status code is not 200');
-        Test_Assert::assertResponsePaginateList($response, 'Find result is not JSON paginated list');
+        $response = self::$client->get('/sdp/assets');
+        $this->assertResponseNotNull($response, 'Find result is empty');
+        $this->assertResponseStatusCode($response, 200, 'Find status code is not 200');
+        $this->assertResponsePaginateList($response, 'Find result is not JSON paginated list');
     }
-
 }
 
 

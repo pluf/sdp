@@ -16,14 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-use PHPUnit\Framework\TestCase;
-require_once 'Pluf.php';
+use Pluf\Test\Client;
+use Pluf\Test\TestCase;
 
-/**
- *
- * @backupGlobals disabled
- * @backupStaticAttributes disabled
- */
 class Drive_AnonymousBasicTest extends TestCase
 {
 
@@ -59,20 +54,7 @@ class Drive_AnonymousBasicTest extends TestCase
         $per = User_Role::getFromString('tenant.owner');
         $user->setAssoc($per);
 
-        self::$client = new Test_Client(array(
-            array(
-                'app' => 'SDP',
-                'regex' => '#^/sdp#',
-                'base' => '',
-                'sub' => include 'SDP/urls.php'
-            ),
-            array(
-                'app' => 'User',
-                'regex' => '#^/user#',
-                'base' => '',
-                'sub' => include 'User/urls.php'
-            )
-        ));
+        self::$client = new Client();
     }
 
     /**
@@ -93,9 +75,9 @@ class Drive_AnonymousBasicTest extends TestCase
     public function shouldAnonymousGetListOfDrivers()
     {
         $response = self::$client->get('/sdp/drivers');
-        Test_Assert::assertResponseNotNull($response, 'Find result is empty');
-        Test_Assert::assertResponseStatusCode($response, 200, 'Find status code is not 200');
-        Test_Assert::assertResponsePaginateList($response, 'Find result is not JSON paginated list');
+        $this->assertResponseNotNull($response, 'Find result is empty');
+        $this->assertResponseStatusCode($response, 200, 'Find status code is not 200');
+        $this->assertResponsePaginateList($response, 'Find result is not JSON paginated list');
     }
 
     /**
@@ -108,8 +90,8 @@ class Drive_AnonymousBasicTest extends TestCase
         $engs = SDP_Service::drivers();
         foreach ($engs as $eng) {
             $response = self::$client->get('/sdp/drivers/' . $eng->getType());
-            Test_Assert::assertResponseNotNull($response, 'Find result is empty');
-            Test_Assert::assertResponseStatusCode($response, 200, 'Find status code is not 200');
+            $this->assertResponseNotNull($response, 'Find result is empty');
+            $this->assertResponseStatusCode($response, 200, 'Find status code is not 200');
         }
     }
 
@@ -121,8 +103,8 @@ class Drive_AnonymousBasicTest extends TestCase
     public function shouldAnonymousGetListOfDrive()
     {
         $response = self::$client->get('/sdp/drives');
-        Test_Assert::assertResponseNotNull($response, 'Find result is empty');
-        Test_Assert::assertResponseStatusCode($response, 200, 'Find status code is not 200');
-        Test_Assert::assertResponsePaginateList($response, 'Find result is not JSON paginated list');
+        $this->assertResponseNotNull($response, 'Find result is empty');
+        $this->assertResponseStatusCode($response, 200, 'Find status code is not 200');
+        $this->assertResponsePaginateList($response, 'Find result is not JSON paginated list');
     }
 }

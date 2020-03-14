@@ -16,17 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-use PHPUnit\Framework\TestCase;
-use PHPUnit\Framework\IncompleteTestError;
 use Firebase\JWT\JWT;
+use Pluf\Test\Client;
+use Pluf\Test\TestCase;
 
-require_once 'Pluf.php';
-
-/**
- *
- * @backupGlobals disabled
- * @backupStaticAttributes disabled
- */
 class Driver_CactusTest extends TestCase
 {
 
@@ -48,10 +41,6 @@ class Driver_CactusTest extends TestCase
      */
     var $asset;
 
-    /**
-     *
-     * @var Test_Client
-     */
     var $client;
 
     var $drive;
@@ -107,20 +96,7 @@ class Driver_CactusTest extends TestCase
      */
     public function init()
     {
-        $this->client = new Test_Client(array(
-            array(
-                'app' => 'SDP',
-                'regex' => '#^/api/sdp#',
-                'base' => '',
-                'sub' => include 'SDP/urls.php'
-            ),
-            array(
-                'app' => 'User',
-                'regex' => '#^/api/user#',
-                'base' => '',
-                'sub' => include 'User/urls.php'
-            )
-        ));
+        $this->client = new Client();
 
         // User
         $this->user = User_Account::getUser('test');
@@ -133,7 +109,7 @@ class Driver_CactusTest extends TestCase
         $this->drive->setMeta('decrypt_key', $this->jwt_key);
         $this->drive->setMeta('algorithm', $this->jwt_alg);
         $this->drive->driver = 'cactus';
-        Test_Assert::assertTrue($this->drive->create(), 'Impossible to create cactus drive');
+        $this->assertTrue($this->drive->create(), 'Impossible to create cactus drive');
 
         // Asset
         $this->asset = new SDP_Asset();
@@ -144,16 +120,16 @@ class Driver_CactusTest extends TestCase
         $this->asset->path = '/test/for/cactus';
         $this->asset->file_name = 'test.png';
         $this->asset->drive_id = $this->drive;
-        Test_Assert::assertTrue($this->asset->create(), 'Impossible to create asset');
+        $this->assertTrue($this->asset->create(), 'Impossible to create asset');
 
         // Link
         $this->link = new SDP_Link();
-        $this->link->secure_link = rand(1000000000, 9999999999) .''. rand(1000000000, 9999999999);
+        $this->link->secure_link = rand(1000000000, 9999999999) . '' . rand(1000000000, 9999999999);
         $this->link->asset_id = $this->asset;
         $this->link->active = true;
         $this->link->expiry = '2050-1-1 00:00:00';
         $this->link->user_id = $this->user;
-        Test_Assert::assertTrue($this->link->create(), 'Impossible to create link');
+        $this->assertTrue($this->link->create(), 'Impossible to create link');
     }
 
     /**
@@ -188,10 +164,10 @@ class Driver_CactusTest extends TestCase
      */
     public function cactusResponseTest()
     {
-        $response = $this->client->get('/api/sdp/links/' . $this->link->secure_link . '/content');
+        $response = $this->client->get('/sdp/links/' . $this->link->secure_link . '/content');
 
-        Test_Assert::assertResponseNotNull($response);
-        Test_Assert::assertResponseStatusCode($response, 301);
+        $this->assertResponseNotNull($response);
+        $this->assertResponseStatusCode($response, 301);
 
         $url = $response->headers['Location'];
         $matches = null;

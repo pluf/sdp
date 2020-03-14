@@ -16,8 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-use PHPUnit\Framework\TestCase;
-use PHPUnit\Framework\IncompleteTestError;
+use Pluf\Test\Client;
+use Pluf\Test\TestCase;
 require_once 'Pluf.php';
 
 /**
@@ -28,10 +28,6 @@ require_once 'Pluf.php';
 class Asset_OwnerRestTest extends TestCase
 {
 
-    /**
-     *
-     * @var Test_Client
-     */
     public static $ownerClient;
 
     var $drive;
@@ -67,21 +63,8 @@ class Asset_OwnerRestTest extends TestCase
         $user->setAssoc($per);
 
         // Owner Client
-        self::$ownerClient = new Test_Client(array(
-            array(
-                'app' => 'SDP',
-                'regex' => '#^/api/sdp#',
-                'base' => '',
-                'sub' => include 'SDP/urls.php'
-            ),
-            array(
-                'app' => 'User',
-                'regex' => '#^/api/user#',
-                'base' => '',
-                'sub' => include 'User/urls.php'
-            )
-        ));
-        self::$ownerClient->post('/api/user/login', array(
+        self::$ownerClient = new Client();
+        self::$ownerClient->post('/user/login', array(
             'login' => 'test',
             'password' => 'test'
         ));
@@ -109,7 +92,7 @@ class Asset_OwnerRestTest extends TestCase
         $this->drive->setMeta('key', 'test_key');
         $this->drive->setMeta('algorithm', 'HS512');
         $this->drive->driver = 'cactus';
-        Test_Assert::assertTrue($this->drive->create(), 'Impossible to create cactus drive');
+        $this->assertTrue($this->drive->create(), 'Impossible to create cactus drive');
     }
 
     /**
@@ -123,7 +106,7 @@ class Asset_OwnerRestTest extends TestCase
             'description' => 'description ' . rand(),
             'price' => rand()
         );
-        $response = self::$ownerClient->post('/api/sdp/assets', $form);
+        $response = self::$ownerClient->post('/sdp/assets', $form);
         $this->assertNotNull($response);
         $this->assertEquals($response->status_code, 200);
     }
@@ -148,10 +131,10 @@ class Asset_OwnerRestTest extends TestCase
             'size' => $size,
             'drive_id' => $this->drive->id
         );
-        $response = self::$ownerClient->post('/api/sdp/assets', $form);
+        $response = self::$ownerClient->post('/sdp/assets', $form);
         $this->assertNotNull($response);
         $this->assertEquals($response->status_code, 200);
-        Test_Assert::assertResponseAsModel($response);
+        $this->assertResponseAsModel($response);
         $actual = json_decode($response->content, true);
         $this->assertEquals($actual['name'], $name);
         $this->assertEquals($actual['file_name'], $fileName);
@@ -174,9 +157,9 @@ class Asset_OwnerRestTest extends TestCase
         $item->description = 'description';
         $item->price = rand();
         $item->create();
-        Test_Assert::assertFalse($item->isAnonymous(), 'Could not create SDP_Asset');
+        $this->assertFalse($item->isAnonymous(), 'Could not create SDP_Asset');
         // Get item
-        $response = self::$ownerClient->get('/api/sdp/assets/' . $item->id);
+        $response = self::$ownerClient->get('/sdp/assets/' . $item->id);
         $this->assertNotNull($response);
         $this->assertEquals($response->status_code, 200);
     }
@@ -192,12 +175,12 @@ class Asset_OwnerRestTest extends TestCase
         $item->description = 'description';
         $item->price = rand();
         $item->create();
-        Test_Assert::assertFalse($item->isAnonymous(), 'Could not create SDP_Asset');
+        $this->assertFalse($item->isAnonymous(), 'Could not create SDP_Asset');
         // Update item
         $form = array(
             'price' => rand()
         );
-        $response = self::$ownerClient->post('/api/sdp/assets/' . $item->id, $form);
+        $response = self::$ownerClient->post('/sdp/assets/' . $item->id, $form);
         $this->assertNotNull($response);
         $this->assertEquals($response->status_code, 200);
     }
@@ -217,7 +200,7 @@ class Asset_OwnerRestTest extends TestCase
         $item->size = 72313;
         $item->drive_id = $this->drive;
         $item->create();
-        Test_Assert::assertFalse($item->isAnonymous(), 'Could not create SDP_Asset');
+        $this->assertFalse($item->isAnonymous(), 'Could not create SDP_Asset');
 
         $newPath = '/new/path/to/file';
         $newFileName = 'newname.txt';
@@ -230,15 +213,15 @@ class Asset_OwnerRestTest extends TestCase
             'path' => $newPath,
             'file_name' => $newFileName
         );
-        $response = self::$ownerClient->post('/api/sdp/assets/' . $item->id, $form);
+        $response = self::$ownerClient->post('/sdp/assets/' . $item->id, $form);
         $this->assertNotNull($response);
         $this->assertEquals($response->status_code, 200);
-        Test_Assert::assertResponseAsModel($response);
+        $this->assertResponseAsModel($response);
         $actual = json_decode($response->content, true);
         $this->assertEquals($actual['name'], $newName);
         $this->assertEquals($actual['file_name'], $newFileName);
         $this->assertEquals($actual['price'], $newPrice);
-        
+
         // Chech unreadable feilds
         $updated = new SDP_Asset($item->id);
         $this->assertEquals($updated->path, $newPath);
@@ -255,10 +238,10 @@ class Asset_OwnerRestTest extends TestCase
         $item->description = 'description';
         $item->price = rand();
         $item->create();
-        Test_Assert::assertFalse($item->isAnonymous(), 'Could not create SDP_Asset');
+        $this->assertFalse($item->isAnonymous(), 'Could not create SDP_Asset');
 
         // delete
-        $response = self::$ownerClient->delete('/api/sdp/assets/' . $item->id);
+        $response = self::$ownerClient->delete('/sdp/assets/' . $item->id);
         $this->assertNotNull($response);
         $this->assertEquals($response->status_code, 200);
     }
@@ -269,7 +252,7 @@ class Asset_OwnerRestTest extends TestCase
      */
     public function findRestTest()
     {
-        $response = self::$ownerClient->get('/api/sdp/assets');
+        $response = self::$ownerClient->get('/sdp/assets');
         $this->assertNotNull($response);
         $this->assertEquals($response->status_code, 200);
     }

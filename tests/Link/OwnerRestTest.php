@@ -16,15 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-use PHPUnit\Framework\TestCase;
-use PHPUnit\Framework\IncompleteTestError;
-require_once 'Pluf.php';
+use Pluf\Test\Client;
+use Pluf\Test\TestCase;
 
-/**
- *
- * @backupGlobals disabled
- * @backupStaticAttributes disabled
- */
 class Link_OwnerRestTest extends TestCase
 {
 
@@ -46,10 +40,6 @@ class Link_OwnerRestTest extends TestCase
      */
     var $asset;
 
-    /**
-     *
-     * @var Test_Client
-     */
     var $client;
 
     /**
@@ -59,7 +49,7 @@ class Link_OwnerRestTest extends TestCase
     public static function createDataBase()
     {
         Pluf::start(__DIR__ . '/../conf/config.php');
-        $m = new Pluf_Migration(Pluf::f('installed_apps'));
+        $m = new Pluf_Migration();
         $m->install();
 
         // Test user
@@ -89,8 +79,8 @@ class Link_OwnerRestTest extends TestCase
      */
     public static function removeDatabses()
     {
-        $m = new Pluf_Migration(Pluf::f('installed_apps'));
-        $m->unInstall();
+        $m = new Pluf_Migration();
+        $m->uninstall();
     }
 
     /**
@@ -99,26 +89,13 @@ class Link_OwnerRestTest extends TestCase
      */
     public function init()
     {
-        $this->client = new Test_Client(array(
-            array(
-                'app' => 'SDP',
-                'regex' => '#^/api/sdp#',
-                'base' => '',
-                'sub' => include 'SDP/urls.php'
-            ),
-            array(
-                'app' => 'User',
-                'regex' => '#^/api/user#',
-                'base' => '',
-                'sub' => include 'User/urls.php'
-            )
-        ));
+        $this->client = new Client();
 
         // User
         $this->user = User_Account::getUser('test');
-        
+
         // login
-        $this->client->post('/api/user/login', array(
+        $this->client->post('/user/login', array(
             'login' => 'test',
             'password' => 'test'
         ));
@@ -129,21 +106,21 @@ class Link_OwnerRestTest extends TestCase
         $this->asset->type = 'file';
         $this->asset->description = 'It is my asset description';
         $this->asset->price = 0;
-//         $this->asset->drive_id = 0;
-        $this->asset->path = __DIR__ . '/../tmp';
-        Test_Assert::assertTrue($this->asset->create(), 'Impossible to create asset');
-        
-        $res = copy(__DIR__ . '/../data/sample.txt', __DIR__ . '/../tmp/'.$this->asset->id);
-        Test_Assert::assertTrue($res, 'Impossible to copy file');
-        
+        // $this->asset->drive_id = 0;
+        $this->asset->path = Pluf::f('upload_path');
+        $this->assertTrue($this->asset->create(), 'Impossible to create asset');
+
+        $res = copy(__DIR__ . '/../data/sample.txt', $this->asset->path . '/' . $this->asset->id);
+        $this->assertTrue($res, 'Impossible to copy file');
+
         // Link
         $this->link = new SDP_Link();
-        $this->link->secure_link = rand(1000000000, 9999999999) .''. rand(1000000000, 9999999999);
+        $this->link->secure_link = rand(1000000000, 9999999999) . '' . rand(1000000000, 9999999999);
         $this->link->asset_id = $this->asset;
         $this->link->active = true;
         $this->link->expiry = '2050-1-1 00:00:00';
         $this->link->user_id = $this->user;
-        Test_Assert::assertTrue($this->link->create(), 'Impossible to create link');
+        $this->assertTrue($this->link->create(), 'Impossible to create link');
     }
 
     /**
@@ -152,10 +129,10 @@ class Link_OwnerRestTest extends TestCase
      */
     public function createLinkTest()
     {
-        $response = $this->client->post('/api/sdp/assets/' . $this->asset->id . '/links');
+        $response = $this->client->post('/sdp/assets/' . $this->asset->id . '/links');
         $this->assertNotNull($response);
         $this->assertEquals($response->status_code, 200);
-        Test_Assert::assertResponseAsModel($response);
+        $this->assertResponseAsModel($response);
         $actual = json_decode($response->content, true);
         $this->assertNotNull($actual['secure_link']);
         $this->assertNotNull($actual['expiry']);
@@ -169,23 +146,23 @@ class Link_OwnerRestTest extends TestCase
      */
     public function downloadFromLinkTest()
     {
-        $response = $this->client->get('/api/sdp/links/' . $this->link->secure_link . '/content');
+        $response = $this->client->get('/sdp/links/' . $this->link->secure_link . '/content');
         $this->assertNotNull($response);
         $this->assertEquals($response->status_code, 200);
     }
-    
+
     /**
      *
      * @test
      */
     public function getListOfLinksTest()
     {
-        $response = $this->client->get('/api/sdp/links');
+        $response = $this->client->get('/sdp/links');
         $this->assertNotNull($response);
         $this->assertEquals($response->status_code, 200);
-        Test_Assert::assertResponsePaginateList($response, 'Find result is not JSON paginated list');
+        $this->assertResponsePaginateList($response, 'Find result is not JSON paginated list');
     }
-    
+
     /**
      *
      * @test
@@ -195,11 +172,10 @@ class Link_OwnerRestTest extends TestCase
         $params = array(
             'graphql' => '{items{id,secure_link,expiry,download,asset{id,name},user{id,login},payment{id}}}'
         );
-        $response = $this->client->get('/api/sdp/links', $params);
+        $response = $this->client->get('/sdp/links', $params);
         $this->assertNotNull($response);
         $this->assertEquals($response->status_code, 200);
     }
-
 }
 
 

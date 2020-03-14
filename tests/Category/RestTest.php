@@ -16,21 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-use PHPUnit\Framework\TestCase;
-use PHPUnit\Framework\IncompleteTestError;
-require_once 'Pluf.php';
-
-/**
- *
- * @backupGlobals disabled
- * @backupStaticAttributes disabled
- */
+use Pluf\Test\Client;
+use Pluf\Test\TestCase;
 class Category_RestTest extends TestCase
 {
 
     /**
      * 
-     * @var Test_Client
+     * @var Client
      */
     public static $ownerClient;
     public static $client;
@@ -66,36 +59,10 @@ class Category_RestTest extends TestCase
         $user->setAssoc($per);
 
         // Anonymouse Client
-        self::$client = new Test_Client(array(
-            array(
-                'app' => 'SDP',
-                'regex' => '#^/api/sdp#',
-                'base' => '',
-                'sub' => include 'SDP/urls.php'
-            ),
-            array(
-                'app' => 'User',
-                'regex' => '#^/api/user#',
-                'base' => '',
-                'sub' => include 'User/urls.php'
-            )
-        ));
+        self::$client = new Client();
         // Owner Client
-        self::$ownerClient = new Test_Client(array(
-            array(
-                'app' => 'SDP',
-                'regex' => '#^/api/sdp#',
-                'base' => '',
-                'sub' => include 'SDP/urls.php'
-            ),
-            array(
-                'app' => 'User',
-                'regex' => '#^/api/user#',
-                'base' => '',
-                'sub' => include 'User/urls.php'
-            )
-        ));
-        self::$ownerClient->post('/api/user/login', array(
+        self::$ownerClient = new Client();
+        self::$ownerClient->post('/user/login', array(
             'login' => 'test',
             'password' => 'test'
         ));
@@ -121,7 +88,7 @@ class Category_RestTest extends TestCase
             'name' => 'category-' . rand(),
             'description' => 'description ' . rand()
         );
-        $response = self::$ownerClient->post('/api/sdp/categories', $form);
+        $response = self::$ownerClient->post('/sdp/categories', $form);
         $this->assertNotNull($response);
         $this->assertEquals($response->status_code, 200);
         
@@ -137,9 +104,9 @@ class Category_RestTest extends TestCase
         $item->name = 'category-' . rand();
         $item->description = 'description';
         $item->create();
-        Test_Assert::assertFalse($item->isAnonymous(), 'Could not create SDP_Category');
+        $this->assertFalse($item->isAnonymous(), 'Could not create SDP_Category');
         // Get item
-        $response = self::$client->get('/api/sdp/categories/' . $item->id);
+        $response = self::$client->get('/sdp/categories/' . $item->id);
         $this->assertNotNull($response);
         $this->assertEquals($response->status_code, 200);
     }
@@ -154,12 +121,12 @@ class Category_RestTest extends TestCase
         $item->name = 'category-' . rand();
         $item->description = 'description';
         $item->create();
-        Test_Assert::assertFalse($item->isAnonymous(), 'Could not create SDP_Category');
+        $this->assertFalse($item->isAnonymous(), 'Could not create SDP_Category');
         // Update item
         $form = array(
             'description' => 'updated description'
         );
-        $response = self::$client->post('/api/sdp/categories/' . $item->id, $form);
+        $response = self::$client->post('/sdp/categories/' . $item->id, $form);
         $this->assertNotNull($response);
         $this->assertEquals($response->status_code, 200);
     }
@@ -174,10 +141,10 @@ class Category_RestTest extends TestCase
         $item->name = 'category-' . rand();
         $item->description = 'description';
         $item->create();
-        Test_Assert::assertFalse($item->isAnonymous(), 'Could not create SDP_Category');
+        $this->assertFalse($item->isAnonymous(), 'Could not create SDP_Category');
         
         // delete
-        $response = self::$ownerClient->delete('/api/sdp/categories/' . $item->id);
+        $response = self::$ownerClient->delete('/sdp/categories/' . $item->id);
         $this->assertNotNull($response);
         $this->assertEquals($response->status_code, 200);
     }
@@ -188,7 +155,7 @@ class Category_RestTest extends TestCase
      */
     public function findRestTest()
     {
-        $response = self::$client->get('/api/sdp/categories');
+        $response = self::$client->get('/sdp/categories');
         $this->assertNotNull($response);
         $this->assertEquals($response->status_code, 200);
     }
@@ -199,10 +166,10 @@ class Category_RestTest extends TestCase
      */
     public function getListofCategoriesTest()
     {
-        $response = self::$client->get('/api/sdp/categories');
-        Test_Assert::assertResponseNotNull($response, 'Find result is empty');
-        Test_Assert::assertResponseStatusCode($response, 200, 'Find status code is not 200');
-        Test_Assert::assertResponsePaginateList($response, 'Find result is not JSON paginated list');
+        $response = self::$client->get('/sdp/categories');
+        $this->assertResponseNotNull($response, 'Find result is empty');
+        $this->assertResponseStatusCode($response, 200, 'Find status code is not 200');
+        $this->assertResponsePaginateList($response, 'Find result is not JSON paginated list');
     }
     
     /**
@@ -212,11 +179,11 @@ class Category_RestTest extends TestCase
     public function getListofCategoriesWithGraphqlTest()
     {
         $params = array(
-            'graphql' => '{items{id,name,description,thumbnail,parent{id,name},content{id,name}}}'
+            'graphql' => '{items{id,name,description,thumbnail,parent{id,name}}}'
         );
-        $response = self::$client->get('/api/sdp/categories', $params);
-        Test_Assert::assertResponseNotNull($response, 'Find result is empty');
-        Test_Assert::assertResponseStatusCode($response, 200, 'Find status code is not 200');
+        $response = self::$client->get('/sdp/categories', $params);
+        $this->assertResponseNotNull($response, 'Find result is empty');
+        $this->assertResponseStatusCode($response, 200, 'Find status code is not 200');
     }
 
     /**
@@ -234,15 +201,15 @@ class Category_RestTest extends TestCase
         $cat2->create();
         
         // DESC
-        $response = self::$client->get('/api/sdp/categories', array(
+        $response = self::$client->get('/sdp/categories', array(
             '_px_fk' => array('id', 'id'),
             '_px_fv' => array($cat1->id, $cat2->id),
             '_px_sk' => 'id',
             '_px_so' => 'd'
         ));
-        Test_Assert::assertResponseNotNull($response, 'Find result is empty');
-        Test_Assert::assertResponseStatusCode($response, 200, 'Find status code is not 200');
-        Test_Assert::assertResponsePaginateList($response, 'Find result is not JSON paginated list');
+        $this->assertResponseNotNull($response, 'Find result is empty');
+        $this->assertResponseStatusCode($response, 200, 'Find status code is not 200');
+        $this->assertResponsePaginateList($response, 'Find result is not JSON paginated list');
         
         $actual = json_decode($response->content, true);
         for ($i = 1; $i < sizeof($actual['items']); $i ++) {
@@ -252,15 +219,15 @@ class Category_RestTest extends TestCase
         }
         
         // ASC
-        $response = self::$client->get('/api/sdp/categories', array(
+        $response = self::$client->get('/sdp/categories', array(
             '_px_fk' => array('id', 'id'),
             '_px_fv' => array($cat1->id, $cat2->id),
             '_px_sk' => 'id',
             '_px_so' => 'a'
         ));
-        Test_Assert::assertResponseNotNull($response, 'Find result is empty');
-        Test_Assert::assertResponseStatusCode($response, 200, 'Find status code is not 200');
-        Test_Assert::assertResponsePaginateList($response, 'Find result is not JSON paginated list');
+        $this->assertResponseNotNull($response, 'Find result is empty');
+        $this->assertResponseStatusCode($response, 200, 'Find status code is not 200');
+        $this->assertResponsePaginateList($response, 'Find result is not JSON paginated list');
         
         $actual = json_decode($response->content, true);
         for ($i = 1; $i < sizeof($actual['items']); $i ++) {

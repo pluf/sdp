@@ -16,22 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-use PHPUnit\Framework\TestCase;
-use PHPUnit\Framework\IncompleteTestError;
-require_once 'Pluf.php';
+use Pluf\Test\Client;
+use Pluf\Test\TestCase;
 
-/**
- *
- * @backupGlobals disabled
- * @backupStaticAttributes disabled
- */
 class Profile_RestTest extends TestCase
 {
 
-    /**
-     *
-     * @var Test_Client
-     */
     public static $ownerClient;
 
     public static $client;
@@ -67,36 +57,10 @@ class Profile_RestTest extends TestCase
         $user->setAssoc($per);
 
         // Anonymouse Client
-        self::$client = new Test_Client(array(
-            array(
-                'app' => 'SDP',
-                'regex' => '#^/api/sdp#',
-                'base' => '',
-                'sub' => include 'SDP/urls.php'
-            ),
-            array(
-                'app' => 'User',
-                'regex' => '#^/api/user#',
-                'base' => '',
-                'sub' => include 'User/urls.php'
-            )
-        ));
+        self::$client = new Client();
         // Owner Client
-        self::$ownerClient = new Test_Client(array(
-            array(
-                'app' => 'SDP',
-                'regex' => '#^/api/sdp#',
-                'base' => '',
-                'sub' => include 'SDP/urls.php'
-            ),
-            array(
-                'app' => 'User',
-                'regex' => '#^/api/user#',
-                'base' => '',
-                'sub' => include 'User/urls.php'
-            )
-        ));
-        self::$ownerClient->post('/api/user/login', array(
+        self::$ownerClient = new Client();
+        self::$ownerClient->post('/user/login', array(
             'login' => 'test',
             'password' => 'test'
         ));
@@ -126,7 +90,7 @@ class Profile_RestTest extends TestCase
             'address' => 'address-' . rand(),
             'mobile_number' => '09171112233 '
         );
-        $response = self::$ownerClient->post('/api/sdp/accounts/' . $user->id . '/profiles', $form);
+        $response = self::$ownerClient->post('/sdp/accounts/' . $user->id . '/profiles', $form);
         $this->assertNotNull($response);
         $this->assertEquals($response->status_code, 200);
     }
@@ -150,9 +114,9 @@ class Profile_RestTest extends TestCase
             $item->account_id = $user;
             $item->create();
         }
-        Test_Assert::assertFalse($item->isAnonymous(), 'Could not create SDP_Profile');
+        $this->assertFalse($item->isAnonymous(), 'Could not create SDP_Profile');
         // Get item
-        $response = self::$client->get('/api/sdp/accounts/' . $user->id . '/profiles/' . $item->id);
+        $response = self::$client->get('/sdp/accounts/' . $user->id . '/profiles/' . $item->id);
         $this->assertNotNull($response);
         $this->assertEquals($response->status_code, 200);
     }
@@ -165,7 +129,7 @@ class Profile_RestTest extends TestCase
     {
         $user = new User_Account();
         $user = $user->getUser('test');
-        
+
         $item = new SDP_Profile();
         $item = $item->getOne('account_id=' . $user->id);
         if ($item == null) {
@@ -176,13 +140,13 @@ class Profile_RestTest extends TestCase
             $item->account_id = $user;
             $item->create();
         }
-        Test_Assert::assertFalse($item->isAnonymous(), 'Could not create SDP_Profile');
+        $this->assertFalse($item->isAnonymous(), 'Could not create SDP_Profile');
         // Update item
         $form = array(
             'activity_field' => 'updated-field-' . rand(),
             'address' => 'updated-address-' . rand()
         );
-        $response = self::$client->post('/api/sdp/accounts/' . $user->id . '/profiles/' . $item->id, $form);
+        $response = self::$client->post('/sdp/accounts/' . $user->id . '/profiles/' . $item->id, $form);
         $this->assertNotNull($response);
         $this->assertEquals($response->status_code, 200);
     }
@@ -206,10 +170,10 @@ class Profile_RestTest extends TestCase
             $item->account_id = $user;
             $item->create();
         }
-        Test_Assert::assertFalse($item->isAnonymous(), 'Could not create SDP_Profile');
+        $this->assertFalse($item->isAnonymous(), 'Could not create SDP_Profile');
 
         // delete
-        $response = self::$ownerClient->delete('/api/sdp/accounts/' . $user->id . '/profiles/' . $item->id);
+        $response = self::$ownerClient->delete('/sdp/accounts/' . $user->id . '/profiles/' . $item->id);
         $this->assertNotNull($response);
         $this->assertEquals($response->status_code, 200);
     }
@@ -223,7 +187,7 @@ class Profile_RestTest extends TestCase
         $user = new User_Account();
         $user = $user->getUser('test');
 
-        $response = self::$client->get('/api/sdp/accounts/' . $user->id . '/profiles');
+        $response = self::$client->get('/sdp/accounts/' . $user->id . '/profiles');
         $this->assertNotNull($response);
         $this->assertEquals($response->status_code, 200);
     }
@@ -237,12 +201,12 @@ class Profile_RestTest extends TestCase
         $user = new User_Account();
         $user = $user->getUser('test');
 
-        $response = self::$client->get('/api/sdp/accounts/' . $user->id . '/profiles');
-        Test_Assert::assertResponseNotNull($response, 'Find result is empty');
-        Test_Assert::assertResponseStatusCode($response, 200, 'Find status code is not 200');
-        Test_Assert::assertResponsePaginateList($response, 'Find result is not JSON paginated list');
+        $response = self::$client->get('/sdp/accounts/' . $user->id . '/profiles');
+        $this->assertResponseNotNull($response, 'Find result is empty');
+        $this->assertResponseStatusCode($response, 200, 'Find status code is not 200');
+        $this->assertResponsePaginateList($response, 'Find result is not JSON paginated list');
     }
-    
+
     /**
      *
      * @test
@@ -255,9 +219,9 @@ class Profile_RestTest extends TestCase
             'graphql' => '{items{id,validate,activity_field,address,mobile_number,account{id,login}}}'
         );
 
-        $response = self::$client->get('/api/sdp/accounts/' . $user->id . '/profiles', $params);
-        Test_Assert::assertResponseNotNull($response, 'Find result is empty');
-        Test_Assert::assertResponseStatusCode($response, 200, 'Find status code is not 200');
+        $response = self::$client->get('/sdp/accounts/' . $user->id . '/profiles', $params);
+        $this->assertResponseNotNull($response, 'Find result is empty');
+        $this->assertResponseStatusCode($response, 200, 'Find status code is not 200');
     }
 }
 

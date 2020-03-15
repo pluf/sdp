@@ -16,23 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-use PHPUnit\Framework\TestCase;
-use PHPUnit\Framework\IncompleteTestError;
-require_once 'Pluf.php';
+use Pluf\Test\TestCase;
+use Pluf\Test\Client;
 
-/**
- *
- * @backupGlobals disabled
- * @backupStaticAttributes disabled
- */
 class Tag_RestTest extends TestCase
 {
 
-    /**
-     * 
-     * @var Test_Client
-     */
     public static $ownerClient;
+
     public static $client;
 
     /**
@@ -41,10 +32,10 @@ class Tag_RestTest extends TestCase
      */
     public static function createDataBase()
     {
-        Pluf::start(__DIR__.'/../conf/config.php');
-        $m = new Pluf_Migration(Pluf::f('installed_apps'));
+        Pluf::start(__DIR__ . '/../conf/config.php');
+        $m = new Pluf_Migration();
         $m->install();
-        
+
         // Test user
         $user = new User_Account();
         $user->login = 'test';
@@ -61,41 +52,15 @@ class Tag_RestTest extends TestCase
         if (true !== $credit->create()) {
             throw new Exception();
         }
-        
+
         $per = User_Role::getFromString('tenant.owner');
         $user->setAssoc($per);
 
         // Anonymouse Client
-        self::$client = new Test_Client(array(
-            array(
-                'app' => 'SDP',
-                'regex' => '#^/api/sdp#',
-                'base' => '',
-                'sub' => include 'SDP/urls.php'
-            ),
-            array(
-                'app' => 'User',
-                'regex' => '#^/api/user#',
-                'base' => '',
-                'sub' => include 'User/urls.php'
-            )
-        ));
+        self::$client = new Client();
         // Owner Client
-        self::$ownerClient = new Test_Client(array(
-            array(
-                'app' => 'SDP',
-                'regex' => '#^/api/sdp#',
-                'base' => '',
-                'sub' => include 'SDP/urls.php'
-            ),
-            array(
-                'app' => 'User',
-                'regex' => '#^/api/user#',
-                'base' => '',
-                'sub' => include 'User/urls.php'
-            )
-        ));
-        self::$ownerClient->post('/api/user/login', array(
+        self::$ownerClient = new Client();
+        self::$ownerClient->post('/user/login', array(
             'login' => 'test',
             'password' => 'test'
         ));
@@ -121,12 +86,11 @@ class Tag_RestTest extends TestCase
             'name' => 'tag-' . rand(),
             'description' => 'description ' . rand()
         );
-        $response = self::$ownerClient->post('/api/sdp/tags', $form);
+        $response = self::$ownerClient->post('/sdp/tags', $form);
         $this->assertNotNull($response);
         $this->assertEquals($response->status_code, 200);
-        
     }
-    
+
     /**
      *
      * @test
@@ -137,13 +101,13 @@ class Tag_RestTest extends TestCase
         $item->name = 'tag-' . rand();
         $item->description = 'description';
         $item->create();
-        Test_Assert::assertFalse($item->isAnonymous(), 'Could not create SDP_Tag');
+        $this->assertFalse($item->isAnonymous(), 'Could not create SDP_Tag');
         // Get item
-        $response = self::$client->get('/api/sdp/tags/' . $item->id);
+        $response = self::$client->get('/sdp/tags/' . $item->id);
         $this->assertNotNull($response);
         $this->assertEquals($response->status_code, 200);
     }
-    
+
     /**
      *
      * @test
@@ -154,16 +118,16 @@ class Tag_RestTest extends TestCase
         $item->name = 'tag-' . rand();
         $item->description = 'description';
         $item->create();
-        Test_Assert::assertFalse($item->isAnonymous(), 'Could not create SDP_Tag');
+        $this->assertFalse($item->isAnonymous(), 'Could not create SDP_Tag');
         // Update item
         $form = array(
             'description' => 'updated description'
         );
-        $response = self::$client->post('/api/sdp/tags/' . $item->id, $form);
+        $response = self::$client->post('/sdp/tags/' . $item->id, $form);
         $this->assertNotNull($response);
         $this->assertEquals($response->status_code, 200);
     }
-    
+
     /**
      *
      * @test
@@ -174,37 +138,37 @@ class Tag_RestTest extends TestCase
         $item->name = 'tag-' . rand();
         $item->description = 'description';
         $item->create();
-        Test_Assert::assertFalse($item->isAnonymous(), 'Could not create SDP_Tag');
-        
+        $this->assertFalse($item->isAnonymous(), 'Could not create SDP_Tag');
+
         // delete
-        $response = self::$ownerClient->delete('/api/sdp/tags/' . $item->id);
+        $response = self::$ownerClient->delete('/sdp/tags/' . $item->id);
         $this->assertNotNull($response);
         $this->assertEquals($response->status_code, 200);
     }
-    
+
     /**
      *
      * @test
      */
     public function findRestTest()
     {
-        $response = self::$client->get('/api/sdp/tags');
+        $response = self::$client->get('/sdp/tags');
         $this->assertNotNull($response);
         $this->assertEquals($response->status_code, 200);
     }
-    
+
     /**
      *
      * @test
      */
     public function getListofTagsTest()
     {
-        $response = self::$client->get('/api/sdp/tags');
-        Test_Assert::assertResponseNotNull($response, 'Find result is empty');
-        Test_Assert::assertResponseStatusCode($response, 200, 'Find status code is not 200');
-        Test_Assert::assertResponsePaginateList($response, 'Find result is not JSON paginated list');
+        $response = self::$client->get('/sdp/tags');
+        $this->assertResponseNotNull($response, 'Find result is empty');
+        $this->assertResponseStatusCode($response, 200, 'Find status code is not 200');
+        $this->assertResponsePaginateList($response, 'Find result is not JSON paginated list');
     }
-    
+
     /**
      *
      * @test
@@ -214,61 +178,74 @@ class Tag_RestTest extends TestCase
         $params = array(
             'graphql' => '{items{id,name,description}}'
         );
-        $response = self::$client->get('/api/sdp/tags', $params);
-        Test_Assert::assertResponseNotNull($response, 'Find result is empty');
-        Test_Assert::assertResponseStatusCode($response, 200, 'Find status code is not 200');
+        $response = self::$client->get('/sdp/tags', $params);
+        $this->assertResponseNotNull($response, 'Find result is empty');
+        $this->assertResponseStatusCode($response, 200, 'Find status code is not 200');
     }
 
     /**
      * Sort tags based on id
+     *
      * @test
      */
     public function getListofTagsSortByIdTest()
     {
         $tag1 = new SDP_Tag();
-        $tag1->name ='name'. rand();
+        $tag1->name = 'name' . rand();
         $tag1->create();
-        
+
         $tag2 = new SDP_Tag();
-        $tag2->name ='name'. rand();
+        $tag2->name = 'name' . rand();
         $tag2->create();
-        
+
         // DESC
-        $response = self::$client->get('/api/sdp/tags', array(
-            '_px_fk' => array('id', 'id'),
-            '_px_fv' => array($tag1->id, $tag2->id),
+        $response = self::$client->get('/sdp/tags', array(
+            '_px_fk' => array(
+                'id',
+                'id'
+            ),
+            '_px_fv' => array(
+                $tag1->id,
+                $tag2->id
+            ),
             '_px_sk' => 'id',
             '_px_so' => 'd'
         ));
-        Test_Assert::assertResponseNotNull($response, 'Find result is empty');
-        Test_Assert::assertResponseStatusCode($response, 200, 'Find status code is not 200');
-        Test_Assert::assertResponsePaginateList($response, 'Find result is not JSON paginated list');
-        
+        $this->assertResponseNotNull($response, 'Find result is empty');
+        $this->assertResponseStatusCode($response, 200, 'Find status code is not 200');
+        $this->assertResponsePaginateList($response, 'Find result is not JSON paginated list');
+
         $actual = json_decode($response->content, true);
         for ($i = 1; $i < sizeof($actual['items']); $i ++) {
             $a = $actual['items'][$i];
             $b = $actual['items'][$i - 1];
             $this->assertTrue($a['id'] < $b['id']);
         }
-        
+
         // ASC
-        $response = self::$client->get('/api/sdp/tags', array(
-            '_px_fk' => array('id', 'id'),
-            '_px_fv' => array($tag1->id, $tag2->id),
+        $response = self::$client->get('/sdp/tags', array(
+            '_px_fk' => array(
+                'id',
+                'id'
+            ),
+            '_px_fv' => array(
+                $tag1->id,
+                $tag2->id
+            ),
             '_px_sk' => 'id',
             '_px_so' => 'a'
         ));
-        Test_Assert::assertResponseNotNull($response, 'Find result is empty');
-        Test_Assert::assertResponseStatusCode($response, 200, 'Find status code is not 200');
-        Test_Assert::assertResponsePaginateList($response, 'Find result is not JSON paginated list');
-        
+        $this->assertResponseNotNull($response, 'Find result is empty');
+        $this->assertResponseStatusCode($response, 200, 'Find status code is not 200');
+        $this->assertResponsePaginateList($response, 'Find result is not JSON paginated list');
+
         $actual = json_decode($response->content, true);
         for ($i = 1; $i < sizeof($actual['items']); $i ++) {
             $a = $actual['items'][$i];
             $b = $actual['items'][$i - 1];
             $this->assertTrue($a['id'] > $b['id']);
         }
-        
+
         $tag1->delete();
         $tag2->delete();
     }

@@ -16,22 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-use PHPUnit\Framework\TestCase;
-use PHPUnit\Framework\IncompleteTestError;
-require_once 'Pluf.php';
-
-/**
- *
- * @backupGlobals disabled
- * @backupStaticAttributes disabled
- */
+use Pluf\Test\Client;
+use Pluf\Test\TestCase;
 class Asset_SortAndFilterRestTest extends TestCase
 {
 
-    /**
-     * 
-     * @var Test_Client
-     */
     public static $client;
 
     /**
@@ -65,20 +54,7 @@ class Asset_SortAndFilterRestTest extends TestCase
         $user->setAssoc($per);
 
         // Anonymouse Client
-        self::$client = new Test_Client(array(
-            array(
-                'app' => 'SDP',
-                'regex' => '#^/api/sdp#',
-                'base' => '',
-                'sub' => include 'SDP/urls.php'
-            ),
-            array(
-                'app' => 'User',
-                'regex' => '#^/api/user#',
-                'base' => '',
-                'sub' => include 'User/urls.php'
-            )
-        ));
+        self::$client = new Client();
     }
 
     /**
@@ -107,15 +83,15 @@ class Asset_SortAndFilterRestTest extends TestCase
         $asset2->create();
         
         // DESC
-        $response = self::$client->get('/api/sdp/assets', array(
+        $response = self::$client->get('/sdp/assets', array(
             '_px_fk' => array('id', 'id'),
             '_px_fv' => array($asset1->id, $asset2->id),
             '_px_sk' => 'id',
             '_px_so' => 'd'
         ));
-        Test_Assert::assertResponseNotNull($response, 'Find result is empty');
-        Test_Assert::assertResponseStatusCode($response, 200, 'Find status code is not 200');
-        Test_Assert::assertResponsePaginateList($response, 'Find result is not JSON paginated list');
+        $this->assertResponseNotNull($response, 'Find result is empty');
+        $this->assertResponseStatusCode($response, 200, 'Find status code is not 200');
+        $this->assertResponsePaginateList($response, 'Find result is not JSON paginated list');
         
         $actual = json_decode($response->content, true);
         for ($i = 1; $i < sizeof($actual['items']); $i ++) {
@@ -125,15 +101,15 @@ class Asset_SortAndFilterRestTest extends TestCase
         }
         
         // ASC
-        $response = self::$client->get('/api/sdp/assets', array(
+        $response = self::$client->get('/sdp/assets', array(
             '_px_fk' => array('id', 'id'),
             '_px_fv' => array($asset1->id, $asset2->id),
             '_px_sk' => 'id',
             '_px_so' => 'a'
         ));
-        Test_Assert::assertResponseNotNull($response, 'Find result is empty');
-        Test_Assert::assertResponseStatusCode($response, 200, 'Find status code is not 200');
-        Test_Assert::assertResponsePaginateList($response, 'Find result is not JSON paginated list');
+        $this->assertResponseNotNull($response, 'Find result is empty');
+        $this->assertResponseStatusCode($response, 200, 'Find status code is not 200');
+        $this->assertResponsePaginateList($response, 'Find result is not JSON paginated list');
         
         $actual = json_decode($response->content, true);
         for ($i = 1; $i < sizeof($actual['items']); $i ++) {
@@ -170,12 +146,12 @@ class Asset_SortAndFilterRestTest extends TestCase
         $asset1->setAssoc($cat);
         
         // Get assets in category
-        $response = self::$client->get('/api/sdp/assets', array(
+        $response = self::$client->get('/sdp/assets', array(
             'include_category' => $cat->id
         ));
-        Test_Assert::assertResponseNotNull($response, 'Find result is empty');
-        Test_Assert::assertResponseStatusCode($response, 200, 'Find status code is not 200');
-        Test_Assert::assertResponsePaginateList($response, 'Find result is not JSON paginated list');
+        $this->assertResponseNotNull($response, 'Find result is empty');
+        $this->assertResponseStatusCode($response, 200, 'Find status code is not 200');
+        $this->assertResponsePaginateList($response, 'Find result is not JSON paginated list');
         
         $actual = json_decode($response->content, true);
         $this->assertTrue(sizeof($actual['items']) === 1);
@@ -209,12 +185,12 @@ class Asset_SortAndFilterRestTest extends TestCase
         $asset1->setAssoc($tag);
         
         // Get assets with tag
-        $response = self::$client->get('/api/sdp/assets', array(
+        $response = self::$client->get('/sdp/assets', array(
             'include_tag' => $tag->id
         ));
-        Test_Assert::assertResponseNotNull($response, 'Find result is empty');
-        Test_Assert::assertResponseStatusCode($response, 200, 'Find status code is not 200');
-        Test_Assert::assertResponsePaginateList($response, 'Find result is not JSON paginated list');
+        $this->assertResponseNotNull($response, 'Find result is empty');
+        $this->assertResponseStatusCode($response, 200, 'Find status code is not 200');
+        $this->assertResponsePaginateList($response, 'Find result is not JSON paginated list');
         
         $actual = json_decode($response->content, true);
         $this->assertTrue(sizeof($actual['items']) === 1);

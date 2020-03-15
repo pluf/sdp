@@ -16,29 +16,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-use PHPUnit\Framework\TestCase;
+use Pluf\Test\TestCase;
 
-require_once 'Pluf.php';
-
-/**
- * @backupGlobals disabled
- * @backupStaticAttributes disabled
- */
 class SDP_ApiTest extends TestCase
 {
 
     /**
+     *
      * @before
      */
-    public function setUpTest ()
+    public function setUpTest()
     {
-        Pluf::start(__DIR__. '/../conf/config.php');
+        Pluf::start(__DIR__ . '/../conf/config.php');
     }
 
     /**
+     *
      * @test
      */
-    public function testClassInstance ()
+    public function testClassInstance()
     {
         $object = new SDP_Asset();
         $this->assertTrue(isset($object), 'SDP_Asset could not be created!');

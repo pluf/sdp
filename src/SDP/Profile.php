@@ -1,5 +1,23 @@
 <?php
 
+/*
+ * This file is part of Pluf Framework, a simple PHP Application Framework.
+ * Copyright (C) 2010-2020 Phoinex Scholars Co. (http://dpq.co.ir)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 /**
  * ساختار داده‌ای پروفایل کاربر را تعیین می‌کند.
  * 
@@ -11,11 +29,7 @@ class SDP_Profile extends Pluf_Model
 
     /**
      *
-     * @brief مدل داده‌ای را بارگذاری می‌کند.
-     *
-     * تمام فیلدهای مورد نیاز برای این مدل داده‌ای در این متد تعیین شده و به
-     * صورت کامل ساختار دهی می‌شود.
-     *
+     * {@inheritdoc}
      * @see Pluf_Model::init()
      */
     function init()
@@ -93,13 +107,9 @@ class SDP_Profile extends Pluf_Model
     }
 
     /**
-     * پیش ذخیره را انجام می‌دهد
      *
-     * در این فرآیند نیازهای ابتدایی سیستم به آن اضافه می‌شود. این نیازها مقادیری هستند که
-     * در زمان ایجاد باید تعیین شوند. از این جمله می‌توان به کاربر و تاریخ اشاره کرد.
-     *
-     * @param $create حالت
-     *            ساخت یا به روز رسانی را تعیین می‌کند
+     * {@inheritdoc}
+     * @see Pluf_Model::preSave()
      */
     function preSave($create = false)
     {

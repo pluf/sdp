@@ -17,7 +17,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-use Firebase\JWT\JWT;
 
 /**
  *
@@ -141,7 +140,7 @@ class SDP_Driver_Cactus extends SDP_Driver
         $key = $drive->getMeta('encrypt_key');
         $alg = $drive->getMeta('algorithm');
 
-        $jwt = JWT::encode($token, $key, $alg);
+        $jwt = \Firebase\JWT\JWT::encode($token, $key, $alg);
         $url = $drive->home . '/api/v2/cactus/files/' . $jwt . '/content';
 
         $response = new Pluf_HTTP_Response_Redirect($url, 301);

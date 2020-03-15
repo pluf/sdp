@@ -16,22 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-use PHPUnit\Framework\TestCase;
-use PHPUnit\Framework\IncompleteTestError;
-require_once 'Pluf.php';
+use Pluf\Test\Client;
+use Pluf\Test\TestCase;
 
-/**
- *
- * @backupGlobals disabled
- * @backupStaticAttributes disabled
- */
 class AssetRelation_RestTest extends TestCase
 {
 
-    /**
-     *
-     * @var Test_Client
-     */
     public static $ownerClient;
 
     public static $client;
@@ -69,36 +59,10 @@ class AssetRelation_RestTest extends TestCase
         $user->setAssoc($per);
 
         // Anonymouse Client
-        self::$client = new Test_Client(array(
-            array(
-                'app' => 'SDP',
-                'regex' => '#^/api/sdp#',
-                'base' => '',
-                'sub' => include 'SDP/urls.php'
-            ),
-            array(
-                'app' => 'User',
-                'regex' => '#^/api/user#',
-                'base' => '',
-                'sub' => include 'User/urls.php'
-            )
-        ));
+        self::$client = new Client();
         // Owner Client
-        self::$ownerClient = new Test_Client(array(
-            array(
-                'app' => 'SDP',
-                'regex' => '#^/api/sdp#',
-                'base' => '',
-                'sub' => include 'SDP/urls.php'
-            ),
-            array(
-                'app' => 'User',
-                'regex' => '#^/api/user#',
-                'base' => '',
-                'sub' => include 'User/urls.php'
-            )
-        ));
-        self::$ownerClient->post('/api/user/login', array(
+        self::$ownerClient = new Client();
+        self::$ownerClient->post('/user/login', array(
             'login' => 'test',
             'password' => 'test'
         ));
@@ -118,17 +82,18 @@ class AssetRelation_RestTest extends TestCase
         $m->unInstall();
     }
 
-    private static function getRandomAsset(){
+    private static function getRandomAsset()
+    {
         // Create asset
         $item = new SDP_Asset();
         $item->name = 'asset-' . rand();
         $item->description = 'description';
         $item->create();
-        Test_Assert::assertFalse($item->isAnonymous(), 'Could not create SDP_Asset');
+        self::assertFalse($item->isAnonymous(), 'Could not create SDP_Asset');
         self::$assetList[] = $item;
         return $item;
     }
-    
+
     /**
      *
      * @test
@@ -141,7 +106,7 @@ class AssetRelation_RestTest extends TestCase
             'start_id' => self::getRandomAsset()->id,
             'end_id' => self::getRandomAsset()->id
         );
-        $response = self::$ownerClient->post('/api/sdp/asset-relations', $form);
+        $response = self::$ownerClient->post('/sdp/asset-relations', $form);
         $this->assertNotNull($response);
         $this->assertEquals($response->status_code, 200);
     }
@@ -158,9 +123,9 @@ class AssetRelation_RestTest extends TestCase
         $item->start_id = self::getRandomAsset();
         $item->end_id = self::getRandomAsset();
         $item->create();
-        Test_Assert::assertFalse($item->isAnonymous(), 'Could not create SDP_AssetRelation');
+        $this->assertFalse($item->isAnonymous(), 'Could not create SDP_AssetRelation');
         // Get item
-        $response = self::$client->get('/api/sdp/asset-relations/' . $item->id);
+        $response = self::$client->get('/sdp/asset-relations/' . $item->id);
         $this->assertNotNull($response);
         $this->assertEquals($response->status_code, 200);
     }
@@ -177,12 +142,12 @@ class AssetRelation_RestTest extends TestCase
         $item->start_id = self::getRandomAsset();
         $item->end_id = self::getRandomAsset();
         $item->create();
-        Test_Assert::assertFalse($item->isAnonymous(), 'Could not create SDP_AssetRelation');
+        $this->assertFalse($item->isAnonymous(), 'Could not create SDP_AssetRelation');
         // Update item
         $form = array(
             'type' => 'relate'
         );
-        $response = self::$client->post('/api/sdp/asset-relations/' . $item->id, $form);
+        $response = self::$client->post('/sdp/asset-relations/' . $item->id, $form);
         $this->assertNotNull($response);
         $this->assertEquals($response->status_code, 200);
     }
@@ -199,10 +164,10 @@ class AssetRelation_RestTest extends TestCase
         $item->start_id = self::getRandomAsset();
         $item->end_id = self::getRandomAsset();
         $item->create();
-        Test_Assert::assertFalse($item->isAnonymous(), 'Could not create SDP_AssetRelation');
+        $this->assertFalse($item->isAnonymous(), 'Could not create SDP_AssetRelation');
 
         // delete
-        $response = self::$ownerClient->delete('/api/sdp/asset-relations/' . $item->id);
+        $response = self::$ownerClient->delete('/sdp/asset-relations/' . $item->id);
         $this->assertNotNull($response);
         $this->assertEquals($response->status_code, 200);
     }
@@ -213,7 +178,7 @@ class AssetRelation_RestTest extends TestCase
      */
     public function findRestTest()
     {
-        $response = self::$client->get('/api/sdp/asset-relations');
+        $response = self::$client->get('/sdp/asset-relations');
         $this->assertNotNull($response);
         $this->assertEquals($response->status_code, 200);
     }
@@ -224,10 +189,10 @@ class AssetRelation_RestTest extends TestCase
      */
     public function getListofAssetRelationsTest()
     {
-        $response = self::$client->get('/api/sdp/asset-relations');
-        Test_Assert::assertResponseNotNull($response, 'Find result is empty');
-        Test_Assert::assertResponseStatusCode($response, 200, 'Find status code is not 200');
-        Test_Assert::assertResponsePaginateList($response, 'Find result is not JSON paginated list');
+        $response = self::$client->get('/sdp/asset-relations');
+        $this->assertResponseNotNull($response, 'Find result is empty');
+        $this->assertResponseStatusCode($response, 200, 'Find status code is not 200');
+        $this->assertResponsePaginateList($response, 'Find result is not JSON paginated list');
     }
 
     /**
@@ -252,7 +217,7 @@ class AssetRelation_RestTest extends TestCase
         $item2->create();
 
         // DESC
-        $response = self::$client->get('/api/sdp/asset-relations', array(
+        $response = self::$client->get('/sdp/asset-relations', array(
             '_px_fk' => array(
                 'id',
                 'id'
@@ -264,9 +229,9 @@ class AssetRelation_RestTest extends TestCase
             '_px_sk' => 'id',
             '_px_so' => 'd'
         ));
-        Test_Assert::assertResponseNotNull($response, 'Find result is empty');
-        Test_Assert::assertResponseStatusCode($response, 200, 'Find status code is not 200');
-        Test_Assert::assertResponsePaginateList($response, 'Find result is not JSON paginated list');
+        $this->assertResponseNotNull($response, 'Find result is empty');
+        $this->assertResponseStatusCode($response, 200, 'Find status code is not 200');
+        $this->assertResponsePaginateList($response, 'Find result is not JSON paginated list');
 
         $actual = json_decode($response->content, true);
         for ($i = 1; $i < sizeof($actual['items']); $i ++) {
@@ -276,7 +241,7 @@ class AssetRelation_RestTest extends TestCase
         }
 
         // ASC
-        $response = self::$client->get('/api/sdp/asset-relations', array(
+        $response = self::$client->get('/sdp/asset-relations', array(
             '_px_fk' => array(
                 'id',
                 'id'
@@ -288,9 +253,9 @@ class AssetRelation_RestTest extends TestCase
             '_px_sk' => 'id',
             '_px_so' => 'a'
         ));
-        Test_Assert::assertResponseNotNull($response, 'Find result is empty');
-        Test_Assert::assertResponseStatusCode($response, 200, 'Find status code is not 200');
-        Test_Assert::assertResponsePaginateList($response, 'Find result is not JSON paginated list');
+        $this->assertResponseNotNull($response, 'Find result is empty');
+        $this->assertResponseStatusCode($response, 200, 'Find status code is not 200');
+        $this->assertResponsePaginateList($response, 'Find result is not JSON paginated list');
 
         $actual = json_decode($response->content, true);
         for ($i = 1; $i < sizeof($actual['items']); $i ++) {
@@ -332,13 +297,13 @@ class AssetRelation_RestTest extends TestCase
         $item3->create();
 
         // Filter types sample
-        $response = self::$client->get('/api/sdp/asset-relations', array(
+        $response = self::$client->get('/sdp/asset-relations', array(
             '_px_fk' => 'type',
             '_px_fv' => 'sample'
         ));
-        Test_Assert::assertResponseNotNull($response, 'Find result is empty');
-        Test_Assert::assertResponseStatusCode($response, 200, 'Find status code is not 200');
-        Test_Assert::assertResponsePaginateList($response, 'Find result is not JSON paginated list');
+        $this->assertResponseNotNull($response, 'Find result is empty');
+        $this->assertResponseStatusCode($response, 200, 'Find status code is not 200');
+        $this->assertResponsePaginateList($response, 'Find result is not JSON paginated list');
 
         $actual = json_decode($response->content, true);
         for ($i = 0; $i < sizeof($actual['items']); $i ++) {
@@ -346,13 +311,13 @@ class AssetRelation_RestTest extends TestCase
         }
 
         // Filter types relate
-        $response = self::$client->get('/api/sdp/asset-relations', array(
+        $response = self::$client->get('/sdp/asset-relations', array(
             '_px_fk' => 'type',
             '_px_fv' => 'relate'
         ));
-        Test_Assert::assertResponseNotNull($response, 'Find result is empty');
-        Test_Assert::assertResponseStatusCode($response, 200, 'Find status code is not 200');
-        Test_Assert::assertResponsePaginateList($response, 'Find result is not JSON paginated list');
+        $this->assertResponseNotNull($response, 'Find result is empty');
+        $this->assertResponseStatusCode($response, 200, 'Find status code is not 200');
+        $this->assertResponsePaginateList($response, 'Find result is not JSON paginated list');
 
         $actual = json_decode($response->content, true);
         for ($i = 0; $i < sizeof($actual['items']); $i ++) {
@@ -373,9 +338,9 @@ class AssetRelation_RestTest extends TestCase
         $params = array(
             'graphql' => '{items{id,type,description,start{id,name},end{id,name}}}'
         );
-        $response = self::$client->get('/api/sdp/asset-relations', $params);
-        Test_Assert::assertResponseNotNull($response, 'Find result is empty');
-        Test_Assert::assertResponseStatusCode($response, 200, 'Find status code is not 200');
+        $response = self::$client->get('/sdp/asset-relations', $params);
+        $this->assertResponseNotNull($response, 'Find result is empty');
+        $this->assertResponseStatusCode($response, 200, 'Find status code is not 200');
     }
 }
 

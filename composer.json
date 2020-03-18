@@ -49,7 +49,7 @@
 			"" : "src"
 		},
 		"psr-4" : {
-			"Pluf\\SDP\\" : "src6"
+			"Pluf\\Sdp\\" : "src6"
 		}
 	},
 	"include-path" : [

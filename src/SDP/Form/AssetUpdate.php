@@ -78,7 +78,7 @@ class SDP_Form_AssetUpdate extends Pluf_Form
                 'required' => false,
                 'max_size' => Pluf::f('upload_max_size', 52428800), // default value: 50 MB
                 'move_function_params' => array(
-                    'upload_path' => Pluf::f('upload_path') . '/' . Pluf_Tenant::current()->id . '/sdp',
+                    'upload_path' => Pluf::f('upload_path') . '/' . Pluf_Tenant::getCurrent()->id . '/sdp',
                     'file_name' => $this->asset->id,
                     'upload_path_create' => true,
                     'upload_overwrite' => true

@@ -14,7 +14,7 @@ $cfg['installed_apps'] = array(
     'Tenant',
     'Bank',
     'Discount',
-    'SDP'
+    'Sdp'
 );
 $cfg['mimetype'] = 'text/html';
 $cfg['app_base'] = '/testapp';

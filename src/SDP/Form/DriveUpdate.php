@@ -65,14 +65,14 @@ class SDP_Form_DriveUpdate extends Pluf_Form
      * می‌کند و آن را به متورهای پرداخت ملک اضافه می‌کند.
      *
      * @param string $commit            
-     * @throws Pluf_Exception
+     * @throws \Pluf\Exception
      * @return SDP_Drive
      */
     function update ($commit = true)
     {
         if (! $this->isValid()) {
             // TODO: maso, 1395: باید از خطای مدل فرم استفاده شود.
-            throw new Pluf_Exception(
+            throw new \Pluf\Exception(
                     __('Cannot save the drive from an invalid form.'));
         }
         // Set attributes
@@ -81,7 +81,7 @@ class SDP_Form_DriveUpdate extends Pluf_Form
         // موجودیت قرار گیرد.
         if ($commit) {
             if (! $this->drive->update()) {
-                throw new Pluf_Exception(__('Fail to create the backend.'));
+                throw new \Pluf\Exception(__('Fail to create the backend.'));
             }
         }
         return $this->drive;

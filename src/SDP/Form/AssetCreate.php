@@ -82,7 +82,7 @@ class SDP_Form_AssetCreate extends Pluf_Form
     function save($commit = true)
     {
         if (! $this->isValid()) {
-            throw new Pluf_Exception('cannot save the asset from an invalid form');
+            throw new \Pluf\Exception('cannot save the asset from an invalid form');
         }
         // Create the asset
         $asset = new SDP_Asset();

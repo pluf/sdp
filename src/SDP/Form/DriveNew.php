@@ -65,14 +65,14 @@ class SDP_Form_DriveNew extends Pluf_Form
      * Creates a new instance of drive
      *
      * @param string $commit
-     * @throws Pluf_Exception
+     * @throws \Pluf\Exception
      * @return SDP_Drive
      */
     function save($commit = true)
     {
         if (! $this->isValid()) {
             // TODO: maso, 1395: باید از خطای مدل فرم استفاده شود.
-            throw new Pluf_Exception(__('Cannot save the drive from an invalid form.'));
+            throw new \Pluf\Exception(__('Cannot save the drive from an invalid form.'));
         }
         // Set attributes
         $drive = new SDP_Drive();
@@ -88,7 +88,7 @@ class SDP_Form_DriveNew extends Pluf_Form
         }
         if ($commit) {
             if (! $drive->create()) {
-                throw new Pluf_Exception(__('Fail to create the drive.'));
+                throw new \Pluf\Exception(__('Fail to create the drive.'));
             }
         }
         return $drive;

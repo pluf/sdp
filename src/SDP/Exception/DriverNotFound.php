@@ -22,14 +22,14 @@
  * @author hadi
  *
  */
-class SDP_Exception_DriverNotFound extends Pluf_Exception
+class SDP_Exception_DriverNotFound extends \Pluf\Exception
 {
 
     /**
      * یک نمونه از این کلاس ایجاد می‌کند.
      *
      * @param string $message            
-     * @param Pluf_Exception $previous            
+     * @param \Pluf\Exception $previous            
      * @param string $link            
      * @param string $developerMessage            
      */

@@ -38,7 +38,7 @@ class SDP_Views_Asset
         $form = new SDP_Form_AssetUpdate(array_merge($request->REQUEST, $request->FILES), $extra);
         try {
             $asset = $form->update();
-        } catch (Pluf_Exception $e) {
+        } catch (\Pluf\Exception $e) {
             $asset->delete();
             throw $e;
         }

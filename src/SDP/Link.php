@@ -17,7 +17,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 class SDP_Link extends Pluf_Model
 {
 
@@ -145,7 +144,7 @@ class SDP_Link extends Pluf_Model
     public static function getLinkBySecureId($secure_link)
     {
         $sql = new Pluf_SQL('secure_link=%s', $secure_link);
-        return Pluf::factory('SDP_Link')->getOne($sql->gen());
+        return Pluf::factory(SDP_Link::class)->getOne($sql->gen());
     }
 
     function isActive()

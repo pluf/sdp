@@ -22,7 +22,7 @@ $cfg['url_format'] = 'simple';
 $cfg['upload_path'] = '/tmp';
 $cfg['tmp_folder'] = '/tmp';
 $cfg['middleware_classes'] = array(
-    'Pluf_Middleware_Session',
+    '\Pluf\Middleware\Session',
     'User_Middleware_Session'
 );
 $cfg['secret_key'] = '5a8d7e0f2aad8bdab8f6eef725412850';
@@ -33,9 +33,7 @@ $cfg['secret_key'] = '5a8d7e0f2aad8bdab8f6eef725412850';
 $cfg['templates_folder'] = array(
     dirname(__FILE__) . '/../templates'
 );
-$cfg['template_tags'] = array(
-    'mytag' => 'Pluf_Template_Tag_Mytag'
-);
+$cfg['template_tags'] = array();
 $cfg['template_modifiers'] = array();
 
 // -------------------------------------------------------------------------
@@ -63,5 +61,12 @@ $cfg['user_avatar_default'] = __DIR__ . '/avatar.svg';
 // Bank
 // -------------------------------------------------------------------------
 $cfg['bank_debug'] = true;
+
+
+
+
+// -------------------------------------------------------------------------
+// Sdp
+// -------------------------------------------------------------------------
 
 return $cfg;

@@ -120,11 +120,11 @@ class Link_AnonymousRestTest extends TestCase
     /**
      * Anonymous user should not be able to create new link
      *
+     * @expectedException \Pluf_Exception_Unauthorized
      * @test
      */
     public function createLinkTest()
     {
-        $this->expectException(Pluf_Exception_Unauthorized::class);
         $response = $this->client->post('/sdp/assets/' . $this->asset->id . '/links');
         $this->assertNotNull($response);
         $this->assertEquals($response->status_code, 401);

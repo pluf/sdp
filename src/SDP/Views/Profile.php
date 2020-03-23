@@ -72,7 +72,7 @@ class SDP_Views_Profile
      * @param Pluf_HTTP_Request $request
      * @param array $match
      * @param array $p
-     * @throws Pluf_Exception
+     * @throws \Pluf\Exception
      * @return Pluf_HTTP_Response_Json
      */
     public static function update($request, $match)
@@ -113,7 +113,7 @@ class SDP_Views_Profile
      * @param Pluf_HTTP_Request $request
      * @param array $match
      * @param array $p
-     * @throws Pluf_Exception
+     * @throws \Pluf\Exception
      * @return Pluf_HTTP_Response_Json
      */
     public static function delete($request, $match)

@@ -40,53 +40,53 @@ class SDP_Profile extends Pluf_Model
 
         $this->_a['cols'] = array(
             'id' => array(
-                'type' => 'Pluf_DB_Field_Sequence',
+                'type' => 'Sequence',
                 'is_null' => false,
                 'editable' => false
             ),
             'level' => array(
-                'type' => 'Pluf_DB_Field_Integer',
+                'type' => 'Integer',
                 'is_null' => false,
                 'unique' => false,
                 'editable' => false
             ),
             'access_count' => array(
-                'type' => 'Pluf_DB_Field_Integer',
+                'type' => 'Integer',
                 'is_null' => false,
                 'unique' => false,
                 'editable' => false
             ),
             'validate' => array(
-                'type' => 'Pluf_DB_Field_Boolean',
+                'type' => 'Boolean',
                 'default' => false,
                 'is_null' => false,
                 'editable' => false
             ),
             'activity_field' => array(
-                'type' => 'Pluf_DB_Field_Varchar',
+                'type' => 'Varchar',
                 'size' => 100,
                 'is_null' => true,
                 'editable' => true,
                 'readable' => true
             ),
             'address' => array(
-                'type' => 'Pluf_DB_Field_Varchar',
+                'type' => 'Varchar',
                 'is_null' => true,
                 'size' => 200
             ),
             'mobile_number' => array(
-                'type' => 'Pluf_DB_Field_Varchar',
+                'type' => 'Varchar',
                 'is_null' => true,
                 'size' => 50,
                 'unique' => false
             ),
             'creation_dtime' => array(
-                'type' => 'Pluf_DB_Field_Datetime',
+                'type' => 'Datetime',
                 'is_null' => false,
                 'editable' => false
             ),
             'modif_dtime' => array(
-                'type' => 'Pluf_DB_Field_Datetime',
+                'type' => 'Datetime',
                 'is_null' => false,
                 'editable' => false
             ),
@@ -94,7 +94,7 @@ class SDP_Profile extends Pluf_Model
              * Foreign Keys
              */
             'account_id' => array(
-                'type' => 'Pluf_DB_Field_Foreignkey',
+                'type' => 'Foreignkey',
                 'model' => 'User_Account',
                 'unique' => true,
                 'name' => 'account',

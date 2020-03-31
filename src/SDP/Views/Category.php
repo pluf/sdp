@@ -26,12 +26,16 @@ class SDP_Views_Category
     {
         $category = Pluf_Shortcuts_GetObjectOr404('SDP_Category', $match['categoryId']);
         $asset = new SDP_Asset();
-        $assetTable = $asset->_con->pfx . $asset->_a['table'];
-        $assocTable = $asset->_con->pfx . Pluf_Shortcuts_GetAssociationTableName('SDP_Asset', 'SDP_Category');
-        $asset->_a['views']['myView'] = array(
-            'select' => $asset->getSelect(),
+
+        $engine = $asset->getEngine();
+        $schema = $engine->getSchema();
+
+        $assetTable = $schema->getTableName($asset);
+        $assocTable = $schema->getRelationTable($asset, $category);
+
+        $asset->setView('myView', array(
             'join' => 'LEFT JOIN ' . $assocTable . ' ON ' . $assetTable . '.id=' . $assocTable . '.sdp_asset_id'
-        );
+        ));
 
         $builder = new Pluf_Paginator_Builder($asset);
         return $builder->setWhereClause(new Pluf_SQL('sdp_category_id=%s', array(

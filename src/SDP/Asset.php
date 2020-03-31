@@ -50,34 +50,34 @@ class SDP_Asset extends Pluf_Model
         $this->_a['verbose'] = 'SDP Asset';
         $this->_a['cols'] = array(
             'id' => array(
-                'type' => 'Pluf_DB_Field_Sequence',
+                'type' => 'Sequence',
                 'is_null' => false,
                 'editable' => false,
                 'readable' => true
             ),
             'name' => array(
-                'type' => 'Pluf_DB_Field_Varchar',
+                'type' => 'Varchar',
                 'is_null' => false,
                 'size' => 250,
                 'editable' => true,
                 'readable' => true
             ),
             'path' => array(
-                'type' => 'Pluf_DB_Field_Varchar',
+                'type' => 'Varchar',
                 'is_null' => true,
                 'size' => 250,
                 'editable' => false,
                 'readable' => false
             ),
             'size' => array(
-                'type' => 'Pluf_DB_Field_Integer',
+                'type' => 'Integer',
                 'is_null' => false,
                 'default' => 0,
                 'editable' => false,
                 'readable' => true
             ),
             'file_name' => array(
-                'type' => 'Pluf_DB_Field_Varchar',
+                'type' => 'Varchar',
                 'is_null' => true,
                 'default' => 'noname',
                 'size' => 256,
@@ -85,26 +85,26 @@ class SDP_Asset extends Pluf_Model
                 'readable' => true
             ),
             'download' => array(
-                'type' => 'Pluf_DB_Field_Integer',
+                'type' => 'Integer',
                 'is_null' => false,
                 'default' => 0,
                 'editable' => false,
                 'readable' => true
             ),
             'creation_dtime' => array(
-                'type' => 'Pluf_DB_Field_Datetime',
+                'type' => 'Datetime',
                 'is_null' => false,
                 'editable' => false,
                 'readable' => true
             ),
             'modif_dtime' => array(
-                'type' => 'Pluf_DB_Field_Datetime',
+                'type' => 'Datetime',
                 'is_null' => false,
                 'editable' => false,
                 'readable' => true
             ),
             'type' => array(
-                'type' => 'Pluf_DB_Field_Varchar',
+                'type' => 'Varchar',
                 'is_null' => false,
                 'default' => 'file',
                 'size' => 250,
@@ -112,28 +112,28 @@ class SDP_Asset extends Pluf_Model
                 'readable' => true
             ),
             'description' => array(
-                'type' => 'Pluf_DB_Field_Varchar',
+                'type' => 'Varchar',
                 'is_null' => true,
                 'size' => 250,
                 'editable' => true,
                 'readable' => true
             ),
             'mime_type' => array(
-                'type' => 'Pluf_DB_Field_Varchar',
+                'type' => 'Varchar',
                 'is_null' => true,
                 'size' => 250,
                 'editable' => false,
                 'readable' => true
             ),
             'price' => array(
-                'type' => 'Pluf_DB_Field_Integer',
+                'type' => 'Integer',
                 'is_null' => false,
                 'default' => 0,
                 'editable' => true,
                 'readable' => true
             ),
             'thumbnail' => array(
-                'type' => 'Pluf_DB_Field_Varchar',
+                'type' => 'Varchar',
                 'size' => 1024,
                 'is_null' => true,
                 'editable' => true,
@@ -141,7 +141,7 @@ class SDP_Asset extends Pluf_Model
             ),
             // relations
             'parent_id' => array(
-                'type' => 'Pluf_DB_Field_Foreignkey',
+                'type' => 'Foreignkey',
                 'model' => 'SDP_Asset',
                 'name' => 'parent',
                 'graphql_name' => 'parent',
@@ -151,7 +151,7 @@ class SDP_Asset extends Pluf_Model
                 'readable' => true
             ),
 //             'content_id' => array(
-//                 'type' => 'Pluf_DB_Field_Foreignkey',
+//                 'type' => 'Foreignkey',
 //                 'model' => 'CMS_Content',
 //                 'name' => 'content',
 //                 'graphql_name' => 'content',
@@ -161,7 +161,7 @@ class SDP_Asset extends Pluf_Model
 //                 'readable' => true
 //             ),
             'drive_id' => array(
-                'type' => 'Pluf_DB_Field_Foreignkey',
+                'type' => 'Foreignkey',
                 'model' => 'SDP_Drive',
                 'is_null' => true,
                 // Note: Hadi, 1398: do not set 'name' => 'drive'. It will cause to error.

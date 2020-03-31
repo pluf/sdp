@@ -48,14 +48,18 @@ class SDP_Views_Asset
     public static function find($request, $match)
     {
         $asset = new SDP_Asset();
-        $assetTable = $asset->_con->pfx . $asset->_a['table'];
+
+        $engine = $asset->getEngine();
+        $schema = $engine->getSchema();
+
+        $assetTable = $schema->getTableName($asset);
         $builder = new Pluf_Paginator_Builder($asset);
 
         $queryView = SDP_Views_Asset::createViewQuery($request);
         if ($queryView != null) {
-            $asset->_a['views']['myView'] = array(
+            $asset->setView('myView', array(
                 'join' => 'JOIN (' . $queryView . ') AS C ON ' . $assetTable . '.id=C.sdp_asset_id'
-            );
+            ));
             $builder->setView('myView');
         }
         // TODO: maso, 2018: set item per page SDP_Shortcuts_NormalizeItemPerPage($request);
@@ -86,8 +90,16 @@ class SDP_Views_Asset
             return null;
 
         $assetModel = new SDP_Asset();
-        $asset_tag_assoc = $assetModel->_con->pfx . Pluf_Shortcuts_GetAssociationTableName('SDP_Asset', 'SDP_Tag');
-        $asset_category_assoc = $assetModel->_con->pfx . Pluf_Shortcuts_GetAssociationTableName('SDP_Asset', 'SDP_Category');
+        $tag = new SDP_Tag();
+        $category = new SDP_Category();
+
+        $engine = $assetModel->getEngine();
+        $schema = $engine->getSchema();
+
+        $asset_tag_assoc = $schema->getRelationTable($assetModel, $tag);
+        // $assetModel->_con->pfx . Pluf_Shortcuts_GetAssociationTableName('SDP_Asset', 'SDP_Tag');
+        $asset_category_assoc = $schema->getRelationTable($assetModel, $category);
+//         $assetModel->_con->pfx . Pluf_Shortcuts_GetAssociationTableName('SDP_Asset', 'SDP_Category');
 
         // NOT IN expression
         $notin = $excludeTag == 0 && $excludeCategory == 0 ? '' : '(' . 'SELECT sdp_asset_id FROM ' . $asset_tag_assoc . ' WHERE sdp_tag_id=' . $excludeTag . ' UNION ' . 'SELECT sdp_asset_id FROM ' . $asset_category_assoc . ' WHERE sdp_category_id=' . $excludeCategory . ')';

@@ -32,39 +32,39 @@ class SDP_Category extends Pluf_Model
         $this->_a['verbose'] = 'SDP Category';
         $this->_a['cols'] = array(
             'id' => array(
-                'type' => 'Pluf_DB_Field_Sequence',
+                'type' => 'Sequence',
                 'is_null' => false,
                 'editable' => false,
                 'readable' => true
             ),
             'name' => array(
-                'type' => 'Pluf_DB_Field_Varchar',
+                'type' => 'Varchar',
                 'is_null' => false,
                 'size' => 250,
                 'editable' => true,
                 'readable' => true
             ),
             'creation_dtime' => array(
-                'type' => 'Pluf_DB_Field_Datetime',
+                'type' => 'Datetime',
                 'is_null' => false,
                 'editable' => false,
                 'readable' => true
             ),
             'modif_dtime' => array(
-                'type' => 'Pluf_DB_Field_Datetime',
+                'type' => 'Datetime',
                 'is_null' => false,
                 'editable' => false,
                 'readable' => true
             ),
             'description' => array(
-                'type' => 'Pluf_DB_Field_Varchar',
+                'type' => 'Varchar',
                 'is_null' => true,
                 'size' => 250,
                 'editable' => true,
                 'readable' => true
             ),
             'thumbnail' => array(
-                'type' => 'Pluf_DB_Field_Varchar',
+                'type' => 'Varchar',
                 'size' => 1024,
                 'is_null' => true,
                 'editable' => true,
@@ -72,7 +72,7 @@ class SDP_Category extends Pluf_Model
             ),
             // relations
             'parent_id' => array(
-                'type' => 'Pluf_DB_Field_Foreignkey',
+                'type' => 'Foreignkey',
                 'model' => 'SDP_Category',
                 'name' => 'parent',
                 'graphql_name' => 'parent',
@@ -82,7 +82,7 @@ class SDP_Category extends Pluf_Model
                 'readable' => true
             ),
 //             'content_id' => array(
-//                 'type' => 'Pluf_DB_Field_Foreignkey',
+//                 'type' => 'Foreignkey',
 //                 'model' => 'CMS_Content',
 //                 'name' => 'content',
 //                 'graphql_name' => 'content',
@@ -92,7 +92,7 @@ class SDP_Category extends Pluf_Model
 //                 'readable' => true
 //             ),
             'assets' => array(
-                'type' => 'Pluf_DB_Field_Manytomany',
+                'type' => 'Manytomany',
                 'model' => 'SDP_Asset',
                 'relate_name' => 'categories',
                 'blank' => false,

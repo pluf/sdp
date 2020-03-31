@@ -18,7 +18,6 @@ return array(
         'http-method' => 'GET',
         'params' => array(
             'model' => 'SDP_Drive',
-            'view' => 'global',
             'sql' => new Pluf_SQL('deleted=%s', array(FALSE))
         )
     ),

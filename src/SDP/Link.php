@@ -31,52 +31,52 @@ class SDP_Link extends Pluf_Model
         $this->_a['verbose'] = 'SDP Link';
         $this->_a['cols'] = array(
             'id' => array(
-                'type' => 'Pluf_DB_Field_Sequence',
+                'type' => 'Sequence',
                 'is_null' => false,
                 'editable' => false,
                 'readable' => true
             ),
             'secure_link' => array(
-                'type' => 'Pluf_DB_Field_Varchar',
+                'type' => 'Varchar',
                 'is_null' => false,
                 'size' => 50,
                 'editable' => false,
                 'readable' => true
             ),
             'expiry' => array(
-                'type' => 'Pluf_DB_Field_Datetime',
+                'type' => 'Datetime',
                 'is_null' => false,
                 'size' => 50,
                 'editable' => false,
                 'readable' => true
             ),
             'download' => array(
-                'type' => 'Pluf_DB_Field_Integer',
+                'type' => 'Integer',
                 'is_null' => false,
                 'size' => 50,
                 'editable' => false,
                 'readable' => true
             ),
             'creation_dtime' => array(
-                'type' => 'Pluf_DB_Field_Datetime',
+                'type' => 'Datetime',
                 'is_null' => false,
                 'editable' => false,
                 'readable' => true
             ),
             'modif_dtime' => array(
-                'type' => 'Pluf_DB_Field_Datetime',
+                'type' => 'Datetime',
                 'is_null' => false,
                 'editable' => false,
                 'readable' => true
             ),
             'active' => array(
-                'type' => 'Pluf_DB_Field_Boolean',
+                'type' => 'Boolean',
                 'is_null' => false,
                 'editable' => false,
                 'readable' => true
             ),
             'discount_code' => array(
-                'type' => 'Pluf_DB_Field_Varchar',
+                'type' => 'Varchar',
                 'blank' => true,
                 'is_null' => true,
                 'size' => 50,
@@ -85,7 +85,7 @@ class SDP_Link extends Pluf_Model
             ),
             // relations
             'asset_id' => array(
-                'type' => 'Pluf_DB_Field_Foreignkey',
+                'type' => 'Foreignkey',
                 'model' => 'SDP_Asset',
                 'name' => 'asset',
                 'graphql_name' => 'asset',
@@ -95,7 +95,7 @@ class SDP_Link extends Pluf_Model
                 'readable' => true
             ),
             'user_id' => array(
-                'type' => 'Pluf_DB_Field_Foreignkey',
+                'type' => 'Foreignkey',
                 'model' => 'User_Account',
                 'name' => 'user',
                 'graphql_name' => 'user',
@@ -105,7 +105,7 @@ class SDP_Link extends Pluf_Model
                 'readable' => true
             ),
             'payment_id' => array(
-                'type' => 'Pluf_DB_Field_Foreignkey',
+                'type' => 'Foreignkey',
                 'model' => 'Bank_Receipt',
                 'name' => 'payment',
                 'graphql_name' => 'payment',

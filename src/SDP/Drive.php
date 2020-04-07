@@ -44,34 +44,34 @@ class SDP_Drive extends Pluf_Model
         $this->_a['table'] = 'sdp_drives';
         $this->_a['cols'] = array(
             'id' => array(
-                'type' => 'Pluf_DB_Field_Sequence',
+                'type' => 'Sequence',
                 'blank' => false,
                 'editable' => false,
                 'readable' => true
             ),
             'title' => array(
-                'type' => 'Pluf_DB_Field_Varchar',
+                'type' => 'Varchar',
                 'is_null' => false,
                 'size' => 64,
                 'editable' => true,
                 'readable' => true
             ),
             'description' => array(
-                'type' => 'Pluf_DB_Field_Varchar',
+                'type' => 'Varchar',
                 'is_null' => true,
                 'size' => 512,
                 'editable' => true,
                 'readable' => true
             ),
             'home' => array(
-                'type' => 'Pluf_DB_Field_Varchar',
+                'type' => 'Varchar',
                 'is_null' => true,
                 'size' => 256,
                 'editable' => true,
                 'readable' => true
             ),
             'meta' => array(
-                'type' => 'Pluf_DB_Field_Varchar',
+                'type' => 'Varchar',
                 'is_null' => true,
                 'secure' => true,
                 'size' => 3000,
@@ -79,33 +79,28 @@ class SDP_Drive extends Pluf_Model
                 'readable' => false
             ),
             'driver' => array(
-                'type' => 'Pluf_DB_Field_Varchar',
+                'type' => 'Varchar',
                 'is_null' => false,
                 'size' => 50
             ),
             'deleted' => array(
-                'type' => 'Pluf_DB_Field_Boolean',
+                'type' => 'Boolean',
                 'is_null' => false,
                 'default' => false,
                 'readable' => true,
                 'editable' => false
             ),
             'creation_dtime' => array(
-                'type' => 'Pluf_DB_Field_Datetime',
+                'type' => 'Datetime',
                 'is_null' => true,
                 'editable' => false,
                 'readable' => true
             ),
             'modif_dtime' => array(
-                'type' => 'Pluf_DB_Field_Datetime',
+                'type' => 'Datetime',
                 'is_null' => true,
                 'editable' => false,
                 'readable' => true
-            ),
-        );
-        $this->_a['views'] = array(
-            'global' => array(
-                'select' => $this->getGlobalSelect()
             )
         );
     }
@@ -124,7 +119,6 @@ class SDP_Drive extends Pluf_Model
 
     /**
      * داده‌های ذخیره شده را بازیابی می‌کند
-     *
      */
     function restore()
     {
@@ -184,21 +178,21 @@ class SDP_Drive extends Pluf_Model
         }
     }
 
-    private function getGlobalSelect()
-    {
-        if (isset($this->_cache['getGlobalSelect']))
-            return $this->_cache['getGlobalSelect'];
-        $select = array();
-        $table = $this->getSqlTable();
-        foreach ($this->_a['cols'] as $col => $val) {
-            if (($val['type'] == 'Pluf_DB_Field_Manytomany') || (array_key_exists('secure', $val) && $val['secure'])) {
-                continue;
-            }
-            $select[] = $table . '.' . $this->_con->qn($col) . ' AS ' . $this->_con->qn($col);
-        }
-        $this->_cache['getSelect'] = implode(', ', $select);
-        return $this->_cache['getSelect'];
-    }
+//     private function getGlobalSelect()
+//     {
+//         if (isset($this->_cache['getGlobalSelect']))
+//             return $this->_cache['getGlobalSelect'];
+//         $select = array();
+//         $table = $this->getSqlTable();
+//         foreach ($this->_a['cols'] as $col => $val) {
+//             if (($val['type'] == 'Manytomany') || (array_key_exists('secure', $val) && $val['secure'])) {
+//                 continue;
+//             }
+//             $select[] = $table . '.' . $this->_con->qn($col) . ' AS ' . $this->_con->qn($col);
+//         }
+//         $this->_cache['getSelect'] = implode(', ', $select);
+//         return $this->_cache['getSelect'];
+//     }
 
     /**
      *

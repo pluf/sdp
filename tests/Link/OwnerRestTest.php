@@ -103,7 +103,6 @@ class Link_OwnerRestTest extends TestCase
         // Asset
         $this->asset = new SDP_Asset();
         $this->asset->name = 'asset-' . rand();
-        $this->asset->type = 'file';
         $this->asset->description = 'It is my asset description';
         $this->asset->price = 0;
         // $this->asset->drive_id = 0;

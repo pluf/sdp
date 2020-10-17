@@ -359,7 +359,7 @@ class SDP_Views_Asset
             'download',
             'creation_dtime',
             'modif_dtime',
-            'type',
+            'media_type',
             'mime_type',
             'price',
             'drive_id',
@@ -367,7 +367,7 @@ class SDP_Views_Asset
         );
         $search_fields = array(
             'name',
-            'type',
+            'media_type',
             'description',
             'mime_type',
             'drive_id'
@@ -379,7 +379,7 @@ class SDP_Views_Asset
             'download',
             'creation_dtime',
             'modif_dtime',
-            'type',
+            'media_type',
             'mime_type',
             'price',
             'driver_id',

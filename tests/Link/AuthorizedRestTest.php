@@ -115,7 +115,6 @@ class Link_AuthorizedRestTest extends TestCase
         // Free Asset
         $this->freeAsset = new SDP_Asset();
         $this->freeAsset->name = 'asset-' . rand();
-        $this->freeAsset->type = 'file';
         $this->freeAsset->description = 'It is my asset description';
         $this->freeAsset->price = 0;
         // $this->asset->drive_id = 0;
@@ -125,7 +124,6 @@ class Link_AuthorizedRestTest extends TestCase
         // Priced Asset
         $this->pricedAsset = new SDP_Asset();
         $this->pricedAsset->name = 'asset-' . rand();
-        $this->pricedAsset->type = 'file';
         $this->pricedAsset->description = 'It is my asset description';
         $this->pricedAsset->price = 1000;
         // $this->asset->drive_id = 0;

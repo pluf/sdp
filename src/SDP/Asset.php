@@ -103,14 +103,6 @@ class SDP_Asset extends Pluf_Model
                 'editable' => false,
                 'readable' => true
             ),
-            'type' => array(
-                'type' => 'Varchar',
-                'is_null' => false,
-                'default' => 'file',
-                'size' => 250,
-                'editable' => false,
-                'readable' => true
-            ),
             'description' => array(
                 'type' => 'Varchar',
                 'is_null' => true,
@@ -125,6 +117,13 @@ class SDP_Asset extends Pluf_Model
                 'editable' => false,
                 'readable' => true
             ),
+            'media_type' => array(
+                'type' => 'Varchar',
+                'is_null' => true,
+                'size' => 64,
+                'editable' => true,
+                'readable' => true
+            ),
             'price' => array(
                 'type' => 'Integer',
                 'is_null' => false,
@@ -132,12 +131,19 @@ class SDP_Asset extends Pluf_Model
                 'editable' => true,
                 'readable' => true
             ),
-            'thumbnail' => array(
+            'cover' => array(
                 'type' => 'Varchar',
                 'size' => 1024,
                 'is_null' => true,
                 'editable' => true,
                 'readable' => true
+            ),
+            'state' => array(
+                'type' => 'Varchar',
+                'is_null' => true,
+                'size' => 64,
+                'default' => '',
+                'editable' => false
             ),
             // relations
             'parent_id' => array(
@@ -149,6 +155,15 @@ class SDP_Asset extends Pluf_Model
                 'is_null' => true,
                 'editable' => true,
                 'readable' => true
+            ),
+            'owner_id' => array(
+                'type' => 'Foreignkey',
+                'model' => 'User_Account',
+                'is_null' => false,
+                'name' => 'owner',
+                'relate_name' => 'assets',
+                'graphql_name' => 'owner',
+                'editable' => false
             ),
 //             'content_id' => array(
 //                 'type' => 'Foreignkey',

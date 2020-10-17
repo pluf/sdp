@@ -6,12 +6,12 @@ Pluf::loadFunction('Pluf_Shortcuts_GetObjectOr404');
  *
  * Following fields could be determined to create a new asset:
  * - name: optional
- * - type: optional. default is 'file'
+ * - media_type: optional.
  * - description: optional.
  * - price: optional. default is 0.
- * - parent: optional.
- * - content: optional.
- * - thumbnail: optional.
+ * - parent_id: optional.
+ * - content_id: optional.
+ * - cover: optional. link to an image as the cover of the asset
  * - drive_id: optional.
  *
  * @author hadi <mohammad.hadi.mansouri@dpq.co.ir>
@@ -31,10 +31,10 @@ class SDP_Form_AssetCreate extends Pluf_Form
             'label' => 'Name',
             'help_text' => 'Name of asset'
         ));
-        $this->fields['type'] = new Pluf_Form_Field_Varchar(array(
+        $this->fields['media_type'] = new Pluf_Form_Field_Varchar(array(
             'required' => false,
-            'label' => 'Type',
-            'help_text' => 'Type of asset'
+            'label' => 'Media Type',
+            'help_text' => 'Media type of asset'
         ));
         $this->fields['parent_id'] = new Pluf_Form_Field_Integer(array(
             'required' => false,
@@ -56,10 +56,10 @@ class SDP_Form_AssetCreate extends Pluf_Form
             'label' => 'Content',
             'help_text' => 'Content related to asset'
         ));
-        $this->fields['thumbnail'] = new Pluf_Form_Field_Integer(array(
+        $this->fields['cover'] = new Pluf_Form_Field_Integer(array(
             'required' => false,
-            'label' => 'Content',
-            'help_text' => 'Content related to asset'
+            'label' => 'Cover',
+            'help_text' => 'Cover image of the asset'
         ));
         $this->fields['drive_id'] = new Pluf_Form_Field_Integer(array(
             'required' => false,
@@ -67,16 +67,6 @@ class SDP_Form_AssetCreate extends Pluf_Form
             'help_text' => 'Drive to store asset'
         ));
 
-        // initial asset data
-        // if (! isset($request->REQUEST['name']) || strlen($request->REQUEST['name']) == 0) {
-        // if (isset($request->FILES['file'])) {
-        // $file = $request->FILES['file'];
-        // $request->REQUEST['name'] = basename($file['name']);
-        // $request->REQUEST['type'] = 'file';
-        // } else {
-        // $request->REQUEST['name'] = "noname" . rand(0, 9999);
-        // }
-        // }
     }
 
     function save($commit = true)
@@ -87,8 +77,7 @@ class SDP_Form_AssetCreate extends Pluf_Form
         // Create the asset
         $asset = new SDP_Asset();
         $asset->setFromFormData($this->cleaned_data);
-        if ($asset->isLocal() && $asset->type !== 'folder') {
-            $asset->type = 'file';
+        if ($asset->isLocal()) {
             $asset->path = Pluf::f('upload_path') . '/' . Pluf_Tenant::current()->id . '/sdp';
             if (! is_dir($asset->path)) {
                 if (false == @mkdir($asset->path, 0777, true)) {
@@ -98,10 +87,6 @@ class SDP_Form_AssetCreate extends Pluf_Form
             if (array_key_exists('file', $_FILES)) {
                 $asset->mime_type = $this->userRequest->FILES['file']['type'];
             }
-        }
-        // Note: Mahdi, 1395-09: For folders there is no path attribute
-        if ($asset->type === 'folder') {
-            $asset->path = '';
         }
         if ($commit) {
             $asset->create();
@@ -123,15 +108,6 @@ class SDP_Form_AssetCreate extends Pluf_Form
         return $fullname;
     }
 
-    public function clean_type()
-    {
-        $type = trim($this->cleaned_data['type']);
-        if ($type !== 'file' && $type !== 'folder') {
-            $type = 'file'; // default value for type is file
-        }
-        return $type;
-    }
-
     public function clean_drive_id()
     {
         $di = $this->cleaned_data['drive_id'];
@@ -148,10 +124,7 @@ class SDP_Form_AssetCreate extends Pluf_Form
         $parentId = $this->cleaned_data['parent_id'];
         if (isset($parentId) && $parentId != 0) {
             // Note: Hadi, 1395-09: It throw exception if asset dose not exist
-            $assetFolder = Pluf_Shortcuts_GetObjectOr404('SDP_Asset', $parentId);
-            if ($assetFolder->type !== 'folder') {
-                throw new Pluf_Form_Invalid('The specified folder does not exist.');
-            }
+            Pluf_Shortcuts_GetObjectOr404('SDP_Asset', $parentId);
         }
         return $parentId;
     }

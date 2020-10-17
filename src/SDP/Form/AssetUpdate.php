@@ -5,12 +5,12 @@
  * 
  * The following field could be updated for an asset:
  * - name: optional
- * - type: optional. default is 'file'
+ * - media_type: optional.
  * - description: optional.
  * - price: optional. default is 0.
- * - parent: optional.
- * - content: optional.
- * - thumbnail: optional.
+ * - parent_id: optional.
+ * - content_id: optional.
+ * - cover: optional. A link to an image as the cover of the asset.
  * 
  * If asset is not local (drive_id is not 0) the following fields could be determined also:
  * - path: optional. empty means root ot drive.
@@ -35,11 +35,11 @@ class SDP_Form_AssetUpdate extends Pluf_Form
             'initial' => $this->asset->name,
             'help_text' => 'Name of Asset'
         ));
-        $this->fields['type'] = new Pluf_Form_Field_Varchar(array(
+        $this->fields['media_type'] = new Pluf_Form_Field_Varchar(array(
             'required' => false,
-            'label' => 'type of Asset',
-            'initial' => $this->asset->type,
-            'help_text' => 'type of Asset'
+            'label' => 'Medial Type',
+            'initial' => $this->asset->media_type,
+            'help_text' => 'Media Type of Asset'
         ));
         $this->fields['description'] = new Pluf_Form_Field_Varchar(array(
             'required' => false,
@@ -66,11 +66,11 @@ class SDP_Form_AssetUpdate extends Pluf_Form
 //             'initial' => $this->asset->content_id,
 //             'help_text' => 'content of Asset'
 //         ));
-        $this->fields['thumbnail'] = new Pluf_Form_Field_Varchar(array(
+        $this->fields['cover'] = new Pluf_Form_Field_Varchar(array(
             'required' => false,
-            'label' => 'thumbnail of Asset',
-            'initial' => $this->asset->thumbnail,
-            'help_text' => 'thumbnail of Asset'
+            'label' => 'cover of Asset',
+            'initial' => $this->asset->cover,
+            'help_text' => 'Cover of Asset'
         ));
 
         if ($this->asset->isLocal()) { // Asset is local

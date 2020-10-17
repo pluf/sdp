@@ -25,6 +25,7 @@ class SDP_Form_AssetCreate extends Pluf_Form
     public function initFields($extra = array())
     {
         $this->userRequest = $extra['request'];
+        $this->user = $extra['user'];
 
         $this->fields['name'] = new Pluf_Form_Field_Varchar(array(
             'required' => false,
@@ -76,6 +77,7 @@ class SDP_Form_AssetCreate extends Pluf_Form
         }
         // Create the asset
         $asset = new SDP_Asset();
+        $asset->owner_id = $this->user;
         $asset->setFromFormData($this->cleaned_data);
         if ($asset->isLocal()) {
             $asset->path = Pluf::f('upload_path') . '/' . Pluf_Tenant::current()->id . '/sdp';

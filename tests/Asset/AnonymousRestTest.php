@@ -166,7 +166,7 @@ class Asset_AnonymousRestTest extends TestCase
     public function findWithGraphqlRestTest()
     {
         $params = array(
-            'graphql' => '{items{id,name,price,thumbnail,parent{id,name},drive{id,home,driver}}}'
+            'graphql' => '{items{id,name,price,cover,parent{id,name},drive{id,home,driver}}}'
         );
         $response = self::$client->get('/sdp/assets', $params);
         $this->assertNotNull($response);

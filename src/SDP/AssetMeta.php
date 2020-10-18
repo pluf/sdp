@@ -65,4 +65,5 @@ class SDP_AssetMeta extends Pluf_Model
             ),
         );
     }
+    
 }

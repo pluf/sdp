@@ -17,7 +17,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-class AssetScreenshot extends Pluf_ModelBinary
+class SDP_AssetScreenshot extends Pluf_ModelBinary
 {
 
     /**
@@ -43,4 +43,55 @@ class AssetScreenshot extends Pluf_ModelBinary
             )
         ));
     }
+    
+    /**
+     * پیش ذخیره را انجام می‌دهد
+     *
+     * @param boolean $create
+     *            حالت
+     *            ساخت یا به روز رسانی را تعیین می‌کند
+     */
+    function preSave($create = false)
+    {
+        $this->modif_dtime = gmdate('Y-m-d H:i:s');
+        // File path
+        $path = $this->getAbsloutPath();
+        // file size
+        if (file_exists($path)) {
+            $this->file_size = filesize($path);
+        } else {
+            $this->file_size = 0;
+        }
+        // mime type (based on file name)
+        $mime_type = $this->mime_type;
+        if (! isset($mime_type) || $mime_type === 'application/octet-stream') {
+            $fileInfo = Pluf_FileUtil::getMimeType($this->file_name);
+            $this->mime_type = $fileInfo[0];
+        }
+    }
+    
+    /**
+     * \brief Do actions before deleting the screenshot
+     *
+     * Before deleting a screenshot it deletes the actual file related to the screenshot
+     */
+    function preDelete()
+    {
+        // remove related file
+        $filename = $this->getAbsloutPath();
+        if (is_file($filename)) {
+            unlink($filename);
+        }
+    }
+    
+    /**
+     * مسیر کامل محتوی را تعیین می‌کند.
+     *
+     * @return string
+     */
+    public function getAbsloutPath()
+    {
+        return $this->file_path;
+    }
+    
 }

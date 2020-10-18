@@ -22,21 +22,23 @@
  * SDP system conditions.
  *
  * Some preconditions which are used in the view layer
- * 
+ *
  * @author hadi <mohammad.hadi.mansouri@dpq.co.ir>
  */
-class SDP_Precondition
+class SDP_Precondition extends User_Precondition
 {
+
     /**
-     * Check if the user is an asset provider. 
-     * 
+     * Check if the user is an asset provider.
+     *
      * A user is provider if he/she has one of the following permissions:
      * <ul>
      * <li>tenant.owner</li>
      * <li>sdp.provider</li>
      * </ul>
      *
-     * @param Pluf_HTTP_Request
+     * @param
+     *            Pluf_HTTP_Request
      * @return boolean|Pluf_Exception_PermissionDenied
      */
     static public function providerRequired($request)
@@ -51,21 +53,23 @@ class SDP_Precondition
         }
         throw new Pluf_Exception_PermissionDenied();
     }
+
     /**
      * Check if the user is an asset provider.
-     * 
+     *
      * User is provider if he/she has one of the following permissions:
      * <ul>
      * <li>tenant.owner</li>
      * <li>sdp.provider</li>
      * </ul>
      *
-     * @param Pluf_HTTP_Request
+     * @param
+     *            Pluf_HTTP_Request
      * @return boolean
      */
-    static public function isAuthor($request)
+    static public function isProvider($request)
     {
-        if (! User_Precondition::isLogedIn($request)){
+        if (! User_Precondition::isLogedIn($request)) {
             return false;
         }
         if ($request->user->hasPerm('tenant.owner') || //
@@ -75,5 +79,9 @@ class SDP_Precondition
         return false;
     }
 
+    static public function canUpdateReview(User_Account $account, int $reviewId) : bool
+    {
+        return $account->hasPerm('tenant.owner') || $account->id == $reviewId;
+    }
 }
 

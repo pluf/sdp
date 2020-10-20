@@ -1,7 +1,7 @@
 CREATE TABLE `sdp_asset_reviews` (
    `id` mediumint(9) unsigned NOT NULL AUTO_INCREMENT,
 	`text` text,
-	`mime_type` varchar(64),
+	`mime_type` varchar(64) DEFAULT 'text/plain',
 	`creation_dtime` datetime(6) NOT NULL,
 	`writer_id` mediumint(9) unsigned NOT NULL,
 	`asset_id` mediumint(9) unsigned NOT NULL,

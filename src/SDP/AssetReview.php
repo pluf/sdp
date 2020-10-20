@@ -33,6 +33,7 @@ class SDP_AssetReview extends Pluf_Model
             'mime_type' => array(
                 'type' => 'Varchar',
                 'size' => 64,
+                'default' => 'text/plain',
                 'is_null' => true,
                 'editable' => true,
                 'readable' => true

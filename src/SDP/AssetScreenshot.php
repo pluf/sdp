@@ -39,7 +39,7 @@ class SDP_AssetScreenshot extends Pluf_ModelBinary
                 'name' => 'asset',
                 'relate_name' => 'screenshots',
                 'graphql_name' => 'asset',
-                'editable' => true
+                'editable' => false
             )
         ));
     }

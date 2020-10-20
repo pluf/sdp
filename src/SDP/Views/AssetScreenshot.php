@@ -46,7 +46,7 @@ class SDP_Views_AssetScreenshot extends Pluf_Views
     {
         Pluf::loadFunction('Pluf_Shortcuts_GetObjectOr404');
         // Check asset
-        $asset = Pluf_Shortcuts_GetObjectOr404('SDP_Asset', $match['assetId']);
+        $asset = Pluf_Shortcuts_GetObjectOr404('SDP_Asset', $match['parentId']);
         // Check screenshot
         if (! array_key_exists('modelId', $match)) {
             throw new Pluf_Exception_BadRequest('screenshot id required');
@@ -69,7 +69,7 @@ class SDP_Views_AssetScreenshot extends Pluf_Views
     public function upload($request, $match)
     {
         Pluf::loadFunction('Pluf_Shortcuts_GetObjectOr404');
-        $asset = SDP_Shortcuts_GetObjectBySecureIdOr404('SDP_Asset', $match['secureId']);
+        $asset = Pluf_Shortcuts_GetObjectOr404('SDP_Asset', $match['parentId']);
         $screenshot = Pluf_Shortcuts_GetObjectOr404('SDP_AssetScreenshot', $match['modelId']);
         if ($asset->id != $screenshot->get_asset()->id) {
             throw new Pluf_Exception_DoesNotExist('given screenshot is not blong to given asset');

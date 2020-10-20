@@ -21,11 +21,12 @@ class SDP_Form_AssetCreate extends Pluf_Form
 {
 
     private $userRequest = null;
+    private $user = null;
 
     public function initFields($extra = array())
     {
         $this->userRequest = $extra['request'];
-        $this->user = $extra['user'];
+        $this->user = $this->userRequest->user;
 
         $this->fields['name'] = new Pluf_Form_Field_Varchar(array(
             'required' => false,
@@ -80,7 +81,7 @@ class SDP_Form_AssetCreate extends Pluf_Form
         $asset->owner_id = $this->user;
         $asset->setFromFormData($this->cleaned_data);
         if ($asset->isLocal()) {
-            $asset->path = Pluf::f('upload_path') . '/' . Pluf_Tenant::current()->id . '/sdp';
+            $asset->path = Pluf_Tenant::storagePath() . '/sdp';
             if (! is_dir($asset->path)) {
                 if (false == @mkdir($asset->path, 0777, true)) {
                     throw new Pluf_Form_Invalid('An error occured when creating the upload path. Please try to send the file again.');

@@ -65,7 +65,7 @@ class SDP_Asset extends Pluf_Model
             'path' => array(
                 'type' => 'Varchar',
                 'is_null' => true,
-                'size' => 250,
+                'size' => 256,
                 'editable' => false,
                 'readable' => false
             ),
@@ -104,16 +104,15 @@ class SDP_Asset extends Pluf_Model
                 'readable' => true
             ),
             'description' => array(
-                'type' => 'Varchar',
+                'type' => 'Text',
                 'is_null' => true,
-                'size' => 250,
                 'editable' => true,
                 'readable' => true
             ),
             'mime_type' => array(
                 'type' => 'Varchar',
                 'is_null' => true,
-                'size' => 250,
+                'size' => 64,
                 'editable' => false,
                 'readable' => true
             ),

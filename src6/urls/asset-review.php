@@ -13,8 +13,8 @@ return array(
     // ************************************************************* Asset Review
     array( // Create
         'regex' => '#^/assets/(?P<parentId>\d+)/reviews$#',
-        'model' => 'Pluf_Views',
-        'method' => 'createManyToOne',
+        'model' => 'SDP_Views_AssetReview',
+        'method' => 'create',
         'http-method' => 'POST',
         'params' => array(
             'parent' => 'SDP_Asset',

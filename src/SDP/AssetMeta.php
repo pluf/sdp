@@ -66,4 +66,27 @@ class SDP_AssetMeta extends Pluf_Model
         );
     }
     
+    /**
+     * Extract information of a meta and returns it.
+     *
+     * @param string $key
+     * @param int $assetId
+     * @return SDP_AssetMeta
+     */
+    public static function getMeta($key, $assetId)
+    {
+        $model = new SDP_AssetMeta();
+        $where = new Pluf_SQL('`key`=%s AND `asset_id`=%s', array(
+            $model->_toDb($key, 'key'),
+            $model->_toDb($assetId, 'asset_id')
+        ));
+        $metas = $model->getList(array(
+            'filter' => $where->gen()
+        ));
+        if ($metas === false or count($metas) !== 1) {
+            return false;
+        }
+        return $metas[0];
+    }
+    
 }

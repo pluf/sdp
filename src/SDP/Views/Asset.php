@@ -35,6 +35,7 @@ class SDP_Views_Asset
 
         // Upload asset file (for local assets) and extract information about it
         $extra['asset'] = $asset;
+        $extra['user'] = $request->user;
         $form = new SDP_Form_AssetUpdate(array_merge($request->REQUEST, $request->FILES), $extra);
         try {
             $asset = $form->update();

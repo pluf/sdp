@@ -1,7 +1,7 @@
 CREATE TABLE `sdp_asset_metas` (
   `id` mediumint(9) unsigned NOT NULL AUTO_INCREMENT,
   `key` varchar(256) NOT NULL DEFAULT '',
-  `value` longtext,
+  `value` text,
   `asset_id` mediumint(9) unsigned DEFAULT 0,
   `tenant` mediumint(9) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),

@@ -4,7 +4,7 @@
  * Updates information of an asset
  * 
  * The following field could be updated for an asset:
- * - name: optional
+ * - title: optional
  * - media_type: optional.
  * - description: optional.
  * - price: optional. default is 0.
@@ -29,11 +29,11 @@ class SDP_Form_AssetUpdate extends Pluf_Form
     {
         $this->asset = $extra['asset'];
 
-        $this->fields['name'] = new Pluf_Form_Field_Varchar(array(
+        $this->fields['title'] = new Pluf_Form_Field_Varchar(array(
             'required' => false,
-            'label' => 'Name of Asset',
-            'initial' => $this->asset->name,
-            'help_text' => 'Name of Asset'
+            'label' => 'Title of Asset',
+            'initial' => $this->asset->title,
+            'help_text' => 'Title of Asset'
         ));
         $this->fields['media_type'] = new Pluf_Form_Field_Varchar(array(
             'required' => false,
@@ -141,11 +141,11 @@ class SDP_Form_AssetUpdate extends Pluf_Form
         return $this->asset;
     }
 
-    function clean_name()
+    function clean_title()
     {
-        $fileName = $this->cleaned_data['name'] ? $this->cleaned_data['name'] : $this->asset->name;
+        $fileName = $this->cleaned_data['title'] ? $this->cleaned_data['title'] : $this->asset->title;
         if (! $fileName) {
-            return array_key_exists('file', $this->data) ? $this->data['file']['name'] : $this->asset->name;
+            return array_key_exists('file', $this->data) ? $this->data['file']['name'] : $this->asset->title;
         }
         return $fileName;
     }

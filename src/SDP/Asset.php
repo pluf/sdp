@@ -55,10 +55,10 @@ class SDP_Asset extends Pluf_Model
                 'editable' => false,
                 'readable' => true
             ),
-            'name' => array(
+            'title' => array(
                 'type' => 'Varchar',
                 'is_null' => false,
-                'size' => 250,
+                'size' => 256,
                 'editable' => true,
                 'readable' => true
             ),

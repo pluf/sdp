@@ -9,3 +9,5 @@ ALTER TABLE `sdp_asset` CHANGE `description` `description` text;
 ALTER TABLE `sdp_asset` CHANGE `path` `path` varchar(256) DEFAULT '';
 ALTER TABLE `sdp_asset` CHANGE `file_name` `file_name` varchar(256) DEFAULT '';
 ALTER TABLE `sdp_asset` CHANGE `mime_type` `mime_type` varchar(64) DEFAULT '';
+
+ALTER TABLE `sdp_asset` CHANGE `name` `title` varchar(256) NOT NULL DEFAULT '';

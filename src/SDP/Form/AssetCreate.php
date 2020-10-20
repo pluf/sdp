@@ -5,7 +5,7 @@ Pluf::loadFunction('Pluf_Shortcuts_GetObjectOr404');
  * Creates a new asset
  *
  * Following fields could be determined to create a new asset:
- * - name: optional
+ * - title: optional
  * - media_type: optional.
  * - description: optional.
  * - price: optional. default is 0.
@@ -28,10 +28,10 @@ class SDP_Form_AssetCreate extends Pluf_Form
         $this->userRequest = $extra['request'];
         $this->user = $this->userRequest->user;
 
-        $this->fields['name'] = new Pluf_Form_Field_Varchar(array(
+        $this->fields['title'] = new Pluf_Form_Field_Varchar(array(
             'required' => false,
-            'label' => 'Name',
-            'help_text' => 'Name of asset'
+            'label' => 'Title',
+            'help_text' => 'Title of asset'
         ));
         $this->fields['media_type'] = new Pluf_Form_Field_Varchar(array(
             'required' => false,
@@ -97,18 +97,18 @@ class SDP_Form_AssetCreate extends Pluf_Form
         return $asset;
     }
 
-    public function clean_name()
+    public function clean_title()
     {
-        $fullname = trim($this->cleaned_data['name']);
-        if (! isset($fullname) || strlen($fullname) == 0) {
+        $title = trim($this->cleaned_data['title']);
+        if (! isset($title) || strlen($title) == 0) {
             if (isset($this->userRequest->FILES['file'])) {
                 $file = $this->userRequest->FILES['file'];
-                $fullname = basename($file['name']);
+                $title = basename($file['name']);
             } else {
-                $fullname = "noname" . rand(0, 9999);
+                $title = "noname" . rand(0, 9999);
             }
         }
-        return $fullname;
+        return $title;
     }
 
     public function clean_drive_id()

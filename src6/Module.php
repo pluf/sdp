@@ -67,6 +67,17 @@ class Module extends \Pluf\Module
             'relate_to' => array(
                 'User_Account'
             )
+        ),
+        'SDP_AssetMeta' => array(
+            'relate_to' => array(
+                'SDP_Asset'
+            )
+        ),
+        'SDP_AssetReview' => array(
+            'relate_to' => array(
+                'SDP_Asset',
+                'User_Account'
+            )
         )
     );
 

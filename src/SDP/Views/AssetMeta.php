@@ -51,7 +51,7 @@ class SDP_Views_AssetMeta extends Pluf_Views
         $match['modelId'] = $meta->id;
         $match['parentId'] = $meta->asset_id;
         $p = array(
-            'parent' => 'User_Account',
+            'parent' => 'SDP_Asset',
             'parentKey' => 'asset_id',
             'model' => 'SDP_AssetMeta'
         );
@@ -66,7 +66,7 @@ class SDP_Views_AssetMeta extends Pluf_Views
         $meta = SDP_AssetMeta::getMeta($request->REQUEST['key'], $asset->id);
 
         $myParams = array_merge(array(
-            'parent' => 'User_Account',
+            'parent' => 'SDP_Asset',
             'parentKey' => 'asset_id',
             'model' => 'SDP_AssetMeta'
         ), $param);

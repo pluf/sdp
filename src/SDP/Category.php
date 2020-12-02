@@ -17,7 +17,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 class SDP_Category extends Pluf_Model
 {
 
@@ -43,6 +42,13 @@ class SDP_Category extends Pluf_Model
                 'size' => 250,
                 'editable' => true,
                 'readable' => true
+            ),
+            'slug' => array(
+                'type' => 'Varchar',
+                'is_null' => true,
+                'unique' => true,
+                'size' => 256,
+                'editable' => true
             ),
             'creation_dtime' => array(
                 'type' => 'Datetime',
@@ -81,16 +87,16 @@ class SDP_Category extends Pluf_Model
                 'editable' => true,
                 'readable' => true
             ),
-//             'content_id' => array(
-//                 'type' => 'Foreignkey',
-//                 'model' => 'CMS_Content',
-//                 'name' => 'content',
-//                 'graphql_name' => 'content',
-//                 'relate_name' => 'categories',
-//                 'is_null' => true,
-//                 'editable' => true,
-//                 'readable' => true
-//             ),
+            // 'content_id' => array(
+            // 'type' => 'Foreignkey',
+            // 'model' => 'CMS_Content',
+            // 'name' => 'content',
+            // 'graphql_name' => 'content',
+            // 'relate_name' => 'categories',
+            // 'is_null' => true,
+            // 'editable' => true,
+            // 'readable' => true
+            // ),
             'assets' => array(
                 'type' => 'Manytomany',
                 'model' => 'SDP_Asset',
@@ -111,6 +117,27 @@ class SDP_Category extends Pluf_Model
                 'lock_option' => ''
             )
         );
+    }
+
+    /**
+     * Returns category by given slug
+     *
+     * @param string $slug
+     * @return SDP_Category
+     */
+    public static function getCategory($slug)
+    {
+        $model = new SDP_Category();
+        $where = new Pluf_SQL('slug = %s', array(
+            $model->_toDb($slug, 'slug')
+        ));
+        $cats = $model->getList(array(
+            'filter' => $where->gen()
+        ));
+        if ($cats === false or count($cats) !== 1) {
+            return false;
+        }
+        return $cats[0];
     }
 
     /**

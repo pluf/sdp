@@ -53,12 +53,12 @@ class SDP_Form_AssetCreate extends Pluf_Form
             'label' => 'Price',
             'help_text' => 'Price of asset'
         ));
-        $this->fields['content_id'] = new Pluf_Form_Field_Integer(array(
-            'required' => false,
-            'label' => 'Content',
-            'help_text' => 'Content related to asset'
-        ));
-        $this->fields['cover'] = new Pluf_Form_Field_Integer(array(
+//         $this->fields['content_id'] = new Pluf_Form_Field_Integer(array(
+//             'required' => false,
+//             'label' => 'Content',
+//             'help_text' => 'Content related to asset'
+//         ));
+        $this->fields['cover'] = new Pluf_Form_Field_Varchar(array(
             'required' => false,
             'label' => 'Cover',
             'help_text' => 'Cover image of the asset'

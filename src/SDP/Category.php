@@ -63,9 +63,8 @@ class SDP_Category extends Pluf_Model
                 'readable' => true
             ),
             'description' => array(
-                'type' => 'Varchar',
+                'type' => 'Text',
                 'is_null' => true,
-                'size' => 250,
                 'editable' => true,
                 'readable' => true
             ),

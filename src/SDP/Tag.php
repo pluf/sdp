@@ -57,9 +57,8 @@ class SDP_Tag extends Pluf_Model
                 'readable' => true
             ),
             'description' => array(
-                'type' => 'Varchar',
+                'type' => 'Text',
                 'is_null' => true,
-                'size' => 250,
                 'editable' => true,
                 'readable' => true
             ),
@@ -86,6 +85,27 @@ class SDP_Tag extends Pluf_Model
         );
     }
 
+    /**
+     * Returns tag by given name
+     *
+     * @param string $name
+     * @return SDP_Tag
+     */
+    public static function getTag($name)
+    {
+        $model = new SDP_Tag();
+        $where = new Pluf_SQL('name = %s', array(
+            $model->_toDb($name, 'name')
+        ));
+        $tags = $model->getList(array(
+            'filter' => $where->gen()
+        ));
+        if ($tags === false or count($tags) !== 1) {
+            return false;
+        }
+        return $tags[0];
+    }
+    
     /**
      *
      * {@inheritdoc}

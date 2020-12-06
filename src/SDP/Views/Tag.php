@@ -18,23 +18,46 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 Pluf::loadFunction('Pluf_Shortcuts_GetObjectOr404');
-Pluf::loadFunction('SDP_Shortcuts_GetTagByNameOr404');
 
-class SDP_Views_Tag
+class SDP_Views_Tag extends Pluf_Views
 {
-
+    public function updateByName($request, $match)
+    {
+        $p = array(
+            'model' => 'SDP_Tag'
+        );
+        $tag = self::getByName($request, $match);
+        $match['modelId'] = $tag->id;
+        return $this->updateObject($request, $match, $p);
+    }
+    
+    public function deleteByName($request, $match)
+    {
+        $p = array(
+            'model' => 'SDP_Tag'
+        );
+        $tag = self::getByName($request, $match);
+        $match['modelId'] = $tag->id;
+        return $this->deleteObject($request, $match, $p);
+    }
+    
     public static function getByName($request, $match)
     {
-        $tag = SDP_Shortcuts_GetTagByNameOr404($match['name']);
-        // حق دسترسی
-        // CMS_Precondition::userCanAccessContent($request, $content);
-        // اجرای درخواست
+        if (! isset($match['name'])) {
+            throw new Pluf_Exception_BadRequest('The name is not set');
+        }
+        $tag = SDP_Tag::getTag($match['name']);
+        if ($tag === null) {
+            throw new Pluf_HTTP_Error404("Object not found (SDP_Tag," . $match['name'] . ")");
+        }
         return $tag;
     }
 
     public static function assets($request, $match)
     {
-        $tag = Pluf_Shortcuts_GetObjectOr404('SDP_Tag', $match['tagId']);
+        $tag = array_key_exists('tagId', $match) ? //
+            Pluf_Shortcuts_GetObjectOr404('SDP_Tag', $match['tagId']) : //
+            self::getByName($request, $match);
         $asset = new SDP_Asset();
 
         $engine = $asset->getEngine();
@@ -49,34 +72,20 @@ class SDP_Views_Tag
             'join' => 'LEFT JOIN ' . $assocTable . ' ON ' . $assetTable . '.id=' . $assocTable . '.sdp_asset_id'
         ));
 
-        $page = new Pluf_Paginator($asset);
-        $sql = new Pluf_SQL('sdp_tag_id=%s', array(
+        $builder = new Pluf_Paginator_Builder($asset);
+        return $builder->setWhereClause(new Pluf_SQL('sdp_tag_id=%s', array(
             $tag->id
-        ));
-        $page->forced_where = $sql;
-        $page->model_view = 'myView';
-        $page->list_filters = array(
-            'id',
-            'name'
-        );
-        $search_fields = array(
-            'name',
-            'description'
-        );
-        $sort_fields = array(
-            'id',
-            'name',
-            'creation_date',
-            'modif_dtime'
-        );
-        $page->configure(array(), $search_fields, $sort_fields);
-        $page->setFromRequest($request);
-        return $page;
+        )))
+            ->setView('myView')
+            ->setRequest($request)
+            ->build();
     }
 
     public static function addAsset($request, $match)
     {
-        $tag = Pluf_Shortcuts_GetObjectOr404('SDP_Tag', $match['tagId']);
+        $tag = array_key_exists('tagId', $match) ? //
+            Pluf_Shortcuts_GetObjectOr404('SDP_Tag', $match['tagId']) : //
+            self::getByName($request, $match);
         if (isset($match['assetId'])) {
             $assetId = $match['assetId'];
         } else {
@@ -89,7 +98,9 @@ class SDP_Views_Tag
 
     public static function removeAsset($request, $match)
     {
-        $tag = Pluf_Shortcuts_GetObjectOr404('SDP_Tag', $match['tagId']);
+        $tag = array_key_exists('tagId', $match) ? //
+            Pluf_Shortcuts_GetObjectOr404('SDP_Tag', $match['tagId']) : //
+            self::getByName($request, $match);
         if (isset($match['assetId'])) {
             $assetId = $match['assetId'];
         } else {

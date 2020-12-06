@@ -31,7 +31,7 @@ class SDP_Views_Category extends Pluf_Views
         $match['modelId'] = $cat->id;
         return $this->updateObject($request, $match, $p);
     }
-    
+
     public function deleteBySlug($request, $match)
     {
         $p = array(
@@ -60,6 +60,45 @@ class SDP_Views_Category extends Pluf_Views
             throw new Pluf_HTTP_Error404("Object not found (SDP_Category," . $match['slug'] . ")");
         }
         return $cat;
+    }
+
+    /**
+     * Creates a category and add it as the child of the given parent category.
+     *
+     * @param Pluf_HTTP_Request $request
+     * @param array $match
+     */
+    public static function addChild($request, $match)
+    {
+        // Find parent category
+        $category = array_key_exists('categoryId', $match) ? //
+            Pluf_Shortcuts_GetObjectOr404('SDP_Category', $match['categoryId']) : //
+            self::getBySlug($request, $match);
+        
+        $request->REQUEST['parent_id'] = $category->id;
+        $params = array(
+            'model' => 'SDP_Category'
+        );
+        return self::createObject($request, $match, $params);
+    }
+    
+    /**
+     * Returns categories which are the child of the given parent category
+     *
+     * @param Pluf_HTTP_Request $request
+     * @param array $match
+     */
+    public static function children($request, $match)
+    {
+        // Find parent category
+        $category = array_key_exists('categoryId', $match) ? //
+            Pluf_Shortcuts_GetObjectOr404('SDP_Category', $match['categoryId']) : //
+            self::getBySlug($request, $match); 
+        $params = array(
+            'model' => 'SDP_Category',
+            'sql' => 'parent_id=' . $category->id
+        );
+        return self::findObject($request, $match, $params);
     }
 
     public static function assets($request, $match)
@@ -91,8 +130,8 @@ class SDP_Views_Category extends Pluf_Views
     public static function addAsset($request, $match)
     {
         $category = array_key_exists('categoryId', $match) ? //
-            Pluf_Shortcuts_GetObjectOr404('SDP_Category', $match['categoryId']) : //
-            self::getBySlug($request, $match);
+        Pluf_Shortcuts_GetObjectOr404('SDP_Category', $match['categoryId']) : //
+        self::getBySlug($request, $match);
         if (isset($match['assetId'])) {
             $assetId = $match['assetId'];
         } else {
@@ -106,8 +145,8 @@ class SDP_Views_Category extends Pluf_Views
     public static function removeAsset($request, $match)
     {
         $category = array_key_exists('categoryId', $match) ? //
-            Pluf_Shortcuts_GetObjectOr404('SDP_Category', $match['categoryId']) : //
-            self::getBySlug($request, $match);
+        Pluf_Shortcuts_GetObjectOr404('SDP_Category', $match['categoryId']) : //
+        self::getBySlug($request, $match);
         if (isset($match['assetId'])) {
             $assetId = $match['assetId'];
         } else {

@@ -66,6 +66,38 @@ return array(
             'User_Precondition::ownerRequired'
         )
     ),
+    // ************************************************************* Children of Category
+    array( // Create
+        'regex' => '#^/categories/(?P<categoryId>\d+)/children$#',
+        'model' => 'SDP_Views_Category',
+        'method' => 'addChild',
+        'http-method' => 'POST',
+        'precond' => array(
+            'User_Precondition::ownerRequired'
+        )
+    ),
+    array( // Read (list)
+        'regex' => '#^/categories/(?P<categoryId>\d+)/children$#',
+        'model' => 'SDP_Views_Category',
+        'method' => 'children',
+        'http-method' => 'GET'
+    ),
+    // ************************************************************* Children of Category (by slug)
+    array( // Create
+        'regex' => '#^/categories/(?P<slug>[^/]+)/children$#',
+        'model' => 'SDP_Views_Category',
+        'method' => 'addChild',
+        'http-method' => 'POST',
+        'precond' => array(
+            'User_Precondition::ownerRequired'
+        )
+    ),
+    array( // Read (list)
+        'regex' => '#^/categories/(?P<slug>[^/]+)/children$#',
+        'model' => 'SDP_Views_Category',
+        'method' => 'children',
+        'http-method' => 'GET'
+    ),
     // ************************************************************* Assets in Category
     array( // Create
         'regex' => '#^/categories/(?P<categoryId>\d+)/assets$#',

@@ -245,7 +245,7 @@ class SDP_Views_Asset
         if (isset($match['tagId'])) {
             $tagId = $match['tagId'];
         } else {
-            $tagId = $request->REQUEST['tagId'];
+            $tagId = isset($request->REQUEST['id']) ? $request->REQUEST['id'] : $request->REQUEST['tagId'];
         }
         $tag = Pluf_Shortcuts_GetObjectOr404('SDP_Tag', $tagId);
         $asset->setAssoc($tag);
@@ -258,7 +258,7 @@ class SDP_Views_Asset
         if (isset($match['tagId'])) {
             $tagId = $match['tagId'];
         } else {
-            $tagId = $request->REQUEST['tagId'];
+            $tagId = isset($request->REQUEST['id']) ? $request->REQUEST['id'] : $request->REQUEST['tagId'];
         }
         $tag = Pluf_Shortcuts_GetObjectOr404('SDP_Tag', $tagId);
         $asset->delAssoc($tag);
@@ -313,7 +313,7 @@ class SDP_Views_Asset
         if (isset($match['categoryId'])) {
             $categoryId = $match['categoryId'];
         } else {
-            $categoryId = $request->REQUEST['categoryId'];
+            $categoryId = isset($request->REQUEST['id']) ? $request->REQUEST['id'] : $request->REQUEST['categoryId'];
         }
         $category = Pluf_Shortcuts_GetObjectOr404('SDP_Category', $categoryId);
         $asset->setAssoc($category);
@@ -326,7 +326,7 @@ class SDP_Views_Asset
         if (isset($match['categoryId'])) {
             $categoryId = $match['categoryId'];
         } else {
-            $categoryId = $request->REQUEST['categoryId'];
+            $categoryId = isset($request->REQUEST['id']) ? $request->REQUEST['id'] : $request->REQUEST['categoryId'];
         }
         $category = Pluf_Shortcuts_GetObjectOr404('SDP_Category', $categoryId);
         $asset->delAssoc($category);
